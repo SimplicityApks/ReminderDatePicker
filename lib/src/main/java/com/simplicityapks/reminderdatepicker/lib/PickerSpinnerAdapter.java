@@ -10,7 +10,7 @@ import android.widget.SpinnerAdapter;
 import java.util.List;
 
 /**
- * Serves as Adapter for all PickerSpinner Views and deals with the extra lastItem and its layout.
+ * Serves as Adapter for all PickerSpinner Views and deals with the extra footer and its layout.
  */
 public class PickerSpinnerAdapter<T> extends ArrayAdapter
         implements SpinnerAdapter, ListAdapter{ // TODO: check if instead should use ArrayAdapter<Object>
@@ -19,23 +19,23 @@ public class PickerSpinnerAdapter<T> extends ArrayAdapter
      * Resource for the last item in the Spinner, which will be inflated at the last position in dropdown/dialog.
      * Set to 0 for use of normal dropDownResource
      */
-    private int lastItemResource;
+    private int footerResource;
 
     /**
      * The last item, set to null to disable custom layouts
      */
-    private T lastItem;
+    private T footer;
 
-    public PickerSpinnerAdapter(Context context, int dropDownResource, int lastItemResource) {
+    public PickerSpinnerAdapter(Context context, int dropDownResource, int footerResource) {
         super(context, dropDownResource);
-        this.lastItemResource = lastItemResource;
+        this.footerResource = footerResource;
     }
 
     public PickerSpinnerAdapter(Context context, int dropDownResource, List<T> objects,
-                                int lastItemResource, T lastItem) {
+                                int footerResource, T footer) {
         super(context, dropDownResource, objects);
-        this.lastItemResource = lastItemResource;
-        this.lastItem = lastItem;
+        this.footerResource = footerResource;
+        this.footer = footer;
     }
 
     /**
@@ -47,7 +47,7 @@ public class PickerSpinnerAdapter<T> extends ArrayAdapter
         if(position != getCount()-1)
             return super.getView(position, convertView, parent);
         View lastView = null;
-        if(lastItemResource == 0)
+        if(footerResource == 0)
             lastView = super.getView(position, convertView, parent);
 
         return lastView;
@@ -59,10 +59,10 @@ public class PickerSpinnerAdapter<T> extends ArrayAdapter
     @Override
     public int getCount() {
         // we need one extra item which is not in the array.
-        return super.getCount() + (lastItem==null? 0 : 1);
+        return super.getCount() + (footer==null? 0 : 1);
     }
 
-    public void setLastItem(T lastItem) {
-        this.lastItem = lastItem;
+    public void setfooter(T footer) {
+        this.footer = footer;
     }
 }
