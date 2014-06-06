@@ -4,12 +4,12 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 /**
- * The left Spinner in the Google Keep app, to select a date.
+ * The left PickerSpinner in the Google Keep app, to select a date.
  */
-public class DateButton extends PopupButton {
+public class DateSpinner extends PickerSpinner {
 
-    // We only need this constructor since the PickerSpinner handles the others.
-    public DateButton(Context context, AttributeSet attrs, int defStyle){
+    // We only need this constructor since PickerSpinner handles the others.
+    public DateSpinner(Context context, AttributeSet attrs, int defStyle){
         super(context);
     }
 

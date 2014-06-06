@@ -2,27 +2,26 @@ package com.simplicityapks.reminderdatepicker.lib;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.Button;
+import android.widget.Spinner;
 
 /**
- * Base class for both DateButton and TimeButton. This base class takes care of inflating the popup
- * and managing selection.
+ * Base class for both DateSpinner and TimeSpinner.
  *
  * Allows to use a custom last list item, which won't get selected on click. Instead,
  * onLastItemClick() will be called.
  */
-public abstract class PopupButton extends Button{
-    public PopupButton(Context context) {
+public abstract class PickerSpinner extends Spinner {
+
+    public PickerSpinner(Context context) {
         this(context, null);
     }
 
-    public PopupButton(Context context, AttributeSet attrs) {
+    public PickerSpinner(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public PopupButton(Context context, AttributeSet attrs, int defStyle) {
+    public PickerSpinner(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-
     }
 
 

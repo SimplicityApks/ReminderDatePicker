@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 /**
- * Object to be inserted into the ArrayAdapter of the DateButton. The date is saved like the DatePicker.
+ * Object to be inserted into the ArrayAdapter of the DateSpinner. The date is saved like the DatePicker.
  */
 public class DateItem {
 
