@@ -9,8 +9,8 @@ import java.util.GregorianCalendar;
  */
 public class DateItem {
 
-    private String label;
-    private int day, month, year;
+    private final String label;
+    private final int day, month, year;
 
     public DateItem(String label, Calendar date) {
         this(label, date.get(Calendar.DAY_OF_MONTH), date.get(Calendar.MONTH), date.get(Calendar.YEAR));

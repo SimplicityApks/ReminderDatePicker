@@ -3,6 +3,8 @@ package com.simplicityapks.reminderdatepicker.lib;
 import android.content.Context;
 import android.util.AttributeSet;
 
+import java.util.List;
+
 /**
  * The left PickerSpinner in the Google Keep app, to select a date.
  */
@@ -12,14 +14,19 @@ public class DateSpinner extends PickerSpinner {
     public DateSpinner(Context context, AttributeSet attrs, int defStyle){
         super(context);
     }
-
+// TODO: implement methods
     @Override
-    public String getLastItem() {
+    public List<Object> getSpinnerItems() {
         return null;
     }
 
     @Override
-    public void onLastItemClick() {
-        // show the additional picker dialog.
+    public String getFooter() {
+        return null;
+    }
+
+    @Override
+    public void onFooterClick() {
+
     }
 }
