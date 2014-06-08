@@ -56,5 +56,9 @@ public abstract class PickerSpinner extends Spinner {
      */
     public abstract String getFooter();
 
+    /**
+     * Built-in listener for clicks on the footer. Note that the footer will not replace the
+     * selection and you still need a separate OnItemSelectedListener.
+     */
     public abstract void onFooterClick();
 }

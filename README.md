@@ -1,7 +1,8 @@
 ReminderDatePicker
 =================
 
-A Google Keep like Date and Time Picker for reminders.
+A Google Keep like Date and Time Picker for reminders. Note that this code is highly untested so only
+use with caution!
 
 Instructions and description will be added as soon as the library reaches a more stable state.
 

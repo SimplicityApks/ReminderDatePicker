@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ReminderDatePicker</string>
+
+    <string name="spinner_date_footer">Select date&#8230;</string>
 </resources>

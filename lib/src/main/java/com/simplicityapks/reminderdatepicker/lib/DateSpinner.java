@@ -14,19 +14,19 @@ public class DateSpinner extends PickerSpinner {
     public DateSpinner(Context context, AttributeSet attrs, int defStyle){
         super(context);
     }
-// TODO: implement methods
+
     @Override
     public List<Object> getSpinnerItems() {
-        return null;
+        return null; // TODO: get the right strings from Google Keep and construct the ArrayList
     }
 
     @Override
     public String getFooter() {
-        return null;
+        return getResources().getString(R.string.spinner_date_footer);
     }
 
     @Override
     public void onFooterClick() {
-
+        // show the date picker
     }
 }
