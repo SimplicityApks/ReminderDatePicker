@@ -1,8 +1,11 @@
 package com.simplicityapks.reminderdatepicker.lib;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.util.AttributeSet;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -17,7 +20,24 @@ public class DateSpinner extends PickerSpinner {
 
     @Override
     public List<Object> getSpinnerItems() {
-        return null; // TODO: get the right strings from Google Keep and construct the ArrayList
+        final Resources res = getResources();
+        final Calendar date = Calendar.getInstance();
+        ArrayList<Object> items = new ArrayList<Object>(3);
+        // today item:
+        items.add(new DateItem(res.getString(R.string.date_today), date));
+        // tomorrow item:
+        date.add(Calendar.DAY_OF_YEAR, 1);
+        items.add(new DateItem(res.getString(R.string.date_tomorrow), date));
+        // next weekday item:
+        date.add(Calendar.DAY_OF_YEAR, 6);
+        items.add(new DateItem(getNextWeekDay(date.get(Calendar.DAY_OF_WEEK)), date));
+        return items;
+    }
+
+    private String getNextWeekDay(int weekDay) {
+        // zero-indexed, because the weekday array is zero-indexed
+        weekDay -= 1;
+        return getResources().getStringArray(R.array.next_weekdays) [weekDay];
     }
 
     @Override

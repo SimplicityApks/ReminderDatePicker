@@ -2,4 +2,8 @@
     <string name="app_name">ReminderDatePicker</string>
 
     <string name="spinner_date_footer">Select date&#8230;</string>
+
+    <!-- Date items: -->
+    <string name="date_today">Today</string>
+    <string name="date_tomorrow">Tomorrow</string>
 </resources>

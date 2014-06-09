@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="next_weekdays">
+        <item>Next Sunday</item>
+        <item>Next Monday</item>
+        <item>Next Tuesday</item>
+        <item>Next Wednesday</item>
+        <item>Next Thursday</item>
+        <item>Next Friday</item>
+        <item>Next Saturday</item>
+    </string-array>
+</resources>
