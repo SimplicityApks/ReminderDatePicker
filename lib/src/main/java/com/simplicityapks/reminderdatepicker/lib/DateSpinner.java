@@ -40,6 +40,34 @@ public class DateSpinner extends PickerSpinner {
         return getResources().getStringArray(R.array.next_weekdays) [weekDay];
     }
 
+    /**
+     * Gets the currently selected Date (that the Spinner is showing)
+     * @return The selected Date as Calendar, or null if there is none.
+     */
+    public Calendar getSelectedDate() {
+        final DateItem selectedItem = (DateItem) getSelectedItem();
+        if(selectedItem == null)
+            return null;
+        else
+            return selectedItem.getDate();
+    }
+
+    public void setSelectedDate(Calendar date) {
+        final int count = getAdapter().getCount() - 1;
+        int itemPosition = -1;
+        for(int i=0; i<count; i++) {
+            if(((DateItem) getAdapter().getItem(i)).getDate().equals(date)) {
+                itemPosition = i;
+                break;
+            }
+        }
+        if(itemPosition >= 0)
+            setSelection(itemPosition);
+        else {
+            // we need to construct a temporary DateItem to select:
+        }
+    }
+
     @Override
     public String getFooter() {
         return getResources().getString(R.string.spinner_date_footer);

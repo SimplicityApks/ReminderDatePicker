@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
  */
 public class ReminderDatePicker extends LinearLayout {
 
+    private DateSpinner dateSpinner;
 
     public ReminderDatePicker(Context context) {
         this(context, null);
@@ -31,5 +32,6 @@ public class ReminderDatePicker extends LinearLayout {
 
     private void init(Context context) {
         LayoutInflater.from(context).inflate(R.layout.reminder_date_picker, this);
+        dateSpinner = (DateSpinner) findViewById(R.id.date_spinner);
     }
 }
