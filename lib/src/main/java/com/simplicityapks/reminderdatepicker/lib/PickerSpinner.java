@@ -39,8 +39,22 @@ public abstract class PickerSpinner extends Spinner {
     public void setSelection(int position) {
         if(position == getCount()-1)
             onFooterClick(); // the footer has been clicked, so don't update the selection
-        else
+        else {
+            // remove any previous temporary selection:
+            ((PickerSpinnerAdapter)getAdapter()).selectTemporary(null);
             super.setSelection(position);
+        }
+    }
+
+
+    /**
+     * Push an item to be selected, but not shown in the dropdown menu. This is similar to calling
+     * setText(item.toString()) if a Spinner had such a method.
+     * @param item The item to select, or null to remove any temporary selection.
+     */
+    public void selectTemporary(Object item) {
+        // pass on the call to the adapter:
+        ((PickerSpinnerAdapter)getAdapter()).selectTemporary(item);
     }
 
     /**

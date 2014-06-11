@@ -1,6 +1,7 @@
 package com.simplicityapks.reminderdatepicker.lib;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,12 @@ public class PickerSpinnerAdapter<T> extends ArrayAdapter
     private int footerResource = 0;
 
     /**
+     * Temporary item which is selected immediately and not shown in the dropdown menu or dialog.
+     * That is why it does not increase getCount().
+     */
+    private T temporarySelection;
+
+    /**
      * The last item, set to null to disable
      */
     private T footer;
@@ -45,10 +52,28 @@ public class PickerSpinnerAdapter<T> extends ArrayAdapter
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        if(temporarySelection != null && position == getCount()) {
+            View temporaryView = super.getView(0, convertView, parent);
+            final TextView textView = (TextView)temporaryView.findViewById(android.R.id.text1);
+            textView.setText(temporarySelection.toString());
+            return temporaryView;
+        }
+        // depending on the position, use super method or create our own
+        if(footer != null && position != getCount()-1)
+            Log.d(getClass().getSimpleName(), "Strange call to getView at footer position: "+position);
+        return super.getView(position, convertView, parent);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public View getDropDownView(int position, View convertView, ViewGroup parent) {
         // depending on the position, use super method or create our own
         if(footer == null || position != getCount()-1)
-            return super.getView(position, convertView, parent);
+            return super.getDropDownView(position, convertView, parent);
 
+        // if we want the footer, create it:
         View footerView;
         if(footerResource == 0)
             footerView = super.getView(position, convertView, parent);
@@ -63,6 +88,24 @@ public class PickerSpinnerAdapter<T> extends ArrayAdapter
                         " a textview with id set to android.R.id.text1");
         textView.setText(footer.toString());
         return footerView;
+    }
+
+    /**
+     * Push an item to be selected, but not shown in the dropdown menu. This is similar to calling
+     * setText(item.toString()) if a Spinner had such a method.
+     * @param item The item to select, or null to remove any temporary selection.
+     */
+    public void selectTemporary(T item) {
+        this.temporarySelection = item;
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        if(temporarySelection != null && position == getCount())
+            return temporarySelection;
+        else
+            return super.getItem(position);
     }
 
     /**
