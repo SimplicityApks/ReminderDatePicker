@@ -52,6 +52,11 @@ public class DateSpinner extends PickerSpinner {
             return selectedItem.getDate();
     }
 
+    /**
+     * Sets the Spinner's selection as date. If the date was not in the possible selections, a temporary
+     * item is created and passed to selectTemporary().
+     * @param date The date to be selected.
+     */
     public void setSelectedDate(Calendar date) {
         final int count = getAdapter().getCount() - 1;
         int itemPosition = -1;
@@ -64,8 +69,24 @@ public class DateSpinner extends PickerSpinner {
         if(itemPosition >= 0)
             setSelection(itemPosition);
         else {
-            // we need to construct a temporary DateItem to select:
+            final int dateDifference = (int) ((date.getTimeInMillis() - Calendar.getInstance().getTimeInMillis())
+                    / (1000*60*60*24));
+            if(dateDifference>0 && dateDifference<=7) { // if the date is within the next week:
+                // we need to construct a temporary DateItem to select:
+                final int day = date.get(Calendar.DAY_OF_WEEK);
+                selectTemporary(new DateItem(getNextWeekDay(day), date));
+            } else {
+                // we need to show the date as a full text, using the current DateFormat:
+                selectTemporary(new DateItem(getDateFormat().format(date.getTime()), date));
+            }
         }
+    }
+
+    private java.text.DateFormat savedFormat;
+    private java.text.DateFormat getDateFormat() {
+        if(savedFormat == null)
+            savedFormat = android.text.format.DateFormat.getDateFormat(getContext().getApplicationContext());
+        return savedFormat;
     }
 
     @Override
