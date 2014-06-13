@@ -42,6 +42,45 @@ public class TimeItem {
         return result;
     }
 
+    /**
+     * Gets the hour set for this TimeItem.
+     * @return The hour, as int.
+     */
+    public int getHour() {
+        return this.hour;
+    }
+
+    /**
+     * Gets the minute set for this TimeItem.
+     * @return The minute, as int.
+     */
+    public int getMinute() {
+        return this.minute;
+    }
+
+    /**
+     * Deeply compares this TimeItem to the specified Object. Returns true if obj is a TimeItem and
+     * contains the same date (ignoring the label) or is a Calendar and contains the same hour and minute.
+     * @param obj The Object to compare this to.
+     * @return true if equal, false otherwise.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        int objHour, objMinute;
+        if(obj instanceof TimeItem) {
+            TimeItem item = (TimeItem) obj;
+            objHour = item.getHour();
+            objMinute = item.getMinute();
+        }
+        else if(obj instanceof Calendar) {
+            Calendar cal = (Calendar) obj;
+            objHour = cal.get(Calendar.HOUR_OF_DAY);
+            objMinute = cal.get(Calendar.MINUTE);
+        }
+        else return false;
+        return objHour==this.hour && objMinute==this.minute;
+    }
+
     @Override
     public String toString() {
         return label;

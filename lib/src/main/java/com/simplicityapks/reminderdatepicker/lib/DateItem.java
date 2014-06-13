@@ -69,7 +69,8 @@ public class DateItem {
 
     /**
      * Deeply compares this DateItem to the specified Object. Returns true if obj is a DateItem and
-     * contains the same date or is a Calendar and contains the same date ignoring hours, minutes and seconds.
+     * contains the same date (ignoring the label) or is a Calendar and contains the same date
+     * ignoring hour, minute and second.
      * @param obj The Object to compare this to.
      * @return true if equal, false otherwise.
      */
@@ -89,7 +90,7 @@ public class DateItem {
             objYear = cal.get(Calendar.YEAR);
         }
         else return false;
-        return objDay==getDay() && objMonth==getMonth() && objYear==getYear();
+        return objDay==this.day && objMonth==this.month && objYear==this.year;
     }
 
     @Override

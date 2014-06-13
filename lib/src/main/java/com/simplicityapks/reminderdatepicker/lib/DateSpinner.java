@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * The left PickerSpinner in the Google Keep app, to select a date.
  */
-public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSelectedListener{
+public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSelectedListener {
 
     /**
      * Implement this interface if you want to be notified whenever the selected date changes.

@@ -1,9 +1,16 @@
 <resources>
     <string name="app_name">ReminderDatePicker</string>
 
-    <string name="spinner_date_footer">Select date&#8230;</string>
+    <string name="spinner_date_footer">Pick a date&#8230;</string>
+    <string name="spinner_time_footer">Pick a time&#8230;</string>
 
     <!-- Date items: -->
     <string name="date_today">Today</string>
     <string name="date_tomorrow">Tomorrow</string>
+
+    <!-- Time items: -->
+    <string name="time_morning">Morning</string>
+    <string name="time_afternoon">Afternoon</string>
+    <string name="time_evening">Evening</string>
+    <string name="time_night">Night</string>
 </resources>
