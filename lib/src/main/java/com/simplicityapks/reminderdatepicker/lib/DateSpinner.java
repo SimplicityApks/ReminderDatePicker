@@ -27,7 +27,7 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
 
     // We only need this constructor since PickerSpinner handles the others.
     public DateSpinner(Context context, AttributeSet attrs, int defStyle){
-        super(context);
+        super(context, attrs, defStyle);
         // check if the parent activity has our dateSelectedListener, automatically enable it:
         if(context instanceof OnDateSelectedListener)
             setOnDateSelectedListener((OnDateSelectedListener) context);
@@ -113,7 +113,7 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
     }
 
     @Override
-    public String getFooter() {
+    public CharSequence getFooter() {
         return getResources().getString(R.string.spinner_date_footer);
     }
 

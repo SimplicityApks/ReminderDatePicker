@@ -36,6 +36,14 @@ public abstract class PickerSpinner extends Spinner {
     }
 
     @Override
+    public void setAdapter(SpinnerAdapter adapter) {
+        if(adapter instanceof PickerSpinnerAdapter)
+            super.setAdapter(adapter);
+        else throw new IllegalArgumentException(
+                "adapter must extend PickerSpinnerAdapter to be used with this class");
+    }
+
+    @Override
     public void setSelection(int position) {
         if(position == getCount()-1)
             onFooterClick(); // the footer has been clicked, so don't update the selection
@@ -45,7 +53,6 @@ public abstract class PickerSpinner extends Spinner {
             super.setSelection(position);
         }
     }
-
 
     /**
      * Push an item to be selected, but not shown in the dropdown menu. This is similar to calling
@@ -65,10 +72,10 @@ public abstract class PickerSpinner extends Spinner {
     public abstract List<Object> getSpinnerItems();
 
     /**
-     * Gets the String to be shown as footer in the drop down menu.
+     * Gets the CharSequence to be shown as footer in the drop down menu.
      * @return The footer, or null to disable showing it.
      */
-    public abstract String getFooter();
+    public abstract CharSequence getFooter();
 
     /**
      * Built-in listener for clicks on the footer. Note that the footer will not replace the
