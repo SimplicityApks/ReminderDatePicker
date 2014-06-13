@@ -43,6 +43,55 @@ public class DateItem {
         return new GregorianCalendar(day, month, year);
     }
 
+    /**
+     * Gets the day of the month set for this TimeItem.
+     * @return The day, as int.
+     */
+    public int getDay() {
+        return this.day;
+    }
+
+    /**
+     * Gets the month set for this TimeItem.
+     * @return The month, as int.
+     */
+    public int getMonth() {
+        return this.month;
+    }
+
+    /**
+     * Gets the year set for this TimeItem.
+     * @return The year, as int.
+     */
+    public int getYear() {
+        return this.year;
+    }
+
+    /**
+     * Deeply compares this DateItem to the specified Object. Returns true if obj is a DateItem and
+     * contains the same date or is a Calendar and contains the same date ignoring hours, minutes and seconds.
+     * @param obj The Object to compare this to.
+     * @return true if equal, false otherwise.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        int objDay, objMonth, objYear;
+        if(obj instanceof DateItem) {
+            DateItem item = (DateItem) obj;
+            objDay = item.getDay();
+            objMonth = item.getMonth();
+            objYear = item.getYear();
+        }
+        else if(obj instanceof Calendar) {
+            Calendar cal = (Calendar) obj;
+            objDay = cal.get(Calendar.DAY_OF_MONTH);
+            objMonth = cal.get(Calendar.MONTH);
+            objYear = cal.get(Calendar.YEAR);
+        }
+        else return false;
+        return objDay==getDay() && objMonth==getMonth() && objYear==getYear();
+    }
+
     @Override
     public String toString() {
         return label;

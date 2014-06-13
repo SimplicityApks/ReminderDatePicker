@@ -57,8 +57,8 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
     }
 
     /**
-     * Gets the currently selected Date (that the Spinner is showing)
-     * @return The selected Date as Calendar, or null if there is none.
+     * Gets the currently selected date (that the Spinner is showing)
+     * @return The selected date as Calendar, or null if there is none.
      */
     public Calendar getSelectedDate() {
         final DateItem selectedItem = (DateItem) getSelectedItem();
@@ -77,7 +77,7 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
         final int count = getAdapter().getCount() - 1;
         int itemPosition = -1;
         for(int i=0; i<count; i++) {
-            if(((DateItem) getAdapter().getItem(i)).getDate().equals(date)) {
+            if(getAdapter().getItem(i).equals(date)) { // because DateItem deeply compares to calendar
                 itemPosition = i;
                 break;
             }
@@ -131,6 +131,5 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
     // unused
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-
     }
 }
