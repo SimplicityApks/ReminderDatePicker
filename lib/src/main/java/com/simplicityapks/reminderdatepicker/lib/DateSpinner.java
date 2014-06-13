@@ -3,6 +3,8 @@ package com.simplicityapks.reminderdatepicker.lib;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.AttributeSet;
+import android.view.View;
+import android.widget.AdapterView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -11,11 +13,25 @@ import java.util.List;
 /**
  * The left PickerSpinner in the Google Keep app, to select a date.
  */
-public class DateSpinner extends PickerSpinner {
+public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSelectedListener{
+
+    /**
+     * Implement this interface if you want to be notified whenever the selected date changes.
+     */
+    public interface OnDateSelectedListener {
+        public void onDateSelected(Calendar newDate);
+    }
+
+    // This listener doesn't have to be implemented, if it is null just ignore it
+    private OnDateSelectedListener dateListener = null;
 
     // We only need this constructor since PickerSpinner handles the others.
     public DateSpinner(Context context, AttributeSet attrs, int defStyle){
         super(context);
+        // check if the parent activity has our dateSelectedListener, automatically enable it:
+        if(context instanceof OnDateSelectedListener)
+            setOnDateSelectedListener((OnDateSelectedListener) context);
+        setOnItemSelectedListener(this);
     }
 
     @Override
@@ -89,6 +105,13 @@ public class DateSpinner extends PickerSpinner {
         return savedFormat;
     }
 
+    /**
+     * Implement this interface if you want to be notified whenever the selected date changes.
+     */
+    public void setOnDateSelectedListener(OnDateSelectedListener listener) {
+        this.dateListener = listener;
+    }
+
     @Override
     public String getFooter() {
         return getResources().getString(R.string.spinner_date_footer);
@@ -96,6 +119,18 @@ public class DateSpinner extends PickerSpinner {
 
     @Override
     public void onFooterClick() {
-        // show the date picker
+        // TODO: show the date picker
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        if(dateListener != null)
+            dateListener.onDateSelected(getSelectedDate());
+    }
+
+    // unused
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 }
