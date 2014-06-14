@@ -9,12 +9,15 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 
+import java.util.Calendar;
+
 /**
  * Base view class to be inflated via xml or constructor.
  */
 public class ReminderDatePicker extends LinearLayout implements AdapterView.OnItemSelectedListener{
 
     private DateSpinner dateSpinner;
+    private TimeSpinner timeSpinner;
 
     // This listener doesn't have to be implemented, if it is null just ignore it
     private OnDateSelectedListener listener = null;
@@ -39,9 +42,38 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
         LayoutInflater.from(context).inflate(R.layout.reminder_date_picker, this);
         dateSpinner = (DateSpinner) findViewById(R.id.date_spinner);
         dateSpinner.setOnItemSelectedListener(this);
+
+        timeSpinner = (TimeSpinner) findViewById(R.id.time_spinner);
+        timeSpinner.setOnItemSelectedListener(this);
         // check if the parent activity has our dateSelectedListener, automatically enable it:
         if(context instanceof OnDateSelectedListener)
             setOnDateSelectedListener((OnDateSelectedListener) context);
+    }
+
+    /**
+     * Gets the currently selected date (that the Spinners are showing)
+     * @return The selected date as Calendar, or null if there is none.
+     */
+    public Calendar getSelectedDate() {
+        Calendar result = dateSpinner.getSelectedDate();
+        Calendar time = timeSpinner.getSelectedTime();
+        if(result!=null && time!=null) {
+            result.set(Calendar.HOUR_OF_DAY, time.get(Calendar.HOUR_OF_DAY));
+            result.set(Calendar.MINUTE, time.get(Calendar.MINUTE));
+            return result;
+        }
+        else return null;
+    }
+
+    /**
+     * Sets the Spinners' selection as date considering both time and day.
+     * @param date The date to be selected.
+     */
+    public void setSelectedDate(Calendar date) {
+        if(date!=null) {
+            dateSpinner.setSelectedDate(date);
+            timeSpinner.setSelectedTime(date.get(Calendar.HOUR_OF_DAY), date.get(Calendar.MINUTE));
+        }
     }
 
     /**
@@ -54,8 +86,9 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         // An item has been selected in one of our child spinners, so get the selected Date and call the listeners
-        if(listener == null) return;
-        // TODO: get date and call
+        if(listener != null) {
+            listener.onDateSelected(getSelectedDate());
+        }
     }
 
     // unused
