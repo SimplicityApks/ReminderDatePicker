@@ -15,13 +15,6 @@ import java.util.List;
  */
 public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSelectedListener {
 
-    /**
-     * Implement this interface if you want to be notified whenever the selected date changes.
-     */
-    public interface OnDateSelectedListener {
-        public void onDateSelected(Calendar newDate);
-    }
-
     // This listener doesn't have to be implemented, if it is null just ignore it
     private OnDateSelectedListener dateListener = null;
 
