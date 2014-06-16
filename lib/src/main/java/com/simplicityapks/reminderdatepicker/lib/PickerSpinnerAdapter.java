@@ -104,6 +104,8 @@ public class PickerSpinnerAdapter<T> extends ArrayAdapter
     public Object getItem(int position) {
         if(temporarySelection != null && position == getCount())
             return temporarySelection;
+        else if(footer != null && position == getCount()-1)
+            return footer;
         else
             return super.getItem(position);
     }

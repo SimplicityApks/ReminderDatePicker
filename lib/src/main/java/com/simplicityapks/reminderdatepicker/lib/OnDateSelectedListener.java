@@ -10,5 +10,5 @@ public interface OnDateSelectedListener {
      * Called whenever a new date is selected in the Picker calling this.
      * @param newDate The new selected date, as Calendar.
      */
-    public void onDateSelected(Calendar newDate);
+    public void onDateSelected(Calendar date);
 }

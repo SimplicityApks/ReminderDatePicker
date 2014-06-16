@@ -18,7 +18,14 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
     // This listener doesn't have to be implemented, if it is null just ignore it
     private OnDateSelectedListener dateListener = null;
 
-    // We only need this constructor since PickerSpinner handles the others.
+    public DateSpinner(Context context){
+        this(context, null, 0);
+    }
+
+    public DateSpinner(Context context, AttributeSet attrs){
+        this(context, attrs, 0);
+    }
+
     public DateSpinner(Context context, AttributeSet attrs, int defStyle){
         super(context, attrs, defStyle);
         // check if the parent activity has our dateSelectedListener, automatically enable it:

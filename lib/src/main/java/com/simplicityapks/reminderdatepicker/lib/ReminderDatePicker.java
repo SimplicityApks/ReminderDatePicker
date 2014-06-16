@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import java.util.Calendar;
 
@@ -39,7 +40,7 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
     }
 
     private void init(Context context) {
-        LayoutInflater.from(context).inflate(R.layout.reminder_date_picker, this);
+        View.inflate(context, R.layout.reminder_date_picker, this);
         dateSpinner = (DateSpinner) findViewById(R.id.date_spinner);
         dateSpinner.setOnItemSelectedListener(this);
 

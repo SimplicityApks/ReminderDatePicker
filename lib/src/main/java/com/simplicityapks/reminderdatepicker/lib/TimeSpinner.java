@@ -19,13 +19,20 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
      * Implement this interface if you want to be notified whenever the selected time changes.
      */
     public interface OnTimeSelectedListener {
-        public void onTimeSelected(int newHour, int newMinute);
+        public void onTimeSelected(int hour, int minute);
     }
 
     // This listener doesn't have to be implemented, if it is null just ignore it
     private OnTimeSelectedListener timeListener = null;
 
-    // We only need this constructor since PickerSpinner handles the others.
+    public TimeSpinner(Context context){
+        this(context, null, 0);
+    }
+
+    public TimeSpinner(Context context, AttributeSet attrs){
+        this(context, attrs, 0);
+    }
+
     public TimeSpinner(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         // check if the parent activity has our timeSelectedListener, automatically enable it:
