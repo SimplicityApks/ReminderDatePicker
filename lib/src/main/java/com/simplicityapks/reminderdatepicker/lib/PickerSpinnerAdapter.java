@@ -15,8 +15,7 @@ import java.util.List;
 /**
  * Serves as Adapter for all PickerSpinner Views and deals with the extra footer and its layout.
  */
-public class PickerSpinnerAdapter<T> extends ArrayAdapter
-        implements SpinnerAdapter, ListAdapter{ // TODO: check if instead should use ArrayAdapter<Object>
+public class PickerSpinnerAdapter extends ArrayAdapter<Object>{ // TODO: check if instead should use ArrayAdapter<Object>
 
     /**
      * Resource for the last item in the Spinner, which will be inflated at the last position in dropdown/dialog.
@@ -28,21 +27,21 @@ public class PickerSpinnerAdapter<T> extends ArrayAdapter
      * Temporary item which is selected immediately and not shown in the dropdown menu or dialog.
      * That is why it does not increase getCount().
      */
-    private T temporarySelection;
+    private Object temporarySelection;
 
     /**
      * The last item, set to null to disable
      */
-    private T footer;
+    private Object footer;
 
-    public PickerSpinnerAdapter(Context context, int dropDownResource, int footerResource) {
-        super(context, dropDownResource);
+    public PickerSpinnerAdapter(Context context, int resource, int footerResource) {
+        super(context, resource);
         this.footerResource = footerResource;
     }
 
-    public PickerSpinnerAdapter(Context context, int dropDownResource, List<T> objects,
-                                int footerResource, T footer) {
-        super(context, dropDownResource, objects);
+    public PickerSpinnerAdapter(Context context, int resource, List<Object> objects,
+                                int footerResource, Object footer) {
+        super(context, resource, objects);
         this.footerResource = footerResource;
         this.footer = footer;
     }
@@ -59,7 +58,7 @@ public class PickerSpinnerAdapter<T> extends ArrayAdapter
             return temporaryView;
         }
         // depending on the position, use super method or create our own
-        if(footer != null && position != getCount()-1)
+        if(footer != null && position == getCount()-1)
             Log.d(getClass().getSimpleName(), "Strange call to getView at footer position: "+position);
         return super.getView(position, convertView, parent);
     }
@@ -95,7 +94,7 @@ public class PickerSpinnerAdapter<T> extends ArrayAdapter
      * setText(item.toString()) if a Spinner had such a method.
      * @param item The item to select, or null to remove any temporary selection.
      */
-    public void selectTemporary(T item) {
+    public void selectTemporary(Object item) {
         this.temporarySelection = item;
         notifyDataSetChanged();
     }
@@ -123,7 +122,7 @@ public class PickerSpinnerAdapter<T> extends ArrayAdapter
      * Sets the text to be shown in the footer.
      * @param footer An Object whose toString() will be the footer text, or null to disable the footer.
      */
-    public void setFooter(T footer) {
+    public void setFooter(Object footer) {
         this.footer = footer;
     }
 

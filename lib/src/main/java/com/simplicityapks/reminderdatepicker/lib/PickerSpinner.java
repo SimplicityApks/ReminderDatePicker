@@ -3,6 +3,7 @@ package com.simplicityapks.reminderdatepicker.lib;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
@@ -16,6 +17,7 @@ import java.util.List;
  */
 public abstract class PickerSpinner extends Spinner {
 
+    private final int DEFAULT_ITEM_RES = android.R.layout.simple_spinner_item;
     private final int DEFAULT_DROPDOWN_RES = android.R.layout.simple_spinner_dropdown_item;
     private final int DEFAULT_FOOTER_RES = 0; // TODO: create layout file with darker background
 
@@ -28,11 +30,13 @@ public abstract class PickerSpinner extends Spinner {
     }
 
     public PickerSpinner(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
+        super(context, attrs);
 
         // create our adapter and set it here:
-        setAdapter(new PickerSpinnerAdapter<Object>(context, DEFAULT_DROPDOWN_RES, getSpinnerItems(),
-                DEFAULT_FOOTER_RES, getFooter()));
+        PickerSpinnerAdapter adapter = new PickerSpinnerAdapter(context, DEFAULT_ITEM_RES, getSpinnerItems(),
+                DEFAULT_FOOTER_RES, getFooter());
+        adapter.setDropDownViewResource(DEFAULT_DROPDOWN_RES);
+        setAdapter(adapter);
     }
 
     @Override
