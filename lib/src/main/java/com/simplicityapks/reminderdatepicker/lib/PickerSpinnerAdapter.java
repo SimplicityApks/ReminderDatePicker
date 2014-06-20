@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Serves as Adapter for all PickerSpinner Views and deals with the extra footer and its layout.
  */
-public class PickerSpinnerAdapter extends ArrayAdapter<Object>{ // TODO: check if instead should use ArrayAdapter<Object>
+public class PickerSpinnerAdapter extends ArrayAdapter<Object>{
 
     /**
      * Resource for the last item in the Spinner, which will be inflated at the last position in dropdown/dialog.
@@ -69,23 +69,22 @@ public class PickerSpinnerAdapter extends ArrayAdapter<Object>{ // TODO: check i
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
         // depending on the position, use super method or create our own
-        if(footer == null || position != getCount()-1)
+        // we don't need to inflate a footer view if it uses the default resource, the superclass will do it for us:
+        if(footer == null || footerResource == 0 || position != getCount()-1)
             return super.getDropDownView(position, convertView, parent);
 
         // if we want the footer, create it:
-        View footerView;
-        if(footerResource == 0)
-            footerView = super.getView(position, convertView, parent);
-        else {
-            footerView = LayoutInflater.from(getContext()).inflate(footerResource, parent);
-            if(footerView == null) throw new IllegalArgumentException(
-                    "The footer resource passed to constructor or setFooterResource() is invalid");
-        }
+        View footerView = LayoutInflater.from(getContext()).inflate(footerResource, parent);
+        if(footerView == null) throw new IllegalArgumentException(
+                "The footer resource passed to constructor or setFooterResource() is invalid");
         final TextView textView = (TextView)footerView.findViewById(android.R.id.text1);
         if(textView == null) throw new IllegalArgumentException(
                 "The footer resource passed to constructor or setFooterResource() does not contain" +
                         " a textview with id set to android.R.id.text1");
-        textView.setText(footer.toString());
+        if(footer instanceof CharSequence)
+            textView.setText((CharSequence)footer);
+        else
+            textView.setText(footer.toString());
         return footerView;
     }
 
