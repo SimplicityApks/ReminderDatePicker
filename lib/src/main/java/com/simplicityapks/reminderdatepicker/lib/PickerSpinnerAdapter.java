@@ -58,8 +58,8 @@ public class PickerSpinnerAdapter extends ArrayAdapter<Object>{
             return temporaryView;
         }
         // depending on the position, use super method or create our own
-        if(footer != null && position == getCount()-1)
-            Log.d(getClass().getSimpleName(), "Strange call to getView at footer position: "+position);
+        /*if(footer != null && position == getCount()-1)
+            Log.d(getClass().getSimpleName(), "Strange call to getView at footer position: "+position);*/
         return super.getView(position, convertView, parent);
     }
 
