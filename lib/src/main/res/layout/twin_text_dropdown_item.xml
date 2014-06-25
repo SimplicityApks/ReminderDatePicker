@@ -20,5 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="?android:attr/dropdownListPreferredItemHeight"
         android:ellipsize="marquee"
-        android:textAlignment="inherit"/>
+        android:textAlignment="inherit"
+        android:textColor="@color/time_spinner_digital"
+        android:typeface="sans"/>
 </LinearLayout>

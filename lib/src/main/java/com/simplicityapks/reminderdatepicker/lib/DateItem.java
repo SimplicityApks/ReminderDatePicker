@@ -1,11 +1,11 @@
 package com.simplicityapks.reminderdatepicker.lib;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 
 /**
- * Object to be inserted into the ArrayAdapter of the DateSpinner. The date is saved like the DatePicker.
+ * TwinTextItem to be inserted into the ArrayAdapter of the DateSpinner. The date is saved like the DatePicker.
+ * The secondary text is currently not in use, so getSecondaryText() returns null.
  */
 public class DateItem implements TwinTextItem{
 

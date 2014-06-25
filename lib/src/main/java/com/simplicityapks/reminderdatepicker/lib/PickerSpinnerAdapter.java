@@ -6,14 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import java.util.List;
 
 /**
- * Serves as Adapter for all PickerSpinner Views and deals with the extra footer and its layout.
+ * Serves as Adapter for all PickerSpinner Views and deals with an extra footer and its layout, the
+ * option to add temporary selections and correctly setting the view for the TwinTextItems.
  */
 public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem>{
 
@@ -38,14 +37,28 @@ public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem>{
      */
     private TwinTextItem footer;
 
+    /**
+     * Constructs a new PickerSpinnerAdapter with these params:
+     * @param context The context needed by any Adapter.
+     * @param resource The resource to be inflated as layout, should contain two TextViews
+     * @param footerResource The resource to be inflated for the footer.
+     */
     public PickerSpinnerAdapter(Context context, int resource, int footerResource) {
         super(context, resource);
         this.footerResource = footerResource;
     }
 
-    public PickerSpinnerAdapter(Context context, int resource, List<TwinTextItem> objects,
+    /**
+     * Constructs a new PickerSpinnerAdapter with these params:
+     * @param context The context needed by any Adapter.
+     * @param resource The resource to be inflated as layout, should contain two TextViews
+     * @param items The TwinTextItems to be shown in layout.
+     * @param footerResource The resource to be inflated for the footer.
+     * @param footer The item to be shown as footer, use TwinTextItem.Simple for easy creation.
+     */
+    public PickerSpinnerAdapter(Context context, int resource, List<TwinTextItem> items,
                                 int footerResource, TwinTextItem footer) {
-        super(context, resource, objects);
+        super(context, resource, items);
         this.footerResource = footerResource;
         this.footer = footer;
     }
@@ -115,6 +128,9 @@ public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem>{
         notifyDataSetChanged();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public TwinTextItem getItem(int position) {
         if(temporarySelection != null && position == getCount())
