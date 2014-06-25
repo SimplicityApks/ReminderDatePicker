@@ -15,7 +15,11 @@ import java.util.List;
 /**
  * Serves as Adapter for all PickerSpinner Views and deals with the extra footer and its layout.
  */
-public class PickerSpinnerAdapter extends ArrayAdapter<Object>{
+public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem>{
+
+    // IDs for both TextViews:
+    private final int PRIMARY_TEXT_ID = android.R.id.text1;
+    private final int SECONDARY_TEXT_ID = android.R.id.text2;
 
     /**
      * Resource for the last item in the Spinner, which will be inflated at the last position in dropdown/dialog.
@@ -27,20 +31,20 @@ public class PickerSpinnerAdapter extends ArrayAdapter<Object>{
      * Temporary item which is selected immediately and not shown in the dropdown menu or dialog.
      * That is why it does not increase getCount().
      */
-    private Object temporarySelection;
+    private TwinTextItem temporarySelection;
 
     /**
      * The last item, set to null to disable
      */
-    private Object footer;
+    private TwinTextItem footer;
 
     public PickerSpinnerAdapter(Context context, int resource, int footerResource) {
         super(context, resource);
         this.footerResource = footerResource;
     }
 
-    public PickerSpinnerAdapter(Context context, int resource, List<Object> objects,
-                                int footerResource, Object footer) {
+    public PickerSpinnerAdapter(Context context, int resource, List<TwinTextItem> objects,
+                                int footerResource, TwinTextItem footer) {
         super(context, resource, objects);
         this.footerResource = footerResource;
         this.footer = footer;
@@ -51,12 +55,19 @@ public class PickerSpinnerAdapter extends ArrayAdapter<Object>{
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        View view = super.getView(0, convertView, parent);
         if(temporarySelection != null && position == getCount()) {
-            View temporaryView = super.getView(0, convertView, parent);
-            final TextView textView = (TextView)temporaryView.findViewById(android.R.id.text1);
-            textView.setText(temporarySelection.toString());
-            return temporaryView;
+            // our inflated view acts as temporaryView:
+            final TextView primary = (TextView) view.findViewById(PRIMARY_TEXT_ID);
+            primary.setText(temporarySelection.getPrimaryText());
+            final TextView secondary = (TextView) view.findViewById(SECONDARY_TEXT_ID);
+            secondary.setText(temporarySelection.getSecondaryText());
+            return view;
         }
+        final TextView primary = (TextView) view.findViewById(PRIMARY_TEXT_ID);
+        primary.setText(getItem(position).getPrimaryText());
+        final TextView secondary = (TextView) view.findViewById(SECONDARY_TEXT_ID);
+        secondary.setText(getItem(position).getSecondaryText());
         // depending on the position, use super method or create our own
         if(footer != null && position == getCount()-1)
             Log.d(getClass().getSimpleName(), "Strange call to getView at footer position: "+position);
@@ -69,22 +80,28 @@ public class PickerSpinnerAdapter extends ArrayAdapter<Object>{
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
         // depending on the position, use super method or create our own
-        // we don't need to inflate a footer view if it uses the default resource, the superclass will do it for us:
-        if(footer == null || footerResource == 0 || position != getCount()-1)
-            return super.getDropDownView(position, convertView, parent);
+        // we don't need to inflate a footer view if it uses the default resource, the superclass will do it:
+        if(footer == null || footerResource == 0 || position != getCount()-1) {
+            View dropDown = super.getDropDownView(position, convertView, parent);
+            final TextView primary = (TextView) dropDown.findViewById(PRIMARY_TEXT_ID);
+            primary.setText(getItem(position).getPrimaryText());
+            final TextView secondary = (TextView) dropDown.findViewById(SECONDARY_TEXT_ID);
+            secondary.setText(getItem(position).getSecondaryText());
+            return dropDown;
+        }
 
         // if we want the footer, create it:
         View footerView = LayoutInflater.from(getContext()).inflate(footerResource, parent);
         if(footerView == null) throw new IllegalArgumentException(
                 "The footer resource passed to constructor or setFooterResource() is invalid");
-        final TextView textView = (TextView)footerView.findViewById(android.R.id.text1);
-        if(textView == null) throw new IllegalArgumentException(
+        final TextView primaryText = (TextView)footerView.findViewById(PRIMARY_TEXT_ID);
+        if(primaryText == null) throw new IllegalArgumentException(
                 "The footer resource passed to constructor or setFooterResource() does not contain" +
                         " a textview with id set to android.R.id.text1");
-        if(footer instanceof CharSequence)
-            textView.setText((CharSequence)footer);
-        else
-            textView.setText(footer.toString());
+        primaryText.setText(footer.getPrimaryText());
+        final TextView secondaryText = (TextView)footerView.findViewById(SECONDARY_TEXT_ID);
+        if(secondaryText != null)
+            secondaryText.setText(footer.getSecondaryText());
         return footerView;
     }
 
@@ -93,13 +110,13 @@ public class PickerSpinnerAdapter extends ArrayAdapter<Object>{
      * setText(item.toString()) if a Spinner had such a method.
      * @param item The item to select, or null to remove any temporary selection.
      */
-    public void selectTemporary(Object item) {
+    public void selectTemporary(TwinTextItem item) {
         this.temporarySelection = item;
         notifyDataSetChanged();
     }
 
     @Override
-    public Object getItem(int position) {
+    public TwinTextItem getItem(int position) {
         if(temporarySelection != null && position == getCount())
             return temporarySelection;
         else if(footer != null && position == getCount()-1)
@@ -121,7 +138,7 @@ public class PickerSpinnerAdapter extends ArrayAdapter<Object>{
      * Sets the text to be shown in the footer.
      * @param footer An Object whose toString() will be the footer text, or null to disable the footer.
      */
-    public void setFooter(Object footer) {
+    public void setFooter(TwinTextItem footer) {
         this.footer = footer;
     }
 

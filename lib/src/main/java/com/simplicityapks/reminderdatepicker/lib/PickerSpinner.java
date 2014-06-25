@@ -17,8 +17,8 @@ import java.util.List;
  */
 public abstract class PickerSpinner extends Spinner {
 
-    private final int DEFAULT_ITEM_RES = android.R.layout.simple_spinner_item;
-    private final int DEFAULT_DROPDOWN_RES = android.R.layout.simple_spinner_dropdown_item;
+    private final int DEFAULT_ITEM_RES = R.layout.twin_text_item;
+    private final int DEFAULT_DROPDOWN_RES = R.layout.twin_text_dropdown_item;
     private final int DEFAULT_FOOTER_RES = 0; // TODO: create layout file with darker background
 
     public PickerSpinner(Context context) {
@@ -34,7 +34,7 @@ public abstract class PickerSpinner extends Spinner {
 
         // create our adapter and set it here:
         PickerSpinnerAdapter adapter = new PickerSpinnerAdapter(context, DEFAULT_ITEM_RES, getSpinnerItems(),
-                DEFAULT_FOOTER_RES, getFooter());
+                DEFAULT_FOOTER_RES, new TwinTextItem.Simple(getFooter(), null));
         adapter.setDropDownViewResource(DEFAULT_DROPDOWN_RES);
         setAdapter(adapter);
     }
@@ -63,7 +63,7 @@ public abstract class PickerSpinner extends Spinner {
      * setText(item.toString()) if a Spinner had such a method.
      * @param item The item to select, or null to remove any temporary selection.
      */
-    public void selectTemporary(Object item) {
+    public void selectTemporary(TwinTextItem item) {
         // pass on the call to the adapter:
         ((PickerSpinnerAdapter)getAdapter()).selectTemporary(item);
     }
@@ -73,7 +73,7 @@ public abstract class PickerSpinner extends Spinner {
      * initializing the Spinner. Should use lazy initialization in inherited classes.
      * @return The List of Objects whose toString() method will be called for the items, or null.
      */
-    public abstract List<Object> getSpinnerItems();
+    public abstract List<TwinTextItem> getSpinnerItems();
 
     /**
      * Gets the CharSequence to be shown as footer in the drop down menu.

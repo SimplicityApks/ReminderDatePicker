@@ -35,10 +35,10 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
     }
 
     @Override
-    public List<Object> getSpinnerItems() {
+    public List<TwinTextItem> getSpinnerItems() {
         final Resources res = getResources();
         final Calendar date = Calendar.getInstance();
-        ArrayList<Object> items = new ArrayList<Object>(3);
+        ArrayList<TwinTextItem> items = new ArrayList<TwinTextItem>(3);
         // today item:
         items.add(new DateItem(res.getString(R.string.date_today), date));
         // tomorrow item:

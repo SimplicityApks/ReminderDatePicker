@@ -7,14 +7,14 @@ import java.util.GregorianCalendar;
 /**
  * Object to be inserted into the ArrayAdapter of the DateSpinner. The date is saved like the DatePicker.
  */
-public class DateItem {
+public class DateItem implements TwinTextItem{
 
     private final String label;
     private final int day, month, year;
 
     /**
-     * Constructs a new DateItem holding the specified date and a label to return in the toString() method.
-     * @param label The string to return when toString() is called.
+     * Constructs a new DateItem holding the specified date and a label to show primarily.
+     * @param label The string to return when getPrimaryText() is called.
      * @param date The date to be returned by getDate().
      */
     public DateItem(String label, Calendar date) {
@@ -22,8 +22,8 @@ public class DateItem {
     }
 
     /**
-     * Constructs a new DateItem holding the specified date and a label to return in the toString() method.
-     * @param label The string to return when toString() is called.
+     * Constructs a new DateItem holding the specified date and a label to to show primarily.
+     * @param label The string to return when getPrimaryText() is called.
      * @param day The day of the month.
      * @param month The month of year, zero-indexed (so 11 is December).
      * @param year The year.
@@ -94,7 +94,12 @@ public class DateItem {
     }
 
     @Override
-    public String toString() {
+    public CharSequence getPrimaryText() {
         return label;
+    }
+
+    @Override
+    public CharSequence getSecondaryText() {
+        return null;
     }
 }

@@ -5,14 +5,14 @@ import java.util.Calendar;
 /**
  * Object to be inserted into the ArrayAdapter of the TimeSpinner. The time is saved as well as a label.
  */
-public class TimeItem {
+public class TimeItem implements TwinTextItem{
 
-    private final String label;
+    private final String label, digitalTime;
     private final int hour, minute;
 
     /**
-     * Constructs a new TimeItem holding the specified time and a label to return in the toString() method.
-     * @param label The string to return when toString() is called.
+     * Constructs a new TimeItem holding the specified time and a label to show primarily.
+     * @param label The String to return when getPrimaryText() is called, but the first text in brackets is set as secondary text.
      * @param time The time to be returned by getTime(), as Calendar.
      */
     public TimeItem(String label, Calendar time) {
@@ -20,13 +20,38 @@ public class TimeItem {
     }
 
     /**
-     * Constructs a new TimeItem holding the specified time and a label to return in the toString() method.
-     * @param label The string to return when toString() is called.
+     * Constructs a new TimeItem holding the specified time and a label to to show primarily.
+     * @param label The String to return when getPrimaryText() is called, but the first text in brackets is set as secondary text.
      * @param hour The hour of the day.
      * @param minute The minute of the hour.
      */
     public TimeItem(String label, int hour, int minute) {
+        this.hour = hour;
+        this.minute = minute;
+
+        // parse the digital time from the label and set both label and digitalTime:
+        int timeStart = label.indexOf('(');
+        int timeEnd = label.indexOf(')');
+        if(timeStart<0 || timeEnd<0) {
+            digitalTime = label.substring(timeStart, timeEnd);
+            this.label = label.substring(0, timeStart) + label.substring(timeEnd+1);
+        } else {
+            // something went wrong, assume that label is only the primary text:
+            digitalTime = null;
+            this.label = label;
+        }
+    }
+
+    /**
+     * Constructs a new TimeItem holding the specified time and a label to to show primarily.
+     * @param label The String to return when getPrimaryText() is called.
+     * @param timeString The String to return when getSecondaryText() is called.
+     * @param hour The hour of the day.
+     * @param minute The minute of the hour.
+     */
+    public TimeItem(String label, String timeString, int hour, int minute) {
         this.label = label;
+        this.digitalTime = timeString;
         this.hour = hour;
         this.minute = minute;
     }
@@ -82,7 +107,12 @@ public class TimeItem {
     }
 
     @Override
-    public String toString() {
+    public CharSequence getPrimaryText() {
         return label;
+    }
+
+    @Override
+    public CharSequence getSecondaryText() {
+        return digitalTime;
     }
 }

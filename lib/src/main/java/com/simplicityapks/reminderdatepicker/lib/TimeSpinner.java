@@ -42,9 +42,9 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
     }
 
     @Override
-    public List<Object> getSpinnerItems() {
+    public List<TwinTextItem> getSpinnerItems() {
         final Resources res = getResources();
-        ArrayList<Object> items = new ArrayList<Object>(4);
+        ArrayList<TwinTextItem> items = new ArrayList<TwinTextItem>(4);
         // Morning item:
         items.add(new TimeItem(res.getString(R.string.time_morning), 9, 0));
         // Afternoon item:
