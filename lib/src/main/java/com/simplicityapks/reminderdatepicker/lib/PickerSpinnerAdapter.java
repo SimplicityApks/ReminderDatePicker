@@ -17,9 +17,10 @@ import java.util.List;
 public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem>{
 
     // IDs for both TextViews:
-    private final int PRIMARY_TEXT_ID = android.R.id.text1;
-    private final int SECONDARY_TEXT_ID = android.R.id.text2;
+    private static final int PRIMARY_TEXT_ID = android.R.id.text1;
+    private static final int SECONDARY_TEXT_ID = android.R.id.text2;
 
+    private final int itemResource;
     /**
      * Resource for the last item in the Spinner, which will be inflated at the last position in dropdown/dialog.
      * Set to 0 for use of normal dropDownResource
@@ -37,6 +38,8 @@ public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem>{
      */
     private TwinTextItem footer;
 
+    private final LayoutInflater inflater;
+
     /**
      * Constructs a new PickerSpinnerAdapter with these params:
      * @param context The context needed by any Adapter.
@@ -44,8 +47,10 @@ public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem>{
      * @param footerResource The resource to be inflated for the footer.
      */
     public PickerSpinnerAdapter(Context context, int resource, int footerResource) {
-        super(context, resource);
+        super(context, resource, PRIMARY_TEXT_ID);
+        this.itemResource = resource;
         this.footerResource = footerResource;
+        this.inflater = LayoutInflater.from(context);
     }
 
     /**
@@ -58,9 +63,11 @@ public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem>{
      */
     public PickerSpinnerAdapter(Context context, int resource, List<TwinTextItem> items,
                                 int footerResource, TwinTextItem footer) {
-        super(context, resource, items);
+        super(context, resource, PRIMARY_TEXT_ID, items);
+        this.itemResource = resource;
         this.footerResource = footerResource;
         this.footer = footer;
+        this.inflater = LayoutInflater.from(context);
     }
 
     /**
@@ -68,23 +75,19 @@ public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem>{
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View view = super.getView(0, convertView, parent);
+        View view;
+        if (convertView == null) {
+            view = inflater.inflate(itemResource, parent, false);
+        } else {
+            view = convertView;
+        }
         if(temporarySelection != null && position == getCount()) {
             // our inflated view acts as temporaryView:
-            final TextView primary = (TextView) view.findViewById(PRIMARY_TEXT_ID);
-            primary.setText(temporarySelection.getPrimaryText());
-            final TextView secondary = (TextView) view.findViewById(SECONDARY_TEXT_ID);
-            secondary.setText(temporarySelection.getSecondaryText());
-            return view;
+            return setTextsAndCheck(view, temporarySelection);
+        } else {
+            // we have a normal item, set the texts:
+            return setTextsAndCheck(view, getItem(position));
         }
-        final TextView primary = (TextView) view.findViewById(PRIMARY_TEXT_ID);
-        primary.setText(getItem(position).getPrimaryText());
-        final TextView secondary = (TextView) view.findViewById(SECONDARY_TEXT_ID);
-        secondary.setText(getItem(position).getSecondaryText());
-        // depending on the position, use super method or create our own
-        if(footer != null && position == getCount()-1)
-            Log.d(getClass().getSimpleName(), "Strange call to getView at footer position: "+position);
-        return super.getView(position, convertView, parent);
     }
 
     /**
@@ -95,27 +98,27 @@ public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem>{
         // depending on the position, use super method or create our own
         // we don't need to inflate a footer view if it uses the default resource, the superclass will do it:
         if(footer == null || footerResource == 0 || position != getCount()-1) {
-            View dropDown = super.getDropDownView(position, convertView, parent);
-            final TextView primary = (TextView) dropDown.findViewById(PRIMARY_TEXT_ID);
-            primary.setText(getItem(position).getPrimaryText());
-            final TextView secondary = (TextView) dropDown.findViewById(SECONDARY_TEXT_ID);
-            secondary.setText(getItem(position).getSecondaryText());
-            return dropDown;
+            // we have a normal item or a footer with same resource
+            return setTextsAndCheck(inflater.inflate(itemResource, parent, false), getItem(position));
+        } else {
+            // if we want the footer, create it:
+            return setTextsAndCheck(inflater.inflate(footerResource, parent, false), footer);
         }
+    }
 
-        // if we want the footer, create it:
-        View footerView = LayoutInflater.from(getContext()).inflate(footerResource, parent);
-        if(footerView == null) throw new IllegalArgumentException(
-                "The footer resource passed to constructor or setFooterResource() is invalid");
-        final TextView primaryText = (TextView)footerView.findViewById(PRIMARY_TEXT_ID);
-        if(primaryText == null) throw new IllegalArgumentException(
-                "The footer resource passed to constructor or setFooterResource() does not contain" +
-                        " a textview with id set to android.R.id.text1");
-        primaryText.setText(footer.getPrimaryText());
-        final TextView secondaryText = (TextView)footerView.findViewById(SECONDARY_TEXT_ID);
-        if(secondaryText != null)
-            secondaryText.setText(footer.getSecondaryText());
-        return footerView;
+    private View setTextsAndCheck(View view, TwinTextItem item) {
+        if (view == null) throw new IllegalArgumentException(
+                "The resource passed to constructor or setItemResource()/setFooterResource() is invalid");
+        final TextView primaryText = (TextView) view.findViewById(PRIMARY_TEXT_ID);
+        if (primaryText == null) throw new IllegalArgumentException(
+                "The resource passed to constructor or setItemResource()/setFooterResource() does not " +
+                        "contain a textview with id set to android.R.id.text1"
+        );
+        primaryText.setText(item.getPrimaryText());
+        final TextView secondaryText = (TextView) view.findViewById(SECONDARY_TEXT_ID);
+        if (secondaryText != null)
+            secondaryText.setText(item.getSecondaryText());
+        return view;
     }
 
     /**
