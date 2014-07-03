@@ -1,6 +1,7 @@
 package com.simplicityapks.reminderdatepicker.lib;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,11 +21,14 @@ public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem>{
     private static final int PRIMARY_TEXT_ID = android.R.id.text1;
     private static final int SECONDARY_TEXT_ID = android.R.id.text2;
 
+    @LayoutRes
     private final int itemResource;
+
     /**
      * Resource for the last item in the Spinner, which will be inflated at the last position in dropdown/dialog.
      * Set to 0 for use of normal dropDownResource
      */
+    @LayoutRes
     private int footerResource = 0;
 
     /**
@@ -46,7 +50,7 @@ public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem>{
      * @param resource The resource to be inflated as layout, should contain two TextViews
      * @param footerResource The resource to be inflated for the footer.
      */
-    public PickerSpinnerAdapter(Context context, int resource, int footerResource) {
+    public PickerSpinnerAdapter(Context context, @LayoutRes int resource, @LayoutRes int footerResource) {
         super(context, resource, PRIMARY_TEXT_ID);
         this.itemResource = resource;
         this.footerResource = footerResource;
@@ -61,8 +65,8 @@ public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem>{
      * @param footerResource The resource to be inflated for the footer.
      * @param footer The item to be shown as footer, use TwinTextItem.Simple for easy creation.
      */
-    public PickerSpinnerAdapter(Context context, int resource, List<TwinTextItem> items,
-                                int footerResource, TwinTextItem footer) {
+    public PickerSpinnerAdapter(Context context, @LayoutRes int resource, List<TwinTextItem> items,
+                                @LayoutRes int footerResource, TwinTextItem footer) {
         super(context, resource, PRIMARY_TEXT_ID, items);
         this.itemResource = resource;
         this.footerResource = footerResource;
@@ -166,7 +170,7 @@ public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem>{
      * to android.R.id.text1, where the text will be added.
      * @param footerResource A valid xml layout resource, or 0 to use dropDownResource instead.
      */
-    public void setFooterResource(int footerResource) {
+    public void setFooterResource(@LayoutRes int footerResource) {
         this.footerResource = footerResource;
     }
 }
