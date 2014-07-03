@@ -15,10 +15,6 @@ import java.util.List;
  */
 public abstract class PickerSpinner extends Spinner {
 
-    private final int DEFAULT_ITEM_RES = R.layout.twin_text_item;
-    private final int DEFAULT_DROPDOWN_RES = R.layout.twin_text_dropdown_item;
-    private final int DEFAULT_FOOTER_RES = 0; // TODO: create layout file with darker background
-
     public PickerSpinner(Context context) {
         this(context, null);
     }
@@ -30,10 +26,9 @@ public abstract class PickerSpinner extends Spinner {
     public PickerSpinner(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs);
 
-        // create our adapter and set it here:
-        PickerSpinnerAdapter adapter = new PickerSpinnerAdapter(context, DEFAULT_ITEM_RES, getSpinnerItems(),
-                DEFAULT_FOOTER_RES, new TwinTextItem.Simple(getFooter(), null));
-        adapter.setDropDownViewResource(DEFAULT_DROPDOWN_RES);
+        // create our simple adapter with default layouts and set it here:
+        PickerSpinnerAdapter adapter = new PickerSpinnerAdapter(context, getSpinnerItems(),
+                new TwinTextItem.Simple(getFooter(), null));
         setAdapter(adapter);
     }
 

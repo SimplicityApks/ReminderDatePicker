@@ -22,14 +22,16 @@ public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem>{
     private static final int SECONDARY_TEXT_ID = android.R.id.text2;
 
     @LayoutRes
-    private final int itemResource;
+    private int itemResource = R.layout.twin_text_item;
+    @LayoutRes
+    private int dropDownResource = R.layout.twin_text_dropdown_item;
 
     /**
      * Resource for the last item in the Spinner, which will be inflated at the last position in dropdown/dialog.
      * Set to 0 for use of normal dropDownResource
      */
     @LayoutRes
-    private int footerResource = 0;
+    private int footerResource = 0; // todo: layout resource file
 
     /**
      * Temporary item which is selected immediately and not shown in the dropdown menu or dialog.
@@ -47,28 +49,29 @@ public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem>{
     /**
      * Constructs a new PickerSpinnerAdapter with these params:
      * @param context The context needed by any Adapter.
-     * @param resource The resource to be inflated as layout, should contain two TextViews
-     * @param footerResource The resource to be inflated for the footer.
+     * @param items The TwinTextItems to be shown in layout.
+     * @param footer The item to be shown as footer, use TwinTextItem.Simple for easy creation.
      */
-    public PickerSpinnerAdapter(Context context, @LayoutRes int resource, @LayoutRes int footerResource) {
-        super(context, resource, PRIMARY_TEXT_ID);
-        this.itemResource = resource;
-        this.footerResource = footerResource;
+    public PickerSpinnerAdapter(Context context, List<TwinTextItem> items, TwinTextItem footer) {
+        super(context, R.layout.twin_text_item, items);
+        this.footer = footer;
         this.inflater = LayoutInflater.from(context);
     }
 
     /**
      * Constructs a new PickerSpinnerAdapter with these params:
      * @param context The context needed by any Adapter.
-     * @param resource The resource to be inflated as layout, should contain two TextViews
+     * @param itemResource The resource to be inflated as layout, should contain two TextViews.
+     * @param dropDownResource The dropDownResource to be inflated in dropDown.
      * @param items The TwinTextItems to be shown in layout.
      * @param footerResource The resource to be inflated for the footer.
      * @param footer The item to be shown as footer, use TwinTextItem.Simple for easy creation.
      */
-    public PickerSpinnerAdapter(Context context, @LayoutRes int resource, List<TwinTextItem> items,
-                                @LayoutRes int footerResource, TwinTextItem footer) {
-        super(context, resource, PRIMARY_TEXT_ID, items);
-        this.itemResource = resource;
+    public PickerSpinnerAdapter(Context context, @LayoutRes int itemResource, @LayoutRes int dropDownResource,
+                                List<TwinTextItem> items, @LayoutRes int footerResource, TwinTextItem footer) {
+        super(context, itemResource, items);
+        this.itemResource = itemResource;
+        this.dropDownResource = dropDownResource;
         this.footerResource = footerResource;
         this.footer = footer;
         this.inflater = LayoutInflater.from(context);
@@ -103,7 +106,7 @@ public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem>{
         // we don't need to inflate a footer view if it uses the default resource, the superclass will do it:
         if(footer == null || footerResource == 0 || position != getCount()-1) {
             // we have a normal item or a footer with same resource
-            return setTextsAndCheck(inflater.inflate(itemResource, parent, false), getItem(position));
+            return setTextsAndCheck(inflater.inflate(dropDownResource, parent, false), getItem(position));
         } else {
             // if we want the footer, create it:
             return setTextsAndCheck(inflater.inflate(footerResource, parent, false), footer);
@@ -172,5 +175,25 @@ public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem>{
      */
     public void setFooterResource(@LayoutRes int footerResource) {
         this.footerResource = footerResource;
+    }
+
+    /**
+     * <p>Sets the layout resource to create the view.</p>
+     *
+     * @param resource the layout resource defining the view, which should contain two text views.
+     * @see #getDropDownView(int, android.view.View, android.view.ViewGroup)
+     */
+    public void setItemResource(@LayoutRes int resource) {
+        this.itemResource = resource;
+    }
+
+    /**
+     * <p>Sets the layout resource to create the drop down views.</p>
+     *
+     * @param resource the layout resource defining the drop down views, which should contain two text views.
+     * @see #getDropDownView(int, android.view.View, android.view.ViewGroup)
+     */
+    public void setDropDownViewResource(@LayoutRes int resource) {
+        this.dropDownResource = resource;
     }
 }
