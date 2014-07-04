@@ -9,6 +9,7 @@
     tools:context=".MainActivity">
 
     <com.simplicityapks.reminderdatepicker.lib.ReminderDatePicker
+        android:id="@+id/date_picker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
