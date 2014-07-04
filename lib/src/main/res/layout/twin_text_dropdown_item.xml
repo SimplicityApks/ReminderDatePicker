@@ -3,28 +3,32 @@
     android:orientation="horizontal"
     style="Widget.AppCompat.Base.DropDownItem.Spinner"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="48dp"
+    android:paddingStart="4dp"
+    android:paddingEnd="4dp">
 
     <TextView
         android:id="@android:id/text1"
         style="Widget.AppCompat.Base.DropDownItem.Spinner"
-        android:layout_gravity="start"
+        android:layout_gravity="start|center_vertical"
         android:layout_weight="1"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:ellipsize="marquee"
         android:textAlignment="inherit"
-        android:singleLine="true"/>
+        android:singleLine="true"
+        android:textAppearance="?android:textAppearanceMedium"/>
 <!-- height has been ?android:attr/dropdownListPreferredItemHeight -->
     <TextView
         android:id="@android:id/text2"
         style="?android:attr/spinnerDropDownItemStyle"
-        android:layout_gravity="end"
+        android:layout_gravity="end|center_vertical"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:ellipsize="marquee"
         android:textAlignment="inherit"
         android:textColor="@color/time_spinner_digital"
         android:typeface="sans"
-        android:singleLine="true"/>
+        android:singleLine="true"
+        android:textAppearance="?android:textAppearanceSmall"/>
 </LinearLayout>

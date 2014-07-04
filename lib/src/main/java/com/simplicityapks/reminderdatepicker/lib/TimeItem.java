@@ -31,10 +31,10 @@ public class TimeItem implements TwinTextItem{
 
         // parse the digital time from the label and set both label and digitalTime:
         int timeStart = label.indexOf('(');
-        int timeEnd = label.indexOf(')')+1;
+        int timeEnd = label.indexOf(')');
         if(timeStart>0 || timeEnd>0) {
-            digitalTime = label.substring(timeStart, timeEnd);
-            this.label = label.substring(0, timeStart) + label.substring(timeEnd);
+            digitalTime = label.substring(timeStart+1, timeEnd);
+            this.label = label.substring(0, timeStart) + label.substring(timeEnd+1);
         } else {
             // something went wrong, assume that label is only the primary text:
             digitalTime = null;

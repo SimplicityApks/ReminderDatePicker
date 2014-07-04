@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="time_spinner_digital">@android:color/secondary_text_light</color>
+    <color name="time_spinner_digital">#ff333333</color>
 </resources>
