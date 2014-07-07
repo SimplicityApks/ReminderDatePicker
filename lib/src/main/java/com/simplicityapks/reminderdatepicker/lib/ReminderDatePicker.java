@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 /**
  * Base view class to be inflated via xml or constructor.
@@ -76,10 +77,44 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
     }
 
     /**
+     * Sets the Spinners' date selection as integers considering only day.
+     */
+    public void setSelectedDate(int year, int month, int day) {
+        dateSpinner.setSelectedDate(new GregorianCalendar(year, month, day));
+    }
+
+    /**
+     * Sets the Spinners' time selection as integers considering only time.
+     */
+    public void setSelectedTime(int hour, int minute) {
+        timeSpinner.setSelectedTime(hour, minute);
+    }
+
+    /**
      * Implement this interface if you want to be notified whenever the selected date changes.
      */
     public void setOnDateSelectedListener(OnDateSelectedListener listener) {
         this.listener = listener;
+    }
+
+    /**
+     * Sets a custom listener whose onClick method will be called to create and handle the custom date picker.
+     * You should call {@link #setSelectedDate(int, int, int)} when the custom picker is finished.
+     * @param launchPicker An {@link android.view.View.OnClickListener} whose onClick method will be
+     *                     called to show the custom date picker.
+     */
+    public void setCustomDatePicker(OnClickListener launchPicker) {
+        dateSpinner.setCustomDatePicker(launchPicker);
+    }
+
+    /**
+     * Sets a custom listener whose onClick method will be called to create and handle the custom time picker.
+     * You should call {@link #setSelectedTime} when the custom picker is finished.
+     * @param launchPicker An {@link android.view.View.OnClickListener} whose onClick method will be
+     *                     called to show the custom time picker.
+     */
+    public void setCustomTimePicker(OnClickListener launchPicker) {
+        timeSpinner.setCustomTimePicker(launchPicker);
     }
 
     @Override

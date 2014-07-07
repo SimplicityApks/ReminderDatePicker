@@ -22,8 +22,9 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
         public void onTimeSelected(int hour, int minute);
     }
 
-    // This listener doesn't have to be implemented, if it is null just ignore it
+    // These listeners don't have to be implemented, if null just ignore
     private OnTimeSelectedListener timeListener = null;
+    private OnClickListener customTimePicker = null;
 
     public TimeSpinner(Context context){
         this(context, null, 0);
@@ -99,6 +100,16 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
         this.timeListener = listener;
     }
 
+    /**
+     * Sets a custom listener whose onClick method will be called to create and handle the custom time picker.
+     * You should call {@link #setSelectedTime} when the custom picker is finished.
+     * @param launchPicker An {@link android.view.View.OnClickListener} whose onClick method will be
+     *                     called to show the custom time picker.
+     */
+    public void setCustomTimePicker(OnClickListener launchPicker) {
+        this.customTimePicker = launchPicker;
+    }
+
     @Override
     public CharSequence getFooter() {
         return getResources().getString(R.string.spinner_time_footer);
@@ -106,7 +117,11 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
 
     @Override
     public void onFooterClick() {
-        // TODO: show the TimePicker here.
+        if (customTimePicker == null) {
+            // TODO: show the default TimePicker here.
+        } else {
+            customTimePicker.onClick(this);
+        }
     }
 
     @Override

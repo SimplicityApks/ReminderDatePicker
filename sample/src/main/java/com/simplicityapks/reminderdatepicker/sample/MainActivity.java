@@ -28,7 +28,6 @@ public class MainActivity extends ActionBarActivity {
         datePicker.setOnDateSelectedListener(new OnDateSelectedListener() {
             @Override
             public void onDateSelected(Calendar date) {
-                Log.d(getClass().getSimpleName(), "Date : "+date.getTime());
                 Toast.makeText(MainActivity.this, "Selected date: "+ getDateFormat().format(date.getTime()), Toast.LENGTH_SHORT).show();
             }
         });

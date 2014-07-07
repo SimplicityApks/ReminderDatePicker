@@ -15,8 +15,9 @@ import java.util.List;
  */
 public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSelectedListener {
 
-    // This listener doesn't have to be implemented, if it is null just ignore it
+    // These listeners don't have to be implemented, if null just ignore
     private OnDateSelectedListener dateListener = null;
+    private OnClickListener customDatePicker = null;
 
     public DateSpinner(Context context){
         this(context, null, 0);
@@ -112,6 +113,16 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
         this.dateListener = listener;
     }
 
+    /**
+     * Sets a custom listener whose onClick method will be called to create and handle the custom date picker.
+     * You should call {@link #setSelectedDate} when the custom picker is finished.
+     * @param launchPicker An {@link android.view.View.OnClickListener} whose onClick method will be
+     *                     called to show the custom date picker.
+     */
+    public void setCustomDatePicker(OnClickListener launchPicker) {
+        this.customDatePicker = launchPicker;
+    }
+
     @Override
     public CharSequence getFooter() {
         return getResources().getString(R.string.spinner_date_footer);
@@ -119,7 +130,11 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
 
     @Override
     public void onFooterClick() {
-        // TODO: show the date picker
+        if (customDatePicker == null) {
+            // TODO: show the default date picker
+        } else {
+            customDatePicker.onClick(this);
+        }
     }
 
     @Override
