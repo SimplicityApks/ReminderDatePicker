@@ -2,6 +2,7 @@ package com.simplicityapks.reminderdatepicker.sample;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -9,6 +10,7 @@ import android.widget.Toast;
 import com.simplicityapks.reminderdatepicker.lib.OnDateSelectedListener;
 import com.simplicityapks.reminderdatepicker.lib.ReminderDatePicker;
 
+import java.text.DateFormat;
 import java.util.Calendar;
 
 
@@ -26,7 +28,8 @@ public class MainActivity extends ActionBarActivity {
         datePicker.setOnDateSelectedListener(new OnDateSelectedListener() {
             @Override
             public void onDateSelected(Calendar date) {
-                Toast.makeText(MainActivity.this, "Selected date: "+ getDateFormat().format(date), Toast.LENGTH_SHORT);
+                Log.d(getClass().getSimpleName(), "Date : "+date.getTime());
+                Toast.makeText(MainActivity.this, "Selected date: "+ getDateFormat().format(date.getTime()), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -34,7 +37,7 @@ public class MainActivity extends ActionBarActivity {
     private java.text.DateFormat savedFormat;
     public java.text.DateFormat getDateFormat() {
         if(savedFormat == null)
-            savedFormat = android.text.format.DateFormat.getDateFormat(getApplicationContext());
+            savedFormat = DateFormat.getDateTimeInstance();
         return savedFormat;
     }
 

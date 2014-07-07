@@ -40,7 +40,7 @@ public class DateItem implements TwinTextItem{
      * @return A new GregorianCalendar containing the date.
      */
     public Calendar getDate() {
-        return new GregorianCalendar(day, month, year);
+        return new GregorianCalendar(year, month, day);
     }
 
     /**
