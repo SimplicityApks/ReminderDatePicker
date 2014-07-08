@@ -1,13 +1,20 @@
 package com.simplicityapks.reminderdatepicker.lib;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 
+import com.fourmob.datetimepicker.date.DatePickerDialog;
+
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -18,6 +25,10 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
     // These listeners don't have to be implemented, if null just ignore
     private OnDateSelectedListener dateListener = null;
     private OnClickListener customDatePicker = null;
+
+    // The default DatePicker dialog to show if customDatePicker has not been set
+    private final DatePickerDialog datePickerDialog;
+    private FragmentManager fragmentManager;
 
     public DateSpinner(Context context){
         this(context, null, 0);
@@ -33,6 +44,31 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
         if(context instanceof OnDateSelectedListener)
             setOnDateSelectedListener((OnDateSelectedListener) context);
         setOnItemSelectedListener(this);
+
+        final Calendar calendar = Calendar.getInstance();
+        // create the dialog:
+        datePickerDialog = DatePickerDialog.newInstance(
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
+                        setSelectedDate(new GregorianCalendar(year, month, day));
+                    }
+                },
+                calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH), hasVibratePermission(context));
+
+        // get the FragmentManager:
+        try{
+            fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
+        } catch (ClassCastException e) {
+            Log.d(getClass().getSimpleName(), "Can't get fragment manager from context");
+        }
+    }
+
+    private boolean hasVibratePermission(Context context) {
+        final String permission = "android.permission.VIBRATE";
+        final int res = context.checkCallingOrSelfPermission(permission);
+        return (res == PackageManager.PERMISSION_GRANTED);
     }
 
     @Override
@@ -131,7 +167,7 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
     @Override
     public void onFooterClick() {
         if (customDatePicker == null) {
-            // TODO: show the default date picker
+            datePickerDialog.show(fragmentManager, "DatePickerDialog");
         } else {
             customDatePicker.onClick(this);
         }
