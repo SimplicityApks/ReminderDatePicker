@@ -135,7 +135,6 @@ public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem>{
      */
     public void selectTemporary(TwinTextItem item) {
         this.temporarySelection = item;
-        notifyDataSetChanged();
     }
 
     /**

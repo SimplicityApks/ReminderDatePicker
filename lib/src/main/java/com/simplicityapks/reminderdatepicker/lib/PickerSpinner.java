@@ -59,6 +59,8 @@ public abstract class PickerSpinner extends Spinner {
     public void selectTemporary(TwinTextItem item) {
         // pass on the call to the adapter:
         ((PickerSpinnerAdapter)getAdapter()).selectTemporary(item);
+        super.setSelection(getCount());
+        // TODO: When the selected position was getCount() before it needs to be updated
     }
 
     /**
