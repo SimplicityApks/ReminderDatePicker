@@ -2,9 +2,14 @@ package com.simplicityapks.reminderdatepicker.lib;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.List;
 
 /**
@@ -14,6 +19,9 @@ import java.util.List;
  * onLastItemClick() will be called.
  */
 public abstract class PickerSpinner extends Spinner {
+
+    // indicates that the onItemSelectedListener callback should not be passed to the listener.
+    private boolean interceptNextSelectionCallback = false;
 
     public PickerSpinner(Context context) {
         this(context, null);
@@ -59,8 +67,33 @@ public abstract class PickerSpinner extends Spinner {
     public void selectTemporary(TwinTextItem item) {
         // pass on the call to the adapter:
         ((PickerSpinnerAdapter)getAdapter()).selectTemporary(item);
-        super.setSelection(getCount());
-        // TODO: When the selected position was getCount() before it needs to be updated
+        final int tempItemPosition = getCount();
+        if(getSelectedItemPosition() == tempItemPosition) {
+            // this is quite a hack, first reset the position to 0 but intercept the callback,
+            // then redo the selection:
+            interceptNextSelectionCallback = true;
+            super.setSelection(0, false);
+        }
+        super.setSelection(tempItemPosition);
+    }
+
+    @Override
+    public void setOnItemSelectedListener(final OnItemSelectedListener listener) {
+        super.setOnItemSelectedListener(
+                new OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        if(!interceptNextSelectionCallback)
+                            listener.onItemSelected(parent, view, position, id);
+                        interceptNextSelectionCallback = false;
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+                        listener.onNothingSelected(parent);
+                    }
+                }
+        );
     }
 
     /**
