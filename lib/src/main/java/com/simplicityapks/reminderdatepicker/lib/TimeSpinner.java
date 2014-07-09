@@ -1,10 +1,18 @@
 package com.simplicityapks.reminderdatepicker.lib;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.text.format.DateFormat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+
+import com.sleepbot.datetimepicker.time.RadialPickerLayout;
+import com.sleepbot.datetimepicker.time.TimePickerDialog;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -26,6 +34,10 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
     private OnTimeSelectedListener timeListener = null;
     private OnClickListener customTimePicker = null;
 
+    // The default time picker dialog to show when the custom one is null:
+    private final TimePickerDialog timePickerDialog;
+    private FragmentManager fragmentManager;
+
     public TimeSpinner(Context context){
         this(context, null, 0);
     }
@@ -40,6 +52,31 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
         if(context instanceof OnTimeSelectedListener)
             setOnTimeSelectedListener((OnTimeSelectedListener) context);
         setOnItemSelectedListener(this);
+
+        final Calendar calendar = Calendar.getInstance();
+        // create the dialog to show later:
+        timePickerDialog = TimePickerDialog.newInstance(
+                new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(RadialPickerLayout radialPickerLayout, int hour, int minute) {
+                        setSelectedTime(hour, minute);
+                    }
+                },
+                calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),
+                DateFormat.is24HourFormat(context), hasVibratePermission(context));
+
+        // get the FragmentManager:
+        try{
+            fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
+        } catch (ClassCastException e) {
+            Log.d(getClass().getSimpleName(), "Can't get fragment manager from context");
+        }
+    }
+
+    private boolean hasVibratePermission(Context context) {
+        final String permission = "android.permission.VIBRATE";
+        final int res = context.checkCallingOrSelfPermission(permission);
+        return (res == PackageManager.PERMISSION_GRANTED);
     }
 
     @Override
@@ -118,7 +155,7 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
     @Override
     public void onFooterClick() {
         if (customTimePicker == null) {
-            // TODO: show the default TimePicker here.
+            timePickerDialog.show(fragmentManager, "TimePickerDialog");
         } else {
             customTimePicker.onClick(this);
         }
