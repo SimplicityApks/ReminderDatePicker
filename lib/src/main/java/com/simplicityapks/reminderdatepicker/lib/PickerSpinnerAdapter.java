@@ -90,10 +90,10 @@ public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem>{
         }
         if(temporarySelection != null && position == getCount()) {
             // our inflated view acts as temporaryView:
-            return setTextsAndCheck(view, temporarySelection);
+            return setTextsAndCheck(view, temporarySelection, false);
         } else {
             // we have a normal item, set the texts:
-            return setTextsAndCheck(view, getItem(position));
+            return setTextsAndCheck(view, getItem(position), false);
         }
     }
 
@@ -106,14 +106,14 @@ public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem>{
         // we don't need to inflate a footer view if it uses the default resource, the superclass will do it:
         if(footer == null || footerResource == 0 || position != getCount()-1) {
             // we have a normal item or a footer with same resource
-            return setTextsAndCheck(inflater.inflate(dropDownResource, parent, false), getItem(position));
+            return setTextsAndCheck(inflater.inflate(dropDownResource, parent, false), getItem(position), true);
         } else {
             // if we want the footer, create it:
-            return setTextsAndCheck(inflater.inflate(footerResource, parent, false), footer);
+            return setTextsAndCheck(inflater.inflate(footerResource, parent, false), footer, true);
         }
     }
 
-    private View setTextsAndCheck(View view, TwinTextItem item) {
+    private View setTextsAndCheck(View view, TwinTextItem item, boolean showSecondaryText) {
         if (view == null) throw new IllegalArgumentException(
                 "The resource passed to constructor or setItemResource()/setFooterResource() is invalid");
         final TextView primaryText = (TextView) view.findViewById(PRIMARY_TEXT_ID);
@@ -123,8 +123,12 @@ public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem>{
         );
         primaryText.setText(item.getPrimaryText());
         final TextView secondaryText = (TextView) view.findViewById(SECONDARY_TEXT_ID);
-        if (secondaryText != null)
-            secondaryText.setText(item.getSecondaryText());
+        if (secondaryText != null) {
+            if (showSecondaryText)
+                secondaryText.setText(item.getSecondaryText());
+            else
+                secondaryText.setVisibility(View.GONE);
+        }
         return view;
     }
 
