@@ -160,6 +160,18 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
         this.customDatePicker = launchPicker;
     }
 
+
+    /**
+     * Set the flags to use for this date spinner.
+     * @param modeOrFlags Either a mode of ReminderDatePicker.MODE_... or multiple ReminderDatePicker.FLAG_...
+     *                    combined with the | operator.
+     */
+    public void setFlags(int modeOrFlags) {
+        if ((modeOrFlags & ReminderDatePicker.FLAG_PAST) == ReminderDatePicker.FLAG_PAST) {
+
+        }
+    }
+
     @Override
     public CharSequence getFooter() {
         return getResources().getString(R.string.spinner_date_footer);

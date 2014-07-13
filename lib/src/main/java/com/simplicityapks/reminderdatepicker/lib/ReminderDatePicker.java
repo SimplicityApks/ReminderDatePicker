@@ -2,6 +2,7 @@ package com.simplicityapks.reminderdatepicker.lib;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
@@ -16,6 +17,14 @@ import java.util.GregorianCalendar;
  */
 public class ReminderDatePicker extends LinearLayout implements AdapterView.OnItemSelectedListener{
 
+    public static final int MODE_GOOGLE = 0;    // 0000; the standard mode
+    public static final int MODE_EVERYTHING = 7;// 0111; include all features
+
+    public static final int FLAG_PAST = 1;      // 0001; include yesterday and last weekday
+    public static final int FLAG_MONTH = 2;     // 0010; include months, so next nth
+    public static final int FLAG_NUMBERS = 4;   // 0100; show numbers in view
+    public static final int FLAG_HIDE_TIME = 8; // 1000; hide the time picker
+
     private DateSpinner dateSpinner;
     private TimeSpinner timeSpinner;
 
@@ -28,17 +37,17 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
 
     public ReminderDatePicker(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context);
+        init(context, attrs);
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public ReminderDatePicker(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init(context);
+        init(context, attrs);
         // Additional styling work is done here
     }
 
-    private void init(Context context) {
+    private void init(Context context, AttributeSet attrs) {
         View.inflate(context, R.layout.reminder_date_picker, this);
         dateSpinner = (DateSpinner) findViewById(R.id.date_spinner);
         dateSpinner.setOnItemSelectedListener(this);
@@ -48,6 +57,13 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
         // check if the parent activity has our dateSelectedListener, automatically enable it:
         if(context instanceof OnDateSelectedListener)
             setOnDateSelectedListener((OnDateSelectedListener) context);
+
+        if(attrs != null) {
+            // get our flags from xml, if set:
+            TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ReminderDatePicker);
+            int flags = a.getInt(R.styleable.ReminderDatePicker_flags, MODE_GOOGLE);
+            setFlags(flags);
+        }
     }
 
     /**
@@ -115,6 +131,19 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
      */
     public void setCustomTimePicker(OnClickListener launchPicker) {
         timeSpinner.setCustomTimePicker(launchPicker);
+    }
+
+    /**
+     * Set the flags to use for the picker.
+     * @param modeOrFlags Either a mode of ReminderDatePicker.MODE_... or multiple ReminderDatePicker.FLAG_...
+     *                    combined with the | operator.
+     */
+    public void setFlags(int modeOrFlags) {
+        // check each flag and pass it on if needed:
+        if((modeOrFlags & FLAG_HIDE_TIME) == FLAG_HIDE_TIME) {
+            // TODO: hide timepicker
+        }
+        dateSpinner.setFlags(modeOrFlags);
     }
 
     @Override
