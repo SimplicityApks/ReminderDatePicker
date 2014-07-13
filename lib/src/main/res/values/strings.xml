@@ -5,6 +5,7 @@
     <string name="spinner_time_footer">Pick a time&#8230;</string>
 
     <!-- Date items: -->
+    <string name="date_yesterday">Yesterday</string>
     <string name="date_today">Today</string>
     <string name="date_tomorrow">Tomorrow</string>
 

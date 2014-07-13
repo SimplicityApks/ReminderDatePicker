@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string-array name="last_weekdays">
+        <item>Last Sunday</item>
+        <item>Last Monday</item>
+        <item>Last Tuesday</item>
+        <item>Last Wednesday</item>
+        <item>Last Thursday</item>
+        <item>Last Friday</item>
+        <item>Last Saturday</item>
+    </string-array>
+    
     <string-array name="next_weekdays">
         <item>Next Sunday</item>
         <item>Next Monday</item>

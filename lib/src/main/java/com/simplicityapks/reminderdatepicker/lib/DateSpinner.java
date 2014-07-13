@@ -3,6 +3,7 @@ package com.simplicityapks.reminderdatepicker.lib;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.support.annotation.ArrayRes;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.AttributeSet;
@@ -29,6 +30,8 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
     // The default DatePicker dialog to show if customDatePicker has not been set
     private final DatePickerDialog datePickerDialog;
     private FragmentManager fragmentManager;
+
+    private boolean usePastItems = false;
 
     public DateSpinner(Context context){
         this(context, null, 0);
@@ -83,14 +86,14 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
         items.add(new DateItem(res.getString(R.string.date_tomorrow), date));
         // next weekday item:
         date.add(Calendar.DAY_OF_YEAR, 6);
-        items.add(new DateItem(getNextWeekDay(date.get(Calendar.DAY_OF_WEEK)), date));
+        items.add(new DateItem(getWeekDay(date.get(Calendar.DAY_OF_WEEK), R.array.next_weekdays), date));
         return items;
     }
 
-    private String getNextWeekDay(int weekDay) {
+    private String getWeekDay(int weekDay, @ArrayRes int arrayRes) {
         // zero-indexed, because the weekday array is zero-indexed
         weekDay -= 1;
-        return getResources().getStringArray(R.array.next_weekdays) [weekDay];
+        return getResources().getStringArray(arrayRes) [weekDay];
     }
 
     /**
@@ -128,7 +131,7 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
             if(dateDifference>0 && dateDifference<=7) { // if the date is within the next week:
                 // we need to construct a temporary DateItem to select:
                 final int day = date.get(Calendar.DAY_OF_WEEK);
-                selectTemporary(new DateItem(getNextWeekDay(day), date));
+                selectTemporary(new DateItem(getWeekDay(day, R.array.next_weekdays), date));
             } else {
                 // we need to show the date as a full text, using the current DateFormat:
                 selectTemporary(new DateItem(getDateFormat().format(date.getTime()), date));
@@ -160,6 +163,34 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
         this.customDatePicker = launchPicker;
     }
 
+    /**
+     * Toggles the use of past items. Past mode shows the yesterday and last weekday item.
+     * @param enable True to enable, false to disable past mode.
+     */
+    public void setUsePastItems(boolean enable) {
+        PickerSpinnerAdapter adapter = (PickerSpinnerAdapter) getAdapter();
+        if(enable && !usePastItems) {
+            // create the yesterday and last Monday item:
+            final Resources res = getResources();
+            final Calendar date = Calendar.getInstance();
+            // yesterday:
+            date.add(Calendar.DAY_OF_YEAR, -1);
+            adapter.insert(new DateItem(res.getString(R.string.date_yesterday), date), 0);
+            // last weekday item:
+            date.add(Calendar.DAY_OF_YEAR, -6);
+            adapter.insert(new DateItem(
+                    getWeekDay(date.get(Calendar.DAY_OF_WEEK), R.array.last_weekdays), date), 0);
+        }
+        else if(!enable && usePastItems) {
+            // delete the yesterday and last weekday items:
+            adapter.remove(adapter.getItem(0));
+            adapter.remove(adapter.getItem(0));
+        }
+        if(enable != usePastItems) {
+            adapter.notifyDataSetChanged();
+            usePastItems = enable;
+        }
+    }
 
     /**
      * Set the flags to use for this date spinner.
@@ -168,7 +199,9 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
      */
     public void setFlags(int modeOrFlags) {
         if ((modeOrFlags & ReminderDatePicker.FLAG_PAST) == ReminderDatePicker.FLAG_PAST) {
-
+            setUsePastItems(true);
+        } else if(usePastItems) { // hide the past items if we called setFlags without FLAG_PAST
+            setUsePastItems(false);
         }
     }
 
