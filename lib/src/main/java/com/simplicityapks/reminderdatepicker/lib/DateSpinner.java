@@ -217,26 +217,12 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
 
     /**
      * Set the flags to use for this date spinner.
-     * @param modeOrFlags Either a mode of ReminderDatePicker.MODE_... or multiple ReminderDatePicker.FLAG_...
+     * @param modeOrFlags A mode of ReminderDatePicker.MODE_... or multiple ReminderDatePicker.FLAG_...
      *                    combined with the | operator.
      */
     public void setFlags(int modeOrFlags) {
-        if ((modeOrFlags & ReminderDatePicker.FLAG_PAST) == ReminderDatePicker.FLAG_PAST) {
-            setShowPastItems(true);
-        } else if(showPastItems) { // hide the past items if we called setFlags without FLAG_PAST
-            setShowPastItems(false);
-        }
-        PickerSpinnerAdapter adapter = (PickerSpinnerAdapter) getAdapter();
-        if ((modeOrFlags & ReminderDatePicker.FLAG_NUMBERS) == ReminderDatePicker.FLAG_NUMBERS) {
-            adapter.setShowSecodaryTextInView(true);
-        } else if (adapter.isShowingSecondaryTextInView()) {
-            adapter.setShowSecodaryTextInView(false);
-        }
-        if ((modeOrFlags & ReminderDatePicker.FLAG_MONTH) == ReminderDatePicker.FLAG_MONTH) {
-            setShowMonthItem(true);
-        } else if(showMonthItem) { // hide the month item if called without the FLAG_MONTH
-            setShowMonthItem(false);
-        }
+        setShowPastItems((modeOrFlags & ReminderDatePicker.FLAG_PAST) == ReminderDatePicker.FLAG_PAST);
+        setShowMonthItem((modeOrFlags & ReminderDatePicker.FLAG_MONTH) == ReminderDatePicker.FLAG_MONTH);
     }
 
     @Override

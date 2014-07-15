@@ -20,10 +20,26 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
     public static final int MODE_GOOGLE = 0;    // 0000; the standard mode
     public static final int MODE_EVERYTHING = 7;// 0111; include all features
 
-    public static final int FLAG_PAST = 1;      // 0001; include yesterday and last weekday
-    public static final int FLAG_MONTH = 2;     // 0010; include months, so next nth
-    public static final int FLAG_NUMBERS = 4;   // 0100; show numbers in view
-    public static final int FLAG_HIDE_TIME = 8; // 1000; hide the time picker
+    /**
+     * Flag for {@link #setFlags(int)}. Include a yesterday and last weekday item.
+     */
+    public static final int FLAG_PAST = 1;      // 0001
+
+    /**
+     * Flag for {@link #setFlags(int)}. Include a month item exactly one month from today.
+     */
+    public static final int FLAG_MONTH = 2;     // 0010
+
+    /**
+     * Flag for {@link #setFlags(int)}. Show numeric time in the time spinner view. Note that time
+     * will always be shown in dropdown.
+     */
+    public static final int FLAG_NUMBERS = 4;   // 0100
+
+    /**
+     * Flag for {@link #setFlags(int)}. Hide the time picker and show a button to show it.
+     */
+    public static final int FLAG_HIDE_TIME = 8; // 1000
 
     private DateSpinner dateSpinner;
     private TimeSpinner timeSpinner;
@@ -135,7 +151,7 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
 
     /**
      * Set the flags to use for the picker.
-     * @param modeOrFlags Either a mode of ReminderDatePicker.MODE_... or multiple ReminderDatePicker.FLAG_...
+     * @param modeOrFlags A mode of ReminderDatePicker.MODE_... or multiple ReminderDatePicker.FLAG_...
      *                    combined with the | operator.
      */
     public void setFlags(int modeOrFlags) {
@@ -144,6 +160,7 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
             // TODO: hide timepicker
         }
         dateSpinner.setFlags(modeOrFlags);
+        timeSpinner.setFlags(modeOrFlags);
     }
 
     @Override

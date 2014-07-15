@@ -147,6 +147,23 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
         this.customTimePicker = launchPicker;
     }
 
+    /**
+     * Sets to show numeric time in the view. Note that time will always be shown in dropdown.
+     * @param enable True to enable, false to disable numeric mode.
+     */
+    public void setShowNumbersInView(boolean enable) {
+        ((PickerSpinnerAdapter) getAdapter()).setShowSecodaryTextInView(enable);
+    }
+
+    /**
+     * Set the flags to use for this time spinner.
+     * @param modeOrFlags A mode of ReminderDatePicker.MODE_... or multiple ReminderDatePicker.FLAG_...
+     *                    combined with the | operator.
+     */
+    public void setFlags(int modeOrFlags) {
+        setShowNumbersInView((modeOrFlags & ReminderDatePicker.FLAG_NUMBERS) == ReminderDatePicker.FLAG_NUMBERS);
+    }
+
     @Override
     public CharSequence getFooter() {
         return getResources().getString(R.string.spinner_time_footer);
