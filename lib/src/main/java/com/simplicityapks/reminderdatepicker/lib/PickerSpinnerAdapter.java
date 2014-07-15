@@ -46,6 +46,8 @@ public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem>{
 
     private final LayoutInflater inflater;
 
+    private boolean showSecodaryTextInView = false;
+
     /**
      * Constructs a new PickerSpinnerAdapter with these params:
      * @param context The context needed by any Adapter.
@@ -90,10 +92,10 @@ public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem>{
         }
         if(temporarySelection != null && position == getCount()) {
             // our inflated view acts as temporaryView:
-            return setTextsAndCheck(view, temporarySelection, false);
+            return setTextsAndCheck(view, temporarySelection, showSecodaryTextInView);
         } else {
             // we have a normal item, set the texts:
-            return setTextsAndCheck(view, getItem(position), false);
+            return setTextsAndCheck(view, getItem(position), showSecodaryTextInView);
         }
     }
 
@@ -198,5 +200,20 @@ public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem>{
      */
     public void setDropDownViewResource(@LayoutRes int resource) {
         this.dropDownResource = resource;
+    }
+
+    /**
+     * Enables showing the secondary text in the view. The dropdown view will always include the secondary text.
+     * @param enable True to enable showing it, false to disable.
+     */
+    public void setShowSecodaryTextInView(boolean enable) {
+        if (showSecodaryTextInView != enable) {
+            showSecodaryTextInView = enable;
+            notifyDataSetChanged();
+        }
+    }
+
+    public boolean isShowingSecondaryTextInView() {
+        return this.showSecodaryTextInView;
     }
 }

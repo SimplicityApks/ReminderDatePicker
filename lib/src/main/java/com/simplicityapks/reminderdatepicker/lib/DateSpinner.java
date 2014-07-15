@@ -31,7 +31,8 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
     private final DatePickerDialog datePickerDialog;
     private FragmentManager fragmentManager;
 
-    private boolean usePastItems = false;
+    private boolean showPastItems = false;
+    private boolean showMonthItem = false;
 
     public DateSpinner(Context context){
         this(context, null, 0);
@@ -164,12 +165,12 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
     }
 
     /**
-     * Toggles the use of past items. Past mode shows the yesterday and last weekday item.
+     * Toggles showing the past items. Past mode shows the yesterday and last weekday item.
      * @param enable True to enable, false to disable past mode.
      */
-    public void setUsePastItems(boolean enable) {
+    public void setShowPastItems(boolean enable) {
         PickerSpinnerAdapter adapter = (PickerSpinnerAdapter) getAdapter();
-        if(enable && !usePastItems) {
+        if(enable && !showPastItems) {
             // create the yesterday and last Monday item:
             final Resources res = getResources();
             final Calendar date = Calendar.getInstance();
@@ -181,14 +182,36 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
             adapter.insert(new DateItem(
                     getWeekDay(date.get(Calendar.DAY_OF_WEEK), R.array.last_weekdays), date), 0);
         }
-        else if(!enable && usePastItems) {
+        else if(!enable && showPastItems) {
             // delete the yesterday and last weekday items:
             adapter.remove(adapter.getItem(0));
             adapter.remove(adapter.getItem(0));
         }
-        if(enable != usePastItems) {
+        if(enable != showPastItems) {
             adapter.notifyDataSetChanged();
-            usePastItems = enable;
+            showPastItems = enable;
+        }
+    }
+
+    /**
+     * Toggles showing the month item. Month mode an item in exactly one month from now.
+     * @param enable True to enable, false to disable month mode.
+     */
+    public void setShowMonthItem(boolean enable) {
+        PickerSpinnerAdapter adapter = (PickerSpinnerAdapter) getAdapter();
+        if(enable && !showMonthItem) {
+            // create the in 1 month item
+            final Calendar date = Calendar.getInstance();
+            date.add(Calendar.MONTH, 1);
+            adapter.add(new DateItem(getDateFormat().format(date), date));
+        }
+        else if(!enable && showMonthItem) {
+            // delete the in 1 month item
+            adapter.remove(adapter.getItem(adapter.getCount()-1));
+        }
+        if(enable != showMonthItem) {
+            adapter.notifyDataSetChanged();
+            showMonthItem = enable;
         }
     }
 
@@ -199,9 +222,20 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
      */
     public void setFlags(int modeOrFlags) {
         if ((modeOrFlags & ReminderDatePicker.FLAG_PAST) == ReminderDatePicker.FLAG_PAST) {
-            setUsePastItems(true);
-        } else if(usePastItems) { // hide the past items if we called setFlags without FLAG_PAST
-            setUsePastItems(false);
+            setShowPastItems(true);
+        } else if(showPastItems) { // hide the past items if we called setFlags without FLAG_PAST
+            setShowPastItems(false);
+        }
+        PickerSpinnerAdapter adapter = (PickerSpinnerAdapter) getAdapter();
+        if ((modeOrFlags & ReminderDatePicker.FLAG_NUMBERS) == ReminderDatePicker.FLAG_NUMBERS) {
+            adapter.setShowSecodaryTextInView(true);
+        } else if (adapter.isShowingSecondaryTextInView()) {
+            adapter.setShowSecodaryTextInView(false);
+        }
+        if ((modeOrFlags & ReminderDatePicker.FLAG_MONTH) == ReminderDatePicker.FLAG_MONTH) {
+            setShowMonthItem(true);
+        } else if(showMonthItem) { // hide the month item if called without the FLAG_MONTH
+            setShowMonthItem(false);
         }
     }
 
