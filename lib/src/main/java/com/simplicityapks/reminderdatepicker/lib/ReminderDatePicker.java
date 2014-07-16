@@ -7,6 +7,7 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import java.util.Calendar;
@@ -40,6 +41,8 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
      * Flag for {@link #setFlags(int)}. Hide the time picker and show a button to show it.
      */
     public static final int FLAG_HIDE_TIME = 8; // 1000
+
+    private boolean isTimeHidden = false;
 
     private DateSpinner dateSpinner;
     private TimeSpinner timeSpinner;
@@ -150,6 +153,31 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
     }
 
     /**
+     * Toggles hiding the Time Spinner and replaces it with a Button.
+     * @param enable True to hide the Spinner, false to show it.
+     * @param useDarkTheme True if a white icon shall be used, false for a dark one.
+     */
+    public void setHideTime(boolean enable, final boolean useDarkTheme) {
+        if(enable && !isTimeHidden) {
+            // hide the time spinner and show a button to show it instead
+            timeSpinner.setVisibility(GONE);
+            ImageButton timeButton = new ImageButton(getContext());
+            timeButton.setImageResource(useDarkTheme? R.drawable.ic_action_time_dark : R.drawable.ic_action_time_light);
+            timeButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    setHideTime(false, useDarkTheme);
+                }
+            });
+            this.addView(timeButton);
+        } else if(!enable && isTimeHidden) {
+            timeSpinner.setVisibility(VISIBLE);
+            this.removeViewAt(2);
+        }
+        isTimeHidden = enable;
+    }
+
+    /**
      * Set the flags to use for the picker.
      * @param modeOrFlags A mode of ReminderDatePicker.MODE_... or multiple ReminderDatePicker.FLAG_...
      *                    combined with the | operator.
@@ -157,7 +185,7 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
     public void setFlags(int modeOrFlags) {
         // check each flag and pass it on if needed:
         if((modeOrFlags & FLAG_HIDE_TIME) == FLAG_HIDE_TIME) {
-            // TODO: hide timepicker
+            setHideTime(true, false);
         }
         dateSpinner.setFlags(modeOrFlags);
         timeSpinner.setFlags(modeOrFlags);
