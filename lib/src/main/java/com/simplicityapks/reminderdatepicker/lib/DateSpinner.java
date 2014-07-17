@@ -181,8 +181,16 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
             date.add(Calendar.DAY_OF_YEAR, -6);
             adapter.insert(new DateItem(
                     getWeekDay(date.get(Calendar.DAY_OF_WEEK), R.array.last_weekdays), date), 0);
+            // restore selection:
+            setSelection(getSelectedItemPosition() + 2);
         }
         else if(!enable && showPastItems) {
+            // restore selection:
+            int selection = getSelectedItemPosition();
+            if(selection >= 2)
+                setSelection(selection - 2);
+            else
+                setSelection(0);
             // delete the yesterday and last weekday items:
             adapter.remove(adapter.getItem(0));
             adapter.remove(adapter.getItem(0));
@@ -203,11 +211,15 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
             // create the in 1 month item
             final Calendar date = Calendar.getInstance();
             date.add(Calendar.MONTH, 1);
-            adapter.add(new DateItem(getDateFormat().format(date), date));
+            adapter.add(new DateItem(getDateFormat().format(date.getTime()), date));
         }
         else if(!enable && showMonthItem) {
+            int monthPosition = adapter.getCount()-2;
+            // restore selection:
+            if(getSelectedItemPosition() == monthPosition)
+                setSelection(monthPosition-1);
             // delete the in 1 month item
-            adapter.remove(adapter.getItem(adapter.getCount()-1));
+            adapter.remove(adapter.getItem(monthPosition));
         }
         if(enable != showMonthItem) {
             adapter.notifyDataSetChanged();

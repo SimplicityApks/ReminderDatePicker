@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import com.simplicityapks.reminderdatepicker.lib.OnDateSelectedListener;
@@ -13,10 +15,11 @@ import com.simplicityapks.reminderdatepicker.lib.ReminderDatePicker;
 import java.text.DateFormat;
 import java.util.Calendar;
 
-
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements CompoundButton.OnCheckedChangeListener{
 
     private ReminderDatePicker datePicker;
+
+    private CheckBox cbPast, cbMonth, cbNumbers, cbHideTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +34,17 @@ public class MainActivity extends ActionBarActivity {
                 Toast.makeText(MainActivity.this, "Selected date: "+ getDateFormat().format(date.getTime()), Toast.LENGTH_SHORT).show();
             }
         });
+
+        cbPast = (CheckBox) findViewById(R.id.cb_past);
+        cbMonth = (CheckBox) findViewById(R.id.cb_month);
+        cbNumbers = (CheckBox) findViewById(R.id.cb_numbers);
+        cbHideTime = (CheckBox) findViewById(R.id.cb_hide_time);
+
+        // setup flag change listeners:
+        cbPast.setOnCheckedChangeListener(this);
+        cbMonth.setOnCheckedChangeListener(this);
+        cbNumbers.setOnCheckedChangeListener(this);
+        cbHideTime.setOnCheckedChangeListener(this);
     }
 
     private java.text.DateFormat savedFormat;
@@ -53,5 +67,17 @@ public class MainActivity extends ActionBarActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         return super.onOptionsItemSelected(item);
+    }
+
+    private int getCheckedFlags() {
+        return  (cbPast.isChecked()? ReminderDatePicker.FLAG_PAST : 0) |
+                (cbMonth.isChecked()? ReminderDatePicker.FLAG_MONTH : 0) |
+                (cbNumbers.isChecked()? ReminderDatePicker.FLAG_NUMBERS : 0) |
+                (cbHideTime.isChecked()? ReminderDatePicker.FLAG_HIDE_TIME : 0);
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        datePicker.setFlags(getCheckedFlags());
     }
 }

@@ -184,9 +184,7 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
      */
     public void setFlags(int modeOrFlags) {
         // check each flag and pass it on if needed:
-        if((modeOrFlags & FLAG_HIDE_TIME) == FLAG_HIDE_TIME) {
-            setHideTime(true, false);
-        }
+        setHideTime((modeOrFlags & FLAG_HIDE_TIME) == FLAG_HIDE_TIME, false);
         dateSpinner.setFlags(modeOrFlags);
         timeSpinner.setFlags(modeOrFlags);
     }

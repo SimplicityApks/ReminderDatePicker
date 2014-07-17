@@ -2,5 +2,13 @@
 <resources>
 
     <string name="app_name">ReminderDatePicker Sample</string>
+    <string name="switch_theme">Switch theme</string>
+    <string name="select_flags">Select Flags</string>
+
+    <!-- for the checkboxes -->
+    <string name="flag_past">FLAG_PAST</string>
+    <string name="flag_month">FLAG_MONTH</string>
+    <string name="flag_numbers">FLAG_NUMBERS</string>
+    <string name="flag_hide_time">FLAG_HIDE_TIME</string>
 
 </resources>

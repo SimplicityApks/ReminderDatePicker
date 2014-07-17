@@ -206,7 +206,7 @@ public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem>{
      * Enables showing the secondary text in the view. The dropdown view will always include the secondary text.
      * @param enable True to enable showing it, false to disable.
      */
-    public void setShowSecodaryTextInView(boolean enable) {
+    public void setShowSecondaryTextInView(boolean enable) {
         if (showSecodaryTextInView != enable) {
             showSecodaryTextInView = enable;
             notifyDataSetChanged();

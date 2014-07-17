@@ -152,7 +152,7 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
      * @param enable True to enable, false to disable numeric mode.
      */
     public void setShowNumbersInView(boolean enable) {
-        ((PickerSpinnerAdapter) getAdapter()).setShowSecodaryTextInView(enable);
+        ((PickerSpinnerAdapter) getAdapter()).setShowSecondaryTextInView(enable);
     }
 
     /**
