@@ -83,6 +83,24 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
             int flags = a.getInt(R.styleable.ReminderDatePicker_flags, MODE_GOOGLE);
             setFlags(flags);
         }
+        selectDefaultDate();
+    }
+
+    private void selectDefaultDate() {
+        Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        if(hour < 9) hour = 9;
+        else if(hour < 13) hour = 13;
+        else if(hour < 17) hour = 17;
+        else if(hour < 20) hour = 20;
+        else {
+            hour = 9;
+            calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) + 1);
+        }
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        setSelectedDate(calendar);
     }
 
     /**
