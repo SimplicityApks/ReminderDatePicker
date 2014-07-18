@@ -1,5 +1,7 @@
 package com.simplicityapks.reminderdatepicker.sample;
 
+import android.content.Intent;
+import android.os.Build;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,12 +19,19 @@ import java.util.Calendar;
 
 public class MainActivity extends ActionBarActivity implements CompoundButton.OnCheckedChangeListener{
 
+    private String FLAG_DARK_THEME = "flag_dark_theme";
+    private boolean useDarkTheme = false;
+
     private ReminderDatePicker datePicker;
 
     private CheckBox cbPast, cbMonth, cbNumbers, cbHideTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // do we want to change the theme to dark?
+        useDarkTheme = getIntent().getBooleanExtra(FLAG_DARK_THEME, false);
+        if(useDarkTheme) setTheme(R.style.Theme_AppCompat);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         datePicker = (ReminderDatePicker) findViewById(R.id.date_picker);
@@ -66,6 +75,19 @@ public class MainActivity extends ActionBarActivity implements CompoundButton.On
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+        switch (item.getItemId()) {
+            case R.id.action_switch_theme:
+                Intent restart = new Intent(this, MainActivity.class);
+                // add boolean extra to switch theme:
+                restart.putExtra(FLAG_DARK_THEME, !useDarkTheme);
+                // kill current activity and start again
+                overridePendingTransition(0, 0);
+                restart.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                finish();
+                overridePendingTransition(0, 0);
+                startActivity(restart);
+                break;
+        }
         return super.onOptionsItemSelected(item);
     }
 

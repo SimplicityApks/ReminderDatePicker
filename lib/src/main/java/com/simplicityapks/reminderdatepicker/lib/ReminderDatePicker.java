@@ -195,6 +195,27 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
         isTimeHidden = enable;
     }
 
+    private boolean isActivityUsingDarkTheme() {
+        TypedArray themeArray = getContext().getTheme().obtainStyledAttributes(
+                new int[] {android.R.attr.textColorPrimary});
+        int textColor = themeArray.getColor(0, 0);
+        return brightness(textColor) > 0.5f;
+    }
+
+    /**
+     * Returns the brightness component of a color int. Taken from android.graphics.Color.
+     *
+     * @return A value between 0.0f and 1.0f
+     */
+    private float brightness(int color) {
+        int r = (color >> 16) & 0xFF;
+        int g = (color >> 8) & 0xFF;
+        int b = color & 0xFF;
+
+        int V = Math.max(b, Math.max(r, g));
+        return (V / 255.f);
+    }
+
     /**
      * Set the flags to use for the picker.
      * @param modeOrFlags A mode of ReminderDatePicker.MODE_... or multiple ReminderDatePicker.FLAG_...
@@ -202,7 +223,7 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
      */
     public void setFlags(int modeOrFlags) {
         // check each flag and pass it on if needed:
-        setHideTime((modeOrFlags & FLAG_HIDE_TIME) == FLAG_HIDE_TIME, false);
+        setHideTime((modeOrFlags & FLAG_HIDE_TIME) == FLAG_HIDE_TIME, isActivityUsingDarkTheme());
         dateSpinner.setFlags(modeOrFlags);
         timeSpinner.setFlags(modeOrFlags);
     }
