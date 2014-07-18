@@ -3,6 +3,9 @@
 
     <string name="app_name">ReminderDatePicker Sample</string>
     <string name="switch_theme">Switch theme</string>
+    <string name="view_source">Get source code</string>
+    <string name="uri_github_source">https://github.com/SimplicityApks/ReminderDatePicker</string>
+
     <string name="select_flags">Select Flags</string>
 
     <!-- for the checkboxes -->

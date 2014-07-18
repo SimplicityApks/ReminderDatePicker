@@ -1,6 +1,7 @@
 package com.simplicityapks.reminderdatepicker.sample;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -86,6 +87,10 @@ public class MainActivity extends ActionBarActivity implements CompoundButton.On
                 finish();
                 overridePendingTransition(0, 0);
                 startActivity(restart);
+                break;
+            case R.id.action_view_source:
+                Intent viewSource = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.uri_github_source)));
+                startActivity(viewSource);
                 break;
         }
         return super.onOptionsItemSelected(item);
