@@ -31,7 +31,7 @@ public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem>{
      * Set to 0 for use of normal dropDownResource
      */
     @LayoutRes
-    private int footerResource = 0; // todo: layout resource file
+    private int footerResource = R.layout.twin_text_footer;
 
     /**
      * Temporary item which is selected immediately and not shown in the dropdown menu or dialog.

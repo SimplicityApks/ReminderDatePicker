@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="time_spinner_digital">#ff808080</color>
+    <color name="time_spinner_digital">#ffb2b2b2</color>
+    <color name="footer_background">#48b7b7b7</color>
 </resources>
