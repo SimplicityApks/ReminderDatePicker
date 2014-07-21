@@ -12,8 +12,8 @@
         android:layout_height="wrap_content"
         android:ellipsize="marquee"
         android:textAlignment="inherit"
-        android:textColor="?android:textColorSecondary"/>
-<!-- Change above text color to Primary? -->
+        android:textColor="?android:textColorPrimary"/>
+<!-- Change above text color to Secondary? -->
 
     <TextView
         android:id="@android:id/text2"
