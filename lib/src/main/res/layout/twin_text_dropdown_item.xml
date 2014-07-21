@@ -16,6 +16,7 @@
         android:layout_height="wrap_content"
         android:ellipsize="marquee"
         android:textAlignment="inherit"
+        android:textColor="?android:textColorSecondary"
         android:singleLine="true"
         android:textAppearance="?android:textAppearanceMedium"/>
 <!-- height has been ?android:attr/dropdownListPreferredItemHeight -->
