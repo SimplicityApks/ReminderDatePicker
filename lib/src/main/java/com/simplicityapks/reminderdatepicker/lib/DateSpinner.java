@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.support.annotation.ArrayRes;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -135,16 +136,13 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
                 selectTemporary(new DateItem(getWeekDay(day, R.array.next_weekdays), date));
             } else {
                 // we need to show the date as a full text, using the current DateFormat:
-                selectTemporary(new DateItem(getDateFormat().format(date.getTime()), date));
+                selectTemporary(new DateItem(formatDate(date), date));
             }
         }
     }
 
-    private java.text.DateFormat savedFormat;
-    private java.text.DateFormat getDateFormat() {
-        if(savedFormat == null)
-            savedFormat = android.text.format.DateFormat.getDateFormat(getContext().getApplicationContext());
-        return savedFormat;
+    private String formatDate(Calendar date) {
+        return DateUtils.formatDateTime(getContext(), date.getTimeInMillis(), DateUtils.FORMAT_SHOW_DATE);
     }
 
     /**
@@ -211,7 +209,7 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
             // create the in 1 month item
             final Calendar date = Calendar.getInstance();
             date.add(Calendar.MONTH, 1);
-            adapter.add(new DateItem(getDateFormat().format(date.getTime()), date));
+            adapter.add(new DateItem(formatDate(date), date));
         }
         else if(!enable && showMonthItem) {
             int monthPosition = adapter.getCount()-2;
