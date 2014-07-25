@@ -3,7 +3,7 @@ package com.simplicityapks.reminderdatepicker.lib;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.support.annotation.ArrayRes;
+import android.support.annotation.StringRes;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.text.format.DateUtils;
@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 
+import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -34,6 +35,8 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
 
     private boolean showPastItems = false;
     private boolean showMonthItem = false;
+
+    private String[] weekDays = null;
 
     public DateSpinner(Context context){
         this(context, null, 0);
@@ -88,14 +91,13 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
         items.add(new DateItem(res.getString(R.string.date_tomorrow), date));
         // next weekday item:
         date.add(Calendar.DAY_OF_YEAR, 6);
-        items.add(new DateItem(getWeekDay(date.get(Calendar.DAY_OF_WEEK), R.array.next_weekdays), date));
+        items.add(new DateItem(getWeekDay(date.get(Calendar.DAY_OF_WEEK), R.string.date_next_weekday), date));
         return items;
     }
 
-    private String getWeekDay(int weekDay, @ArrayRes int arrayRes) {
-        // zero-indexed, because the weekday array is zero-indexed
-        weekDay -= 1;
-        return getResources().getStringArray(arrayRes) [weekDay];
+    private String getWeekDay(int weekDay, @StringRes int stringRes) {
+        if(weekDays == null) weekDays = new DateFormatSymbols().getWeekdays();
+        return getResources().getString(stringRes, weekDays[weekDay]);
     }
 
     /**
@@ -133,7 +135,7 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
             if(dateDifference>0 && dateDifference<=7) { // if the date is within the next week:
                 // we need to construct a temporary DateItem to select:
                 final int day = date.get(Calendar.DAY_OF_WEEK);
-                selectTemporary(new DateItem(getWeekDay(day, R.array.next_weekdays), date));
+                selectTemporary(new DateItem(getWeekDay(day, R.string.date_next_weekday), date));
             } else {
                 // we need to show the date as a full text, using the current DateFormat:
                 selectTemporary(new DateItem(formatDate(date), date));
@@ -178,7 +180,7 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
             // last weekday item:
             date.add(Calendar.DAY_OF_YEAR, -6);
             adapter.insert(new DateItem(
-                    getWeekDay(date.get(Calendar.DAY_OF_WEEK), R.array.last_weekdays), date), 0);
+                    getWeekDay(date.get(Calendar.DAY_OF_WEEK), R.string.date_last_weekday), date), 0);
             // restore selection:
             setSelection(getSelectedItemPosition() + 2);
         }
