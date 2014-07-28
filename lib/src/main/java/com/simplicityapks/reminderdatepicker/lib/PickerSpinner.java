@@ -48,9 +48,12 @@ public abstract class PickerSpinner extends Spinner {
                 "adapter must extend PickerSpinnerAdapter to be used with this class");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setSelection(int position) {
-        if(position == getCount()-1)
+        if(position == getCount()-1 && ((PickerSpinnerAdapter)getAdapter()).hasFooter())
             onFooterClick(); // the footer has been clicked, so don't update the selection
         else {
             // remove any previous temporary selection:
@@ -60,19 +63,36 @@ public abstract class PickerSpinner extends Spinner {
     }
 
     /**
+     * Equivalent to {@link #setSelection(int)}, but without calling any onItemSelectedListeners or
+     * checking for footer clicks.
+     */
+    private void setSelectionQuietly(int position) {
+        // intercept the callback here:
+        interceptNextSelectionCallback = true;
+        super.setSelection(position, false); // No idea why both setSelections are needed but it only works with both
+        interceptNextSelectionCallback = true;
+        super.setSelection(position);
+    }
+
+    /**
      * Push an item to be selected, but not shown in the dropdown menu. This is similar to calling
      * setText(item.toString()) if a Spinner had such a method.
      * @param item The item to select, or null to remove any temporary selection.
      */
     public void selectTemporary(TwinTextItem item) {
+        // if we just want to clear the selection:
+        if(item == null) {
+            setSelection(getLastItemPosition());
+            // the call is passed on to the adapter in setSelection.
+            return;
+        }
         // pass on the call to the adapter:
         ((PickerSpinnerAdapter)getAdapter()).selectTemporary(item);
         final int tempItemPosition = getCount();
         if(getSelectedItemPosition() == tempItemPosition) {
             // this is quite a hack, first reset the position to 0 but intercept the callback,
             // then redo the selection:
-            interceptNextSelectionCallback = true;
-            super.setSelection(0, false);
+            setSelectionQuietly(0);
         }
         super.setSelection(tempItemPosition);
     }
@@ -83,7 +103,7 @@ public abstract class PickerSpinner extends Spinner {
                 new OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        if(!interceptNextSelectionCallback)
+                        if (!interceptNextSelectionCallback)
                             listener.onItemSelected(parent, view, position, id);
                         interceptNextSelectionCallback = false;
                     }
@@ -94,6 +114,71 @@ public abstract class PickerSpinner extends Spinner {
                     }
                 }
         );
+    }
+
+    /**
+     * Gets the position of the last item in the dataset, after which the footer and temporary selection have their index.
+     * @return The last selectable position.
+     */
+    public int getLastItemPosition() {
+        return getCount() - (((PickerSpinnerAdapter) getAdapter()).hasFooter()?2:1);
+    }
+
+    /**
+     * Adds the item to the adapter's data set and takes care of handling selection changes.
+     * Always call this method instead of getAdapter().add().
+     * @param item The item to insert.
+     */
+    public void addAdapterItem(TwinTextItem item) {
+        insertAdapterItem(item, getLastItemPosition()+1);
+    }
+
+    /**
+     * Inserts the item at the specified index into the adapter's data set and takes care of handling selection changes.
+     * Always call this method instead of getAdapter().insert().
+     * @param item The item to insert.
+     * @param index The index where it'll be at.
+     */
+    public void insertAdapterItem(TwinTextItem item, int index) {
+        int selection = getSelectedItemPosition();
+        // catch the temporary item
+        /*if(selection == getAdapter().getCount())
+            setSelectionQuietly(0);*/
+        ((PickerSpinnerAdapter)getAdapter()).insert(item, index);
+        if(index <= selection)
+            setSelectionQuietly(selection+1);
+    }
+
+    /**
+     * Removes the specified item from the adapter and takes care of handling selection changes.
+     * Always call this method instead of getAdapter().remove().
+     * @param index The index of the item to be removed.
+     */
+    public void removeAdapterItemAt(int index) {
+        PickerSpinnerAdapter adapter = (PickerSpinnerAdapter) getAdapter();
+        int count = adapter.getCount();
+        int selection = getSelectedItemPosition();
+
+        // check which item will be removed:
+        if(index == count) // temporary selection
+            selectTemporary(null);
+        else if (index == count-1 && adapter.hasFooter()) { // footer
+            if(selection == count)
+                setSelectionQuietly(selection - 1);
+            adapter.setFooter(null);
+        } else { // a normal item //TODO no idea why this works and does not in past mode
+            // keep the right selection in either of these cases:
+            if(index == selection) {// we delete the selected item and
+                if(index == getLastItemPosition())  // it is the last real item
+                    setSelection(selection - 1);
+                else setSelection(selection);
+            }
+            else if(index < selection && selection!=count) // we remove an item above it
+                setSelectionQuietly(selection - 1);
+            adapter.remove(adapter.getItem(index));
+            if(selection == count) // we have a temporary item selected
+                setSelectionQuietly(selection - 1);
+        }
     }
 
     /**

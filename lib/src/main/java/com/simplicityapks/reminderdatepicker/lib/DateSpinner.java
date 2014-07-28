@@ -169,36 +169,24 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
      * @param enable True to enable, false to disable past mode.
      */
     public void setShowPastItems(boolean enable) {
-        PickerSpinnerAdapter adapter = (PickerSpinnerAdapter) getAdapter();
         if(enable && !showPastItems) {
             // create the yesterday and last Monday item:
             final Resources res = getResources();
             final Calendar date = Calendar.getInstance();
             // yesterday:
             date.add(Calendar.DAY_OF_YEAR, -1);
-            adapter.insert(new DateItem(res.getString(R.string.date_yesterday), date), 0);
+            insertAdapterItem(new DateItem(res.getString(R.string.date_yesterday), date), 0);
             // last weekday item:
             date.add(Calendar.DAY_OF_YEAR, -6);
-            adapter.insert(new DateItem(
+            insertAdapterItem(new DateItem(
                     getWeekDay(date.get(Calendar.DAY_OF_WEEK), R.string.date_last_weekday), date), 0);
-            // restore selection:
-            setSelection(getSelectedItemPosition() + 2);
         }
         else if(!enable && showPastItems) {
-            // restore selection:
-            int selection = getSelectedItemPosition();
-            if(selection >= 2)
-                setSelection(selection - 2);
-            else
-                setSelection(0);
             // delete the yesterday and last weekday items:
-            adapter.remove(adapter.getItem(0));
-            adapter.remove(adapter.getItem(0));
+            removeAdapterItemAt(0);
+            removeAdapterItemAt(0);
         }
-        if(enable != showPastItems) {
-            adapter.notifyDataSetChanged();
-            showPastItems = enable;
-        }
+        showPastItems = enable;
     }
 
     /**
@@ -206,25 +194,16 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
      * @param enable True to enable, false to disable month mode.
      */
     public void setShowMonthItem(boolean enable) {
-        PickerSpinnerAdapter adapter = (PickerSpinnerAdapter) getAdapter();
         if(enable && !showMonthItem) {
             // create the in 1 month item
             final Calendar date = Calendar.getInstance();
             date.add(Calendar.MONTH, 1);
-            adapter.add(new DateItem(formatDate(date), date));
+            addAdapterItem(new DateItem(formatDate(date), date));
         }
         else if(!enable && showMonthItem) {
-            int monthPosition = adapter.getCount()-2;
-            // restore selection:
-            if(getSelectedItemPosition() == monthPosition)
-                setSelection(monthPosition-1);
-            // delete the in 1 month item
-            adapter.remove(adapter.getItem(monthPosition));
+            removeAdapterItemAt(getLastItemPosition());
         }
-        if(enable != showMonthItem) {
-            adapter.notifyDataSetChanged();
-            showMonthItem = enable;
-        }
+        showMonthItem = enable;
     }
 
     /**

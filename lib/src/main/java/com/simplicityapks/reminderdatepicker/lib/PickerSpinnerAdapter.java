@@ -14,6 +14,16 @@ import java.util.List;
 /**
  * Serves as Adapter for all PickerSpinner Views and deals with an extra footer and its layout, the
  * option to add temporary selections and correctly setting the view for the TwinTextItems.
+ *
+ * This is the layout of the items and indexes:
+ *
+ * INDEX:       | ITEM returned by getView() or getItem():
+ * 0            | item1
+ * 1            | item2
+ * 2            | item3
+ * ...            ...
+ * getCount()-1 | footer, if available (else last item)
+ * getCount()   | temporarySelection, if available (else null)
  */
 public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem>{
 
@@ -143,6 +153,7 @@ public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem>{
         this.temporarySelection = item;
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -163,6 +174,14 @@ public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem>{
     public int getCount() {
         // we need one extra item which is not in the array.
         return super.getCount() + (footer==null? 0 : 1);
+    }
+
+    /**
+     * Checks if the Spinner will show a footer, previously set using setFooter().
+     * @return True if there is a footer, false otherwise.
+     */
+    public boolean hasFooter() {
+        return this.footer != null;
     }
 
     /**
