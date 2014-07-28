@@ -182,6 +182,9 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
                     getWeekDay(date.get(Calendar.DAY_OF_WEEK), R.string.date_last_weekday), date), 0);
         }
         else if(!enable && showPastItems) {
+            // workaround for bug when temporary item is selected:
+            if(getSelectedItemPosition() == getCount())
+                setSelection(2);
             // delete the yesterday and last weekday items:
             removeAdapterItemAt(0);
             removeAdapterItemAt(0);
