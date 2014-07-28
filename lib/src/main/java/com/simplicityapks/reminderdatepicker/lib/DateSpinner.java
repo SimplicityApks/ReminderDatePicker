@@ -215,8 +215,8 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
      *                    combined with the | operator.
      */
     public void setFlags(int modeOrFlags) {
-        setShowPastItems((modeOrFlags & ReminderDatePicker.FLAG_PAST) == ReminderDatePicker.FLAG_PAST);
-        setShowMonthItem((modeOrFlags & ReminderDatePicker.FLAG_MONTH) == ReminderDatePicker.FLAG_MONTH);
+        setShowPastItems((modeOrFlags & ReminderDatePicker.FLAG_PAST) != 0);
+        setShowMonthItem((modeOrFlags & ReminderDatePicker.FLAG_MONTH) != 0);
     }
 
     @Override

@@ -44,10 +44,17 @@
         android:text="@string/flag_month"/>
 
     <CheckBox
-        android:id="@+id/cb_numbers"
+        android:id="@+id/cb_more_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/cb_month"
+        android:text="@string/flag_more_time"/>
+
+    <CheckBox
+        android:id="@+id/cb_numbers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cb_more_time"
         android:text="@string/flag_numbers"/>
 
     <CheckBox

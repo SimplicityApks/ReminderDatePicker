@@ -18,29 +18,41 @@ import java.util.GregorianCalendar;
  */
 public class ReminderDatePicker extends LinearLayout implements AdapterView.OnItemSelectedListener{
 
-    public static final int MODE_GOOGLE = 0;    // 0000; the standard mode
-    public static final int MODE_EVERYTHING = 7;// 0111; include all features
+    /**
+     * Mode for {@link #setFlags(int)}. Base mode, same items as in the Google Keep app.
+     */
+    public static final int MODE_GOOGLE = 0;     // 00000
+
+    /**
+     * Mode for {@link #setFlags(int)}. Include all possible items and show numbers in the time spinner.
+     */
+    public static final int MODE_EVERYTHING = 15;// 01111
 
     /**
      * Flag for {@link #setFlags(int)}. Include a yesterday and last weekday item.
      */
-    public static final int FLAG_PAST = 1;      // 0001
+    public static final int FLAG_PAST = 1;       // 00001
 
     /**
      * Flag for {@link #setFlags(int)}. Include a month item exactly one month from today.
      */
-    public static final int FLAG_MONTH = 2;     // 0010
+    public static final int FLAG_MONTH = 2;      // 00010
+
+    /**
+     * Flag for {@link #setFlags(int)}. Include a noon and late night item in the time spinner.
+     */
+    public static final int FLAG_MORE_TIME = 4;  // 00100
 
     /**
      * Flag for {@link #setFlags(int)}. Show numeric time in the time spinner view. Note that time
      * will always be shown in dropdown.
      */
-    public static final int FLAG_NUMBERS = 4;   // 0100
+    public static final int FLAG_NUMBERS = 8;    // 01000
 
     /**
      * Flag for {@link #setFlags(int)}. Hide the time picker and show a button to show it.
      */
-    public static final int FLAG_HIDE_TIME = 8; // 1000
+    public static final int FLAG_HIDE_TIME = 16; // 10000
 
     private boolean isTimeHidden = false;
 
@@ -223,7 +235,7 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
      */
     public void setFlags(int modeOrFlags) {
         // check each flag and pass it on if needed:
-        setHideTime((modeOrFlags & FLAG_HIDE_TIME) == FLAG_HIDE_TIME, isActivityUsingDarkTheme());
+        setHideTime((modeOrFlags & FLAG_HIDE_TIME) != 0, isActivityUsingDarkTheme());
         dateSpinner.setFlags(modeOrFlags);
         timeSpinner.setFlags(modeOrFlags);
     }

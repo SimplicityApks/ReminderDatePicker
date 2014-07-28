@@ -38,6 +38,8 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
     private final TimePickerDialog timePickerDialog;
     private FragmentManager fragmentManager;
 
+    private boolean showMoreTimeItems = false;
+
     public TimeSpinner(Context context){
         this(context, null, 0);
     }
@@ -148,6 +150,32 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
     }
 
     /**
+     * Toggles showing more time items. If enabled, a noon and a late night time item are shown.
+     * @param enable True to enable, false to disable more time items.
+     */
+    public void setShowMoreTimeItems(boolean enable) {
+        if(enable && !showMoreTimeItems) {
+            // create the noon and late night item:
+            final Resources res = getResources();
+            // switch the afternoon item to 2pm:
+            removeAdapterItemAt(1);
+            insertAdapterItem(new TimeItem(res.getString(R.string.time_afternoon_2), 14, 0), 1);
+            // noon item:
+            insertAdapterItem(new TimeItem(res.getString(R.string.time_noon), 12, 0), 1);
+            // late night item:
+            addAdapterItem(new TimeItem(res.getString(R.string.time_late_night), 23, 0));
+        }
+        else if(!enable && showMoreTimeItems) {
+            removeAdapterItemAt(1);
+            removeAdapterItemAt(getLastItemPosition());
+            // switch back the afternoon item:
+            removeAdapterItemAt(1);
+            insertAdapterItem(new TimeItem(getResources().getString(R.string.time_afternoon), 13, 0), 1);
+        }
+        showMoreTimeItems = enable;
+    }
+
+    /**
      * Sets to show numeric time in the view. Note that time will always be shown in dropdown.
      * @param enable True to enable, false to disable numeric mode.
      */
@@ -161,7 +189,8 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
      *                    combined with the | operator.
      */
     public void setFlags(int modeOrFlags) {
-        setShowNumbersInView((modeOrFlags & ReminderDatePicker.FLAG_NUMBERS) == ReminderDatePicker.FLAG_NUMBERS);
+        setShowMoreTimeItems((modeOrFlags & ReminderDatePicker.FLAG_MORE_TIME) != 0);
+        setShowNumbersInView((modeOrFlags & ReminderDatePicker.FLAG_NUMBERS) != 0);
     }
 
     @Override
