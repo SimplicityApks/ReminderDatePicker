@@ -14,9 +14,13 @@ import android.widget.AdapterView;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * The right PickerSpinner of the Google Keep app, to select a time within one day.
@@ -128,8 +132,19 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
             setSelection(itemPosition);
         else {
             // create a temporary TimeItem to select:
-            selectTemporary(new TimeItem(hour+":"+minute, hour, minute));
+            selectTemporary(new TimeItem(formatTime(hour, minute), hour, minute));
         }
+    }
+
+    private String formatTime(int hour, int minute) {
+        return getTimeFormat().format(new GregorianCalendar(0,0,0,hour,minute).getTime());
+    }
+
+    private java.text.DateFormat timeFormat = null;
+    private java.text.DateFormat getTimeFormat() {
+        if(timeFormat == null)
+            timeFormat = java.text.DateFormat.getTimeInstance(java.text.DateFormat.SHORT);
+        return timeFormat;
     }
 
     /**
@@ -180,6 +195,8 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
      * @param enable True to enable, false to disable numeric mode.
      */
     public void setShowNumbersInView(boolean enable) {
+        // workaround for now.
+        setSelection(0);
         ((PickerSpinnerAdapter) getAdapter()).setShowSecondaryTextInView(enable);
     }
 
@@ -210,7 +227,7 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if(timeListener != null) {
-            TimeItem selected = (TimeItem) getItemAtPosition(position);
+            TimeItem selected = (TimeItem) getSelectedItem();
             if(selected != null)
                 timeListener.onTimeSelected(selected.getHour(), selected.getMinute());
         }
