@@ -168,13 +168,13 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
      * Toggles showing more time items. If enabled, a noon and a late night time item are shown.
      * @param enable True to enable, false to disable more time items.
      */
-    public void setShowMoreTimeItems(boolean enable) {
+    public void setShowMoreTimeItems(boolean enable) { // TODO: strangely this resets the selection to 0...
         if(enable && !showMoreTimeItems) {
             // create the noon and late night item:
             final Resources res = getResources();
             // switch the afternoon item to 2pm:
+            insertAdapterItem(new TimeItem(res.getString(R.string.time_afternoon_2), 14, 0), 2);
             removeAdapterItemAt(1);
-            insertAdapterItem(new TimeItem(res.getString(R.string.time_afternoon_2), 14, 0), 1);
             // noon item:
             insertAdapterItem(new TimeItem(res.getString(R.string.time_noon), 12, 0), 1);
             // late night item:
@@ -184,8 +184,11 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
             removeAdapterItemAt(1);
             removeAdapterItemAt(getLastItemPosition());
             // switch back the afternoon item:
+            // workaround for now.
+            if(getCount() == getSelectedItemPosition())
+                setSelection(0);
+            insertAdapterItem(new TimeItem(getResources().getString(R.string.time_afternoon), 13, 0), 2);
             removeAdapterItemAt(1);
-            insertAdapterItem(new TimeItem(getResources().getString(R.string.time_afternoon), 13, 0), 1);
         }
         showMoreTimeItems = enable;
     }
@@ -195,9 +198,11 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
      * @param enable True to enable, false to disable numeric mode.
      */
     public void setShowNumbersInView(boolean enable) {
+        PickerSpinnerAdapter adapter = (PickerSpinnerAdapter) getAdapter();
         // workaround for now.
-        setSelection(0);
-        ((PickerSpinnerAdapter) getAdapter()).setShowSecondaryTextInView(enable);
+        if(enable != adapter.isShowingSecondaryTextInView() && getCount() == getSelectedItemPosition())
+            setSelection(0);
+        adapter.setShowSecondaryTextInView(enable);
     }
 
     /**
