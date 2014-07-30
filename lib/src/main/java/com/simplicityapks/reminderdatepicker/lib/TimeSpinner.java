@@ -181,14 +181,11 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
             addAdapterItem(new TimeItem(res.getString(R.string.time_late_night), 23, 0));
         }
         else if(!enable && showMoreTimeItems) {
+            // switch back the afternoon item:
+            insertAdapterItem(new TimeItem(getResources().getString(R.string.time_afternoon), 13, 0), 3);
+            removeAdapterItemAt(2);
             removeAdapterItemAt(1);
             removeAdapterItemAt(getLastItemPosition());
-            // switch back the afternoon item:
-            // workaround for now.
-            if(getCount() == getSelectedItemPosition())
-                setSelection(0);
-            insertAdapterItem(new TimeItem(getResources().getString(R.string.time_afternoon), 13, 0), 2);
-            removeAdapterItemAt(1);
         }
         showMoreTimeItems = enable;
     }

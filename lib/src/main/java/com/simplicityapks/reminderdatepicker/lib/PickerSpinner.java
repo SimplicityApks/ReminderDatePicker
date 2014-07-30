@@ -10,6 +10,7 @@ import android.widget.SpinnerAdapter;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -20,8 +21,9 @@ import java.util.List;
  */
 public abstract class PickerSpinner extends Spinner {
 
-    // indicates that the onItemSelectedListener callback should not be passed to the listener.
-    private boolean interceptNextSelectionCallback = false;
+    // Indicates that the onItemSelectedListener callback should not be passed to the listener.
+    private int interceptNextSelectionCallbacks = 0;
+    private boolean reselectTemporaryItem = false;
 
     public PickerSpinner(Context context) {
         this(context, null);
@@ -58,7 +60,10 @@ public abstract class PickerSpinner extends Spinner {
         else {
             // remove any previous temporary selection:
             ((PickerSpinnerAdapter)getAdapter()).selectTemporary(null);
+            // check that the selection goes through:
+            interceptNextSelectionCallbacks = 0;
             super.setSelection(position);
+            super.setSelection(position, false);
         }
     }
 
@@ -68,9 +73,8 @@ public abstract class PickerSpinner extends Spinner {
      */
     private void setSelectionQuietly(int position) {
         // intercept the callback here:
-        interceptNextSelectionCallback = true;
+        interceptNextSelectionCallbacks++;
         super.setSelection(position, false); // No idea why both setSelections are needed but it only works with both
-        interceptNextSelectionCallback = true;
         super.setSelection(position);
     }
 
@@ -103,9 +107,15 @@ public abstract class PickerSpinner extends Spinner {
                 new OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        if (!interceptNextSelectionCallback)
-                            listener.onItemSelected(parent, view, position, id);
-                        interceptNextSelectionCallback = false;
+                        if(interceptNextSelectionCallbacks > 0) {
+                            interceptNextSelectionCallbacks--;
+                            if(reselectTemporaryItem) {
+                                if (position != getAdapter().getCount())
+                                    setSelectionQuietly(getAdapter().getCount());
+                                reselectTemporaryItem = false;
+                            }
+                        }
+                        else listener.onItemSelected(parent, view, position, id);
                     }
 
                     @Override
@@ -141,9 +151,6 @@ public abstract class PickerSpinner extends Spinner {
      */
     public void insertAdapterItem(TwinTextItem item, int index) {
         int selection = getSelectedItemPosition();
-        // catch the temporary item
-        /*if(selection == getAdapter().getCount())
-            setSelectionQuietly(0);*/
         ((PickerSpinnerAdapter)getAdapter()).insert(item, index);
         if(index <= selection)
             setSelectionQuietly(selection+1);
@@ -171,13 +178,19 @@ public abstract class PickerSpinner extends Spinner {
             if(index == selection) {// we delete the selected item and
                 if(index == getLastItemPosition())  // it is the last real item
                     setSelection(selection - 1);
-                else setSelection(selection);
+                else {
+                    // we need to reselect the current item:
+                    setSelectionQuietly(index==0 && count>1? 1 : 0);
+                    setSelection(selection);
+                }
             }
             else if(index < selection && selection!=count) // we remove an item above it
                 setSelectionQuietly(selection - 1);
             adapter.remove(adapter.getItem(index));
-            if(selection == count) // we have a temporary item selected
+            if(selection == count) { // we have a temporary item selected
+                reselectTemporaryItem = true;
                 setSelectionQuietly(selection - 1);
+            }
         }
     }
 
