@@ -62,6 +62,9 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
     // This listener doesn't have to be implemented, if it is null just ignore it
     private OnDateSelectedListener listener = null;
 
+    // To catch twice selecting the same date:
+    private Calendar lastSelectedDate = null;
+
     public ReminderDatePicker(Context context) {
         this(context, null);
     }
@@ -248,7 +251,10 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         // An item has been selected in one of our child spinners, so get the selected Date and call the listeners
         if(listener != null) {
-            listener.onDateSelected(getSelectedDate());
+            Calendar date = getSelectedDate();
+            if(!date.equals(lastSelectedDate))
+                listener.onDateSelected(date);
+            lastSelectedDate = date;
         }
     }
 
