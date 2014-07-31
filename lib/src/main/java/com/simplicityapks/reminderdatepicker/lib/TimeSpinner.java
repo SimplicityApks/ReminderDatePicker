@@ -3,6 +3,9 @@ package com.simplicityapks.reminderdatepicker.lib;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.text.format.DateFormat;
@@ -165,6 +168,14 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
     }
 
     /**
+     * Checks whether the spinner is showing all time items, including noon and late night.
+     * @return True if FLAG_MORE_TIME has been set or {@link #setShowMoreTimeItems(boolean)} was called, false otherwise.
+     */
+    public boolean isShowingMoreTimeItems() {
+        return this.showMoreTimeItems;
+    }
+
+    /**
      * Toggles showing more time items. If enabled, a noon and a late night time item are shown.
      * @param enable True to enable, false to disable more time items.
      */
@@ -224,6 +235,11 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
         } else {
             customTimePicker.onClick(this);
         }
+    }
+
+    @Override
+    protected void restoreTemporarySelection(String codeString) {
+        selectTemporary(TimeItem.fromString(codeString));
     }
 
     @Override

@@ -1,6 +1,9 @@
 package com.simplicityapks.reminderdatepicker.lib;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -40,6 +43,37 @@ public abstract class PickerSpinner extends Spinner {
         PickerSpinnerAdapter adapter = new PickerSpinnerAdapter(context, getSpinnerItems(),
                 new TwinTextItem.Simple(getFooter(), null));
         setAdapter(adapter);
+    }
+
+    @NonNull
+    @Override
+    public Parcelable onSaveInstanceState() {
+        // our temporary selection will not be saved
+        if(getSelectedItemPosition() == getCount()) {
+            Bundle state = new Bundle();
+            state.putParcelable("superState", super.onSaveInstanceState());
+            // save the TwinTextItem using its toString() method
+            state.putString("temporaryItem", getSelectedItem().toString());
+            return state;
+        }
+        else return super.onSaveInstanceState();
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        if(state instanceof Bundle) {
+            Bundle bundle = (Bundle) state;
+            super.onRestoreInstanceState(bundle.getParcelable("superState"));
+            // restore the temporary selection, we need to wait till the end of the message queue
+            final String tempItem = bundle.getString("temporaryItem");
+            post(new Runnable() {
+                @Override
+                public void run() {
+                    restoreTemporarySelection(tempItem);
+                }
+            });
+        }
+        else super.onRestoreInstanceState(state);
     }
 
     @Override
@@ -173,7 +207,7 @@ public abstract class PickerSpinner extends Spinner {
             if(selection == count)
                 setSelectionQuietly(selection - 1);
             adapter.setFooter(null);
-        } else { // a normal item //TODO no idea why this works and does not in past mode
+        } else { // a normal item
             // keep the right selection in either of these cases:
             if(index == selection) {// we delete the selected item and
                 if(index == getLastItemPosition())  // it is the last real item
@@ -212,4 +246,12 @@ public abstract class PickerSpinner extends Spinner {
      * selection and you still need a separate OnItemSelectedListener.
      */
     public abstract void onFooterClick();
+
+    /**
+     * Called to restore a previously saved temporary selection. The given codeString has been saved
+     * using the toString() method on the TwinTextItem. This method should ideally only call
+     * {@link #selectTemporary(TwinTextItem)} with a new TwinTextItem parsed from the codeString.
+     * @param codeString The raw String saved from the item's toString() method.
+     */
+    protected abstract void restoreTemporarySelection(String codeString);
 }

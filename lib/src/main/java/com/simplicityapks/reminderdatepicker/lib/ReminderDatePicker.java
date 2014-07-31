@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
@@ -65,6 +66,9 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
     // To catch twice selecting the same date:
     private Calendar lastSelectedDate = null;
 
+    // To keep track whether we need to selectDefaultDate in onAttachToWindow():
+    private boolean restoringViewState = false;
+
     public ReminderDatePicker(Context context) {
         this(context, null);
     }
@@ -99,19 +103,34 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
             flags = a.getInt(R.styleable.ReminderDatePicker_flags, MODE_GOOGLE);
             setFlags(flags);
         }
-        selectDefaultDate(flags);
     }
 
-    private void selectDefaultDate(int flags) {
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        super.onRestoreInstanceState(state);
+        if(state != null)
+            restoringViewState = true;
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        // we may need to initialize the selected date
+        if(!restoringViewState)
+            selectDefaultDate();
+    }
+
+    private void selectDefaultDate() {
         Calendar calendar = Calendar.getInstance();
+        boolean moreTime = timeSpinner.isShowingMoreTimeItems();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         if(hour < 9) hour = 9;
-        else if(hour < 12 && (flags & FLAG_MORE_TIME)!=0) hour = 12;
-        else if(hour < 13 && (flags & FLAG_MORE_TIME)==0) hour = 13;
-        else if(hour < 14 && (flags & FLAG_MORE_TIME)!=0) hour = 14;
-        else if(hour < 17) hour = 17;
-        else if(hour < 20) hour = 20;
-        else if(hour < 23 && (flags & FLAG_MORE_TIME)!=0) hour = 23;
+        else if(hour < 12 && moreTime)  hour = 12;
+        else if(hour < 13 && !moreTime) hour = 13;
+        else if(hour < 14 && moreTime)  hour = 14;
+        else if(hour < 17)              hour = 17;
+        else if(hour < 20)              hour = 20;
+        else if(hour < 23 && moreTime)  hour = 23;
         else {
             hour = 9;
             calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) + 1);
@@ -251,6 +270,7 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         // An item has been selected in one of our child spinners, so get the selected Date and call the listeners
         if(listener != null) {
+            // catch selecting same date twice
             Calendar date = getSelectedDate();
             if(!date.equals(lastSelectedDate))
                 listener.onDateSelected(date);

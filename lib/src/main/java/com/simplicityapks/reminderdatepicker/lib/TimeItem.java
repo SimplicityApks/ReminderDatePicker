@@ -115,4 +115,34 @@ public class TimeItem implements TwinTextItem{
     public CharSequence getSecondaryText() {
         return digitalTime;
     }
+
+    /**
+     * The returned String may be passed to {@link #fromString(String)} to save and recreate this object easily.
+     * @return The elements of this object separated by \n
+     */
+    @Override
+    public String toString() {
+        String sep = "\n";
+        return label +sep+ digitalTime +sep+ hour +sep+ minute;
+    }
+
+    /**
+     * Constructs a new TimeItem from a String previously gotten from the {@link #toString()} method.
+     * @param code The string to parse from.
+     * @return A new TimeItem, or null if there was an error.
+     */
+    public static TimeItem fromString(String code) {
+        String[] items = code.split("\n");
+        if(items.length != 4) return null;
+        int hour, minute;
+        try {
+            hour = Integer.parseInt(items[2]);
+            minute = Integer.parseInt(items[3]);
+        }
+        catch (NumberFormatException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return new TimeItem(items[0], items[1], hour, minute);
+    }
 }

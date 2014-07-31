@@ -231,6 +231,11 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
     }
 
     @Override
+    protected void restoreTemporarySelection(String codeString) {
+        selectTemporary(DateItem.fromString(codeString));
+    }
+
+    @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if(dateListener != null)
             dateListener.onDateSelected(getSelectedDate());
