@@ -3,6 +3,7 @@
 
     <string name="spinner_date_footer">Pick a date&#8230;</string>
     <string name="spinner_time_footer">Pick a time&#8230;</string>
+    <string name="select_time">Select time</string>
 
     <!-- Date items: -->
     <string name="date_last_weekday">Last %1$s</string>

@@ -6,6 +6,9 @@ import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.view.ContextThemeWrapper;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
@@ -96,11 +99,13 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
         if(context instanceof OnDateSelectedListener)
             setOnDateSelectedListener((OnDateSelectedListener) context);
 
-        int flags = MODE_GOOGLE;
+        // set gravity, for the timeButton when th eTimeSpinner is hidden:
+        setGravity(Gravity.CENTER_VERTICAL);
+
         if(attrs != null) {
             // get our flags from xml, if set:
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ReminderDatePicker);
-            flags = a.getInt(R.styleable.ReminderDatePicker_flags, MODE_GOOGLE);
+            int flags = a.getInt(R.styleable.ReminderDatePicker_flags, MODE_GOOGLE);
             setFlags(flags);
         }
     }
@@ -217,8 +222,8 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
         if(enable && !isTimeHidden) {
             // hide the time spinner and show a button to show it instead
             timeSpinner.setVisibility(GONE);
-            ImageButton timeButton = new ImageButton(getContext());
-            timeButton.setImageResource(useDarkTheme? R.drawable.ic_action_time_dark : R.drawable.ic_action_time_light);
+            ImageButton timeButton = (ImageButton) LayoutInflater.from(getContext()).inflate(R.layout.time_button, null);
+            timeButton.setImageResource(useDarkTheme ? R.drawable.ic_action_time_dark : R.drawable.ic_action_time_light);
             timeButton.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="BorderlessButton" parent="android:Widget.Button">
+        <item name="android:background">@drawable/abc_list_selector_holo_light</item>
+    </style>
+</resources>

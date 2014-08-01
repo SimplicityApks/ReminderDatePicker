@@ -3,10 +3,17 @@
     <com.simplicityapks.reminderdatepicker.lib.DateSpinner
         android:id="@+id/date_spinner"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:spinnerMode="dropdown"/>
 
     <com.simplicityapks.reminderdatepicker.lib.TimeSpinner
         android:id="@+id/time_spinner"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="4dp"
+        android:spinnerMode="dropdown"/>
 </merge>
