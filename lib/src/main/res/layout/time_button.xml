@@ -4,4 +4,4 @@
     style="@style/BorderlessButton"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:contentDescription="@string/select_time"/>
+    android:contentDescription="@string/select_time" />
