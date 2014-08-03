@@ -3,6 +3,7 @@ package com.simplicityapks.reminderdatepicker.lib;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.support.annotation.StringRes;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -70,6 +71,13 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
             fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
         } catch (ClassCastException e) {
             Log.d(getClass().getSimpleName(), "Can't get fragment manager from context");
+        }
+
+        if(attrs != null) {
+            // get our flags from xml, if set:
+            TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ReminderDatePicker);
+            int flags = a.getInt(R.styleable.ReminderDatePicker_flags, ReminderDatePicker.MODE_GOOGLE);
+            setFlags(flags);
         }
     }
 
