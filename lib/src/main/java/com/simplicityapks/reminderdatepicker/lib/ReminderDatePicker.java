@@ -6,7 +6,6 @@ import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Parcelable;
 import android.util.AttributeSet;
-import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +17,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 /**
- * Base view class to be inflated via xml or constructor.
+ * A Google Keep like date and time picker for reminders, to be inflated via xml or constructor.
+ * Holds both DateSpinner and TimeSpinner and takes care of handling selection layout changes.
  */
 public class ReminderDatePicker extends LinearLayout implements AdapterView.OnItemSelectedListener{
 
@@ -58,7 +58,8 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
      */
     public static final int FLAG_HIDE_TIME = 16; // 10000
 
-    private boolean isTimeHidden = false;
+    // has FLAG_HIDE_TIME been set?
+    private boolean shouldHideTime = false;
 
     private DateSpinner dateSpinner;
     private TimeSpinner timeSpinner;
@@ -129,7 +130,12 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
         Calendar calendar = Calendar.getInstance();
         boolean moreTime = timeSpinner.isShowingMoreTimeItems();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        if(hour < 9) hour = 9;
+        // if FLAG_HIDE_TIME has been set, set it to tomorrow morning:
+        if(shouldHideTime) {
+            hour = 9;
+            calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) + 1);
+        }
+        else if(hour < 9)               hour = 9;
         else if(hour < 12 && moreTime)  hour = 12;
         else if(hour < 13 && !moreTime) hour = 13;
         else if(hour < 14 && moreTime)  hour = 14;
@@ -214,12 +220,20 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
     }
 
     /**
+     * Checks if the time spinner is currently invisible (with {@link #FLAG_HIDE_TIME}), so the user didn't choose a time.
+     * @return True if the time is not visible, false otherwise.
+     */
+    public boolean isTimeHidden() {
+        return timeSpinner.getVisibility() == GONE;
+    }
+
+    /**
      * Toggles hiding the Time Spinner and replaces it with a Button.
      * @param enable True to hide the Spinner, false to show it.
      * @param useDarkTheme True if a white icon shall be used, false for a dark one.
      */
     public void setHideTime(boolean enable, final boolean useDarkTheme) {
-        if(enable && !isTimeHidden) {
+        if(enable && !shouldHideTime) {
             // hide the time spinner and show a button to show it instead
             timeSpinner.setVisibility(GONE);
             ImageButton timeButton = (ImageButton) LayoutInflater.from(getContext()).inflate(R.layout.time_button, null);
@@ -231,11 +245,11 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
                 }
             });
             this.addView(timeButton);
-        } else if(!enable && isTimeHidden) {
+        } else if(!enable && shouldHideTime) {
             timeSpinner.setVisibility(VISIBLE);
             this.removeViewAt(2);
         }
-        isTimeHidden = enable;
+        shouldHideTime = enable;
     }
 
     private boolean isActivityUsingDarkTheme() {
