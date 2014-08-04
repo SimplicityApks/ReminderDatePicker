@@ -5,22 +5,21 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.HashSet;
 import java.util.List;
 
 /**
  * Base class for both DateSpinner and TimeSpinner.
+ * This is a Spinner with the following additional, optional features:
  *
- * Allows to use a custom last list item, which won't get selected on click. Instead,
- * onLastItemClick() will be called.
+ * 1. A custom last list item (footer), which won't get selected on click. Instead, onFooterClick() will be called.
+ * 2. Items with secondary text, due to integration with {@link com.simplicityapks.reminderdatepicker.lib.PickerSpinnerAdapter}
+ * 3. Select items which are not currently in the spinner items (use {@link #selectTemporary(TwinTextItem)}.
+ * 4. Dynamic and easy modifying the spinner items without having to worry about selection changes (use the ...AdapterItem...() methods)
  */
 public abstract class PickerSpinner extends Spinner {
 
@@ -28,14 +27,31 @@ public abstract class PickerSpinner extends Spinner {
     private int interceptNextSelectionCallbacks = 0;
     private boolean reselectTemporaryItem = false;
 
+    /**
+     * Construct a new PickerSpinner with the given context's theme.
+     * @param context The Context the view is running in, through which it can access the current theme, resources, etc.
+     */
     public PickerSpinner(Context context) {
         this(context, null);
     }
 
+    /**
+     * Construct a new PickerSpinner with the given context's theme and the supplied attribute set.
+     * @param context The Context the view is running in, through which it can access the current theme, resources, etc.
+     * @param attrs The attributes of the XML tag that is inflating the view.
+     */
     public PickerSpinner(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
+    /**
+     * Construct a new PickerSpinner with the given context's theme, the supplied attribute set, and default style.
+     * @param context The Context the view is running in, through which it can access the current theme, resources, etc.
+     * @param attrs The attributes of the XML tag that is inflating the view.
+     * @param defStyle The default style to apply to this view. If 0, no style will be applied (beyond
+     *                 what is included in the theme). This may either be an attribute resource, whose
+     *                 value will be retrieved from the current theme, or an explicit style resource.
+     */
     public PickerSpinner(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs);
 
@@ -76,6 +92,13 @@ public abstract class PickerSpinner extends Spinner {
         else super.onRestoreInstanceState(state);
     }
 
+    /**
+     * Sets the Adapter used to provide the data which backs this Spinner. Needs to be an {@link com.simplicityapks.reminderdatepicker.lib.PickerSpinnerAdapter}
+     * to be used with this class. Note that a PickerSpinner automatically creates its own adapter
+     * so you should not need to call this method.
+     * @param adapter The PickerSpinnerAdapter to be used.
+     * @throws IllegalArgumentException If adapter is not a PickerSpinnerAdapter.
+     */
     @Override
     public void setAdapter(SpinnerAdapter adapter) {
         if(adapter instanceof PickerSpinnerAdapter)

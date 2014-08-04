@@ -2,7 +2,6 @@ package com.simplicityapks.reminderdatepicker.lib;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -232,6 +231,11 @@ public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem>{
         }
     }
 
+    /**
+     * Checks whether showing secondary text in view is enabled for this spinner (defaults to false).
+     * @return True if this PickerSpinner shows the item's secondary text in the view as well as in
+     *         dropdown, false if only in dropdown.
+     */
     public boolean isShowingSecondaryTextInView() {
         return this.showSecodaryTextInView;
     }

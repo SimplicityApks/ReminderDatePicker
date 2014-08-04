@@ -19,6 +19,8 @@ import java.util.GregorianCalendar;
 /**
  * A Google Keep like date and time picker for reminders, to be inflated via xml or constructor.
  * Holds both DateSpinner and TimeSpinner and takes care of handling selection layout changes.
+ *
+ * Refer to <a href="https://github.com/SimplicityApks/ReminderDatePicker">the project's github page</a> for official documentation.
  */
 public class ReminderDatePicker extends LinearLayout implements AdapterView.OnItemSelectedListener{
 
@@ -73,15 +75,32 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
     // To keep track whether we need to selectDefaultDate in onAttachToWindow():
     private boolean restoringViewState = false;
 
+    /**
+     * Construct a new ReminderDatePicker with the given context's theme but without any flags.
+     * @param context The Context the view is running in, through which it can access the current theme, resources, etc.
+     */
     public ReminderDatePicker(Context context) {
         this(context, null);
     }
 
+    /**
+     * Construct a new ReminderDatePicker with the given context's theme and the supplied attribute set.
+     * @param context The Context the view is running in, through which it can access the current theme, resources, etc.
+     * @param attrs The attributes of the XML tag that is inflating the view. May contain a flags attribute.
+     */
     public ReminderDatePicker(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs);
     }
 
+    /**
+     * Construct a new ReminderDatePicker with the given context's theme and the supplied attribute set.
+     * @param context The Context the view is running in, through which it can access the current theme, resources, etc.
+     * @param attrs The attributes of the XML tag that is inflating the view. May contain a flags attribute.
+     * @param defStyle The default style to apply to this view. If 0, no style will be applied (beyond
+     *                 what is included in the theme). This may either be an attribute resource, whose
+     *                 value will be retrieved from the current theme, or an explicit style resource.
+     */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public ReminderDatePicker(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);

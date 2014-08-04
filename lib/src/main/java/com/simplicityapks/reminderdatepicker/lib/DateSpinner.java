@@ -39,14 +39,31 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
 
     private String[] weekDays = null;
 
+    /**
+     * Construct a new DateSpinner with the given context's theme.
+     * @param context The Context the view is running in, through which it can access the current theme, resources, etc.
+     */
     public DateSpinner(Context context){
         this(context, null, 0);
     }
 
+    /**
+     * Construct a new DateSpinner with the given context's theme and the supplied attribute set.
+     * @param context The Context the view is running in, through which it can access the current theme, resources, etc.
+     * @param attrs The attributes of the XML tag that is inflating the view. May contain a flags attribute.
+     */
     public DateSpinner(Context context, AttributeSet attrs){
         this(context, attrs, 0);
     }
 
+    /**
+     * Construct a new TimeSpinner with the given context's theme, the supplied attribute set, and default style.
+     * @param context The Context the view is running in, through which it can access the current theme, resources, etc.
+     * @param attrs The attributes of the XML tag that is inflating the view. May contain a flags attribute.
+     * @param defStyle The default style to apply to this view. If 0, no style will be applied (beyond
+     *                 what is included in the theme). This may either be an attribute resource, whose
+     *                 value will be retrieved from the current theme, or an explicit style resource.
+     */
     public DateSpinner(Context context, AttributeSet attrs, int defStyle){
         super(context, attrs, defStyle);
         // check if the parent activity has our dateSelectedListener, automatically enable it:

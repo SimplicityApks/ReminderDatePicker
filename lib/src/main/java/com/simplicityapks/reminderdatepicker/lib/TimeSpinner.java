@@ -4,9 +4,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.os.Bundle;
-import android.os.Parcelable;
-import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.text.format.DateFormat;
@@ -18,13 +15,10 @@ import android.widget.AdapterView;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * The right PickerSpinner of the Google Keep app, to select a time within one day.
@@ -48,14 +42,31 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
 
     private boolean showMoreTimeItems = false;
 
+    /**
+     * Construct a new TimeSpinner with the given context's theme.
+     * @param context The Context the view is running in, through which it can access the current theme, resources, etc.
+     */
     public TimeSpinner(Context context){
         this(context, null, 0);
     }
 
+    /**
+     * Construct a new TimeSpinner with the given context's theme and the supplied attribute set.
+     * @param context The Context the view is running in, through which it can access the current theme, resources, etc.
+     * @param attrs The attributes of the XML tag that is inflating the view. May contain a flags attribute.
+     */
     public TimeSpinner(Context context, AttributeSet attrs){
         this(context, attrs, 0);
     }
 
+    /**
+     * Construct a new TimeSpinner with the given context's theme, the supplied attribute set, and default style.
+     * @param context The Context the view is running in, through which it can access the current theme, resources, etc.
+     * @param attrs The attributes of the XML tag that is inflating the view. May contain a flags attribute.
+     * @param defStyle The default style to apply to this view. If 0, no style will be applied (beyond
+     *                 what is included in the theme). This may either be an attribute resource, whose
+     *                 value will be retrieved from the current theme, or an explicit style resource.
+     */
     public TimeSpinner(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         // check if the parent activity has our timeSelectedListener, automatically enable it:
@@ -187,7 +198,7 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
      * Toggles showing more time items. If enabled, a noon and a late night time item are shown.
      * @param enable True to enable, false to disable more time items.
      */
-    public void setShowMoreTimeItems(boolean enable) { // TODO: strangely this resets the selection to 0...
+    public void setShowMoreTimeItems(boolean enable) {
         if(enable && !showMoreTimeItems) {
             // create the noon and late night item:
             final Resources res = getResources();
