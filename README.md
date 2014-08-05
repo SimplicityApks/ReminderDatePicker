@@ -26,8 +26,12 @@ Screenshots
 Set-up
 ------
 
-To use this library in your project, just copy the library into your workspace and [add it as library 
-in Eclipse](http://developer.android.com/tools/projects/projects-eclipse.html#ReferencingLibraryProject) 
+To use this library in your project either
+
+* Add this line to the dependencies in your build.gradle (note you need `mavenCentral()` in your repositories):
+`compile 'com.simplicityapks:reminderdatepicker:1.0.0'`
+
+* Copy the library into your workspace and [add it as library in Eclipse](http://developer.android.com/tools/projects/projects-eclipse.html#ReferencingLibraryProject) 
 or add `compile project(':lib')` to the dependencies in your build.gradle in Android Studio.
 
 The library is designed for Android ICS and above (API level 14+), but it works fine in Android 2.1+ 
@@ -83,6 +87,7 @@ Credits
 **Huge thanks to**
 * **Google** for the original design of this picker in Google Keep
 * **@flavienlaurent** for his awesome [DateTimePicker](https://github.com/flavienlaurent/datetimepicker)
+* **@chrisbanes** for his [maven_push.gradle script](http://chris.banes.me/2013/08/27/pushing-aars-to-maven-central/) which brought this lib to maven central
 
 License
 -------
