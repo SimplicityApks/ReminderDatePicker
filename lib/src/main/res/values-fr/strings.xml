@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">ReminderDatePicker</string>
+
+    <string name="spinner_date_footer">Sélectionner une date&#8230;</string>
+    <string name="spinner_time_footer">Choisir l\'heure&#8230;</string>
+    <string name="select_time">Sélectionner l\'heure</string>
+
+    <!-- Date items: -->
+    <string name="date_last_weekday">%1$s dernier</string>
+    <string name="date_yesterday">Hier</string>
+    <string name="date_today">Aujourd\'hui</string>
+    <string name="date_tomorrow">Demain</string>
+    <string name="date_next_weekday">%1$s prochain</string>
+
+    <!-- Time items: -->
+    <string name="time_morning">Matin (9:00)</string>
+    <string name="time_noon">Midi (12:00)</string>
+    <string name="time_afternoon">Après-midi (13:00)</string>
+    <string name="time_afternoon_2">Après-midi (14:00)</string>
+    <string name="time_evening">Début de soirée (17:00)</string>
+    <string name="time_night">Soir (20:00)</string>
+    <string name="time_late_night">Fin de soirée (23:00)</string>
+</resources>

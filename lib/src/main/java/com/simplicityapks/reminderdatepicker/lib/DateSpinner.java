@@ -122,7 +122,9 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
 
     private String getWeekDay(int weekDay, @StringRes int stringRes) {
         if(weekDays == null) weekDays = new DateFormatSymbols().getWeekdays();
-        return getResources().getString(stringRes, weekDays[weekDay]);
+        // in some translations (French for instance), the weekday is the first word but is not capitalized, so we'll do that
+        String result = getResources().getString(stringRes, weekDays[weekDay]);
+        return Character.toUpperCase(result.charAt(0)) + result.substring(1);
     }
 
     /**
