@@ -7,7 +7,7 @@ ReminderDatePicker
 
 An intuitive and simplistic **Date and Time Picker for reminders**. Per default it almost exactly 
 matches the picker seen in the [Google Notes App](https://play.google.com/store/apps/details?id=com.google.android.keep) 
-but adds important features and enhancements.
+but adds important features and enhancements. You can **download the [sample app in the Play Store here](https://play.google.com/store/apps/details?id=com.simplicityapks.reminderdatepicker.sample)** to test it!
 
 Screenshots
 -----------
@@ -50,7 +50,7 @@ or add it to your layout xml files:
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
         
-See the sample source code for more information.
+See the [sample source code](https://github.com/SimplicityApks/ReminderDatePicker/tree/master/sample/src/main) for more information.
 
 ###Flags and Modes
 
@@ -86,8 +86,9 @@ Credits
 
 **Huge thanks to**
 * **Google** for the original design of this picker in Google Keep
-* **@flavienlaurent** for his awesome [DateTimePicker](https://github.com/flavienlaurent/datetimepicker)
-* **@chrisbanes** for his [maven_push.gradle script](http://chris.banes.me/2013/08/27/pushing-aars-to-maven-central/) which brought this lib to maven central
+* **[flavienlaurent](https://github.com/flavienlaurent)** for his awesome [DateTimePicker](https://github.com/flavienlaurent/datetimepicker)
+* **[chrisbanes](https://github.com/chrisbanes)** for his [maven_push.gradle script](http://chris.banes.me/2013/08/27/pushing-aars-to-maven-central/) which brought this lib to maven central
+* **[Oxygen Team](http://www.iconarchive.com/artist/oxygen-icons.org.html)** for designing the [icon of the sample app](http://www.iconarchive.com/show/oxygen-icons-by-oxygen-icons.org/Apps-preferences-system-time-icon.html)
 
 License
 -------
