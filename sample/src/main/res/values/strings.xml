@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">ReminderDatePicker Sample</string>
+    <string name="sample_name">ReminderDatePicker Sample</string>
     <string name="switch_theme">Switch theme</string>
     <string name="view_source">Get source code</string>
     <string name="uri_github_source">https://github.com/SimplicityApks/ReminderDatePicker</string>

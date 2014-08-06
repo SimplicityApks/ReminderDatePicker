@@ -1,6 +1,4 @@
 <resources>
-    <string name="app_name">ReminderDatePicker</string>
-
     <string name="spinner_date_footer">Sélectionner une date&#8230;</string>
     <string name="spinner_time_footer">Choisir l\'heure&#8230;</string>
     <string name="select_time">Sélectionner l\'heure</string>
