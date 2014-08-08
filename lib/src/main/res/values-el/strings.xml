@@ -1,0 +1,21 @@
+<resources>
+    <string name="spinner_date_footer">Διαλέξτε κάποια ημερομηνία&#8230;</string>
+    <string name="spinner_time_footer">Διαλέξτε κάποια ώρα&#8230;</string>
+    <string name="select_time">Επιλογή ώρας</string>
+
+    <!-- Date items: -->
+    <string name="date_last_weekday">Τελευταία %1$s</string>
+    <string name="date_yesterday">Χθες</string>
+    <string name="date_today">Σήμερα</string>
+    <string name="date_tomorrow">Αύριο</string>
+    <string name="date_next_weekday">Επόμενη %1$s</string>
+
+    <!-- Time items: -->
+    <string name="time_morning">Πρωί (9:00)</string>
+    <string name="time_noon">Μεσημέρι (12:00)</string>
+    <string name="time_afternoon">Απόγευμα (13:00)</string>
+    <string name="time_afternoon_2">Απόγευμα (14:00)</string>
+    <string name="time_evening">Βράδυ (17:00)</string>
+    <string name="time_night">Νύχτα (20:00)</string>
+    <string name="time_late_night">Αργά τη νύχτα (23:00)</string>
+</resources>

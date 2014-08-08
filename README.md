@@ -89,6 +89,7 @@ Credits
 * **[flavienlaurent](https://github.com/flavienlaurent)** for his awesome [DateTimePicker](https://github.com/flavienlaurent/datetimepicker)
 * **[chrisbanes](https://github.com/chrisbanes)** for his [maven_push.gradle script](http://chris.banes.me/2013/08/27/pushing-aars-to-maven-central/) which brought this lib to maven central
 * **[Oxygen Team](http://www.iconarchive.com/artist/oxygen-icons.org.html)** for designing the [icon of the sample app](http://www.iconarchive.com/show/oxygen-icons-by-oxygen-icons.org/Apps-preferences-system-time-icon.html)
+* **[dancer_69](http://forum.xda-developers.com/member.php?u=390873)** for the Greek translation
 
 License
 -------
