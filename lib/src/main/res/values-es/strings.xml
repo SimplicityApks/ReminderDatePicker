@@ -1,0 +1,21 @@
+<resources>
+    <string name="spinner_date_footer">Elegir una fecha&#8230;</string>
+    <string name="spinner_time_footer">Elegir un horario&#8230;</string>
+    <string name="select_time">Elegir horario</string>
+
+    <!-- Date items: -->
+    <string name="date_last_weekday">%1$s anterior</string>
+    <string name="date_yesterday">Ayer</string>
+    <string name="date_today">Hoy</string>
+    <string name="date_tomorrow">Mañana</string>
+    <string name="date_next_weekday">Siguiente %1$s</string>
+
+    <!-- Time items: -->
+    <string name="time_morning">Por la mañana (9:00)</string>
+    <string name="time_noon">Al mediodía (12:00)</string>
+    <string name="time_afternoon">Por la tarde (13:00)</string>
+    <string name="time_afternoon_2">Por la tarde (14:00)</string>
+    <string name="time_evening">Al anochecer (17:00)</string>
+    <string name="time_night">Por la noche (20:00)</string>
+    <string name="time_late_night">Por la noche (23:00)</string>
+</resources>
