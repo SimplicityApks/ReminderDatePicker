@@ -156,9 +156,9 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
         if(itemPosition >= 0)
             setSelection(itemPosition);
         else {
-            final int MILLIS_IN_DAY = 1000*60*60*24;
-            final int dateDifference = ((int) date.getTimeInMillis()/MILLIS_IN_DAY)
-                    - ((int)Calendar.getInstance().getTimeInMillis()/MILLIS_IN_DAY);
+            final long MILLIS_IN_DAY = 1000*60*60*24;
+            final long dateDifference = (date.getTimeInMillis()/MILLIS_IN_DAY)
+                    - (Calendar.getInstance().getTimeInMillis()/MILLIS_IN_DAY);
             if(dateDifference>0 && dateDifference<=7) { // if the date is within the next week:
                 // we need to construct a temporary DateItem to select:
                 final int day = date.get(Calendar.DAY_OF_WEEK);
