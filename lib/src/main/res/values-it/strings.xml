@@ -1,7 +1,7 @@
 <resources>
     <string name="spinner_date_footer">Seleziona una data&#8230;</string>
-    <string name="spinner_time_footer">Seleziona l'ora&#8230;</string>
-    <string name="select_time">Seleziona l'ora</string>
+    <string name="spinner_time_footer">Seleziona l\'ora&#8230;</string>
+    <string name="select_time">Seleziona l\'ora</string>
 
     <!-- Date items: -->
     <string name="date_last_weekday">Ultimo %1$s</string>
