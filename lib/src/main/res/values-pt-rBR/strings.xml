@@ -1,0 +1,25 @@
+<resources>
+    <string name="spinner_date_footer">Escolha uma data&#8230;</string>
+    <string name="spinner_time_footer">Escolha um horário&#8230;</string>
+    <string name="select_time">Escolha um horário</string>
+
+    <!-- Date items: -->
+    <string name="date_last_weekday">Última %1$s</string>
+    <!-- In Portuguese Saturday and Sunday are considere male words, but the others days are female -->
+    <!-- Since it needs some modifications in the code to be implemented I've used just the female version, but it will sound very weird -->
+    <!-- Anyway, for weekend days the string shoud be "Último %1$s -->
+    <string name="date_yesterday">Ontem</string>
+    <string name="date_today">Hoje</string>
+    <string name="date_tomorrow">Amanhã</string>
+    <string name="date_next_weekday">Próxima %1$s</string>
+    <!-- Same issue above. The string should be "Próximo %1$s" -->
+
+    <!-- Time items: -->
+    <string name="time_morning">Manhã (9:00)</string>
+    <string name="time_noon">Meio-dia (12:00)</string>
+    <string name="time_afternoon">Tarde (13:00)</string>
+    <string name="time_afternoon_2">Tarde (14:00)</string>
+    <string name="time_evening">Anoitecer (17:00)</string>
+    <string name="time_night">Noite (20:00)</string>
+    <string name="time_late_night">Noite (23:00)</string>
+</resources>
