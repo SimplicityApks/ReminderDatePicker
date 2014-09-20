@@ -5,14 +5,12 @@
 
     <!-- Date items: -->
     <string name="date_last_weekday">Última %1$s</string>
-    <!-- In Portuguese Saturday and Sunday are considere male words, but the others days are female -->
-    <!-- Since it needs some modifications in the code to be implemented I've used just the female version, but it will sound very weird -->
-    <!-- Anyway, for weekend days the string shoud be "Último %1$s -->
+    <string name="date_last_weekday_weekend">Último %1$s</string>
     <string name="date_yesterday">Ontem</string>
     <string name="date_today">Hoje</string>
     <string name="date_tomorrow">Amanhã</string>
     <string name="date_next_weekday">Próxima %1$s</string>
-    <!-- Same issue above. The string should be "Próximo %1$s" -->
+    <string name="date_next_weekday_weekend">Próximo %1$s</string>
 
     <!-- Time items: -->
     <string name="time_morning">Manhã (9:00)</string>

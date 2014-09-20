@@ -5,10 +5,12 @@
 
     <!-- Date items: -->
     <string name="date_last_weekday">Τελευταία %1$s</string>
+    <string name="date_last_weekday_weekend">Τελευταία %1$s</string>
     <string name="date_yesterday">Χθες</string>
     <string name="date_today">Σήμερα</string>
     <string name="date_tomorrow">Αύριο</string>
     <string name="date_next_weekday">Επόμενη %1$s</string>
+    <string name="date_next_weekday_weekend">Επόμενη %1$s</string>
 
     <!-- Time items: -->
     <string name="time_morning">Πρωί (9:00)</string>

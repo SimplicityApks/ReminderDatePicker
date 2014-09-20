@@ -5,10 +5,12 @@
 
     <!-- Date items: -->
     <string name="date_last_weekday">Ultimo %1$s</string>
+    <string name="date_last_weekday_weekend">Ultimo %1$s</string>
     <string name="date_yesterday">Ieri</string>
     <string name="date_today">Oggi</string>
     <string name="date_tomorrow">Domani</string>
     <string name="date_next_weekday">Prossimo %1$s</string>
+    <string name="date_next_weekday_weekend">Prossimo %1$s</string>
 
     <!-- Time items: -->
     <string name="time_morning">Mattina (9:00)</string>
