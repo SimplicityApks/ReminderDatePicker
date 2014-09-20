@@ -92,6 +92,7 @@ Credits
 * **[dancer_69](http://forum.xda-developers.com/member.php?u=390873)** for the Greek translation
 * **[dahool](https://github.com/dahool)** for the Spanish translation
 * **[rampo](https://github.com/rampo)** for the Italian translation
+* **[erickpires](https://github.com/erickpires)** for the Brazilian Portuguese translation
 
 License
 -------
