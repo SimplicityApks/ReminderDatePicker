@@ -116,7 +116,10 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
         items.add(new DateItem(res.getString(R.string.date_tomorrow), date));
         // next weekday item:
         date.add(Calendar.DAY_OF_YEAR, 6);
-        items.add(new DateItem(getWeekDay(date.get(Calendar.DAY_OF_WEEK), R.string.date_next_weekday), date));
+        int weekday = date.get(Calendar.DAY_OF_WEEK);
+        items.add(new DateItem(getWeekDay(weekday,
+                // have a separate string for Saturday and Sunday because of gender variation in Portuguese
+                weekday==7 || weekday==1? R.string.date_next_weekday : R.string.date_next_weekday_weekend), date));
         return items;
     }
 
@@ -205,8 +208,11 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
             insertAdapterItem(new DateItem(res.getString(R.string.date_yesterday), date), 0);
             // last weekday item:
             date.add(Calendar.DAY_OF_YEAR, -6);
-            insertAdapterItem(new DateItem(
-                    getWeekDay(date.get(Calendar.DAY_OF_WEEK), R.string.date_last_weekday), date), 0);
+            int weekday = date.get(Calendar.DAY_OF_WEEK);
+            insertAdapterItem(new DateItem(getWeekDay(weekday,
+            // have a separate string for Saturday and Sunday because of gender variation in Portuguese
+                    weekday==7 || weekday==1? R.string.date_last_weekday : R.string.date_last_weekday_weekend),
+                    date), 0);
         }
         else if(!enable && showPastItems) {
             // delete the yesterday and last weekday items:
