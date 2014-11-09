@@ -33,6 +33,9 @@ To use this library in your project either
 
 * Copy the library into your workspace and [add it as library in Eclipse](http://developer.android.com/tools/projects/projects-eclipse.html#ReferencingLibraryProject) 
 or add `compile project(':lib')` to the dependencies in your build.gradle in Android Studio.
+In Eclipse, you will need to right click on the java folder in this project and select Build Path-->Use as Source Folder.
+Also, make sure you have configured both the [appcompat support (v7) library](http://developer.android.com/tools/support-library/features.html#v7)
+and the [DateTimePicker](https://github.com/flavienlaurent/datetimepicker) correctly and referenced as library.
 
 The library is designed for Android ICS and above (API level 14+), but it works fine in Android 2.1+ 
 as well (only the spinners use a dialog instead of the popup menu). Note that you need to use [NineOldAndroids](https://github.com/JakeWharton/NineOldAndroids/)
