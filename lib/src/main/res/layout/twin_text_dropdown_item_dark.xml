@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- every change here should be applied to R.layout.twin_text_dropdown_item_dark as well! -->
+<!-- Only used on pre-Lollipop devices with Dark App theme! -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     style="Widget.AppCompat.Base.DropDownItem.Spinner"
@@ -21,8 +21,9 @@
         android:textAlignment="inherit"
         android:singleLine="true"
         android:textAppearance="?android:textAppearanceMedium"
-        android:textColor="?android:textColorSecondary"/>
-<!-- height has been ?android:attr/dropdownListPreferredItemHeight -->
+        android:textColor="?android:textColorSecondaryInverse"/>
+<!-- height has been ?android:attr/dropdownListPreferredItemHeight,
+textColor is the only difference to twin_text_dropdown_item -->
     <TextView
         android:id="@android:id/text2"
         style="?android:attr/spinnerDropDownItemStyle"

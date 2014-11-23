@@ -1,6 +1,8 @@
 package com.simplicityapks.reminderdatepicker.lib;
 
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.os.Build;
 import android.support.annotation.LayoutRes;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,15 +34,20 @@ public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem>{
 
     @LayoutRes
     private int itemResource = R.layout.twin_text_item;
+
+    // Due to only having a light spinner dropdown background even on a dark app theme, we need a
+    // different resource with inverse text colors on pre Lollipop devices.
+    private final boolean useAlternativeResources = Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && isActivityUsingDarkTheme();
+
     @LayoutRes
-    private int dropDownResource = R.layout.twin_text_dropdown_item;
+    private int dropDownResource = useAlternativeResources? R.layout.twin_text_dropdown_item_dark : R.layout.twin_text_dropdown_item;
 
     /**
      * Resource for the last item in the Spinner, which will be inflated at the last position in dropdown/dialog.
      * Set to 0 for use of normal dropDownResource
      */
     @LayoutRes
-    private int footerResource = R.layout.twin_text_footer;
+    private int footerResource = useAlternativeResources? R.layout.twin_text_footer_dark : R.layout.twin_text_footer;
 
     /**
      * Temporary item which is selected immediately and not shown in the dropdown menu or dialog.
@@ -238,5 +245,26 @@ public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem>{
      */
     public boolean isShowingSecondaryTextInView() {
         return this.showSecodaryTextInView;
+    }
+
+    private boolean isActivityUsingDarkTheme() {
+        TypedArray themeArray = getContext().getTheme().obtainStyledAttributes(
+                new int[] {android.R.attr.textColorPrimary});
+        int textColor = themeArray.getColor(0, 0);
+        return brightness(textColor) > 0.5f;
+    }
+
+    /**
+     * Returns the brightness component of a color int. Taken from android.graphics.Color.
+     *
+     * @return A value between 0.0f and 1.0f
+     */
+    private float brightness(int color) {
+        int r = (color >> 16) & 0xFF;
+        int g = (color >> 8) & 0xFF;
+        int b = color & 0xFF;
+
+        int V = Math.max(b, Math.max(r, g));
+        return (V / 255.f);
     }
 }

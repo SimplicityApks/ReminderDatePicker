@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- every change here should be applied to R.layout.twin_text_footer_dark as well! -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     style="Widget.AppCompat.Base.DropDownItem.Spinner"
     android:layout_width="match_parent"
     android:layout_height="48dp"
     android:paddingStart="8dp"
+    android:paddingLeft="8dp"
     android:paddingEnd="4dp"
+    android:paddingRight="4dp"
     android:background="@color/footer_background">
 
     <TextView
