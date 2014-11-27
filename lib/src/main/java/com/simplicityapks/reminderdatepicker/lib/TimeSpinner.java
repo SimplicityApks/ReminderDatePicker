@@ -42,6 +42,9 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
 
     private boolean showMoreTimeItems = false;
 
+    // The time format used to convert Calendars into displayable Strings:
+    private java.text.DateFormat timeFormat = null;
+
     /**
      * Construct a new TimeSpinner with the given context's theme.
      * @param context The Context the view is running in, through which it can access the current theme, resources, etc.
@@ -162,11 +165,23 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
         return getTimeFormat().format(new GregorianCalendar(0,0,0,hour,minute).getTime());
     }
 
-    private java.text.DateFormat timeFormat = null;
-    private java.text.DateFormat getTimeFormat() {
+    /**
+     * Gets the time format (as java.text.DateFormat) currently used to format Calendar strings.
+     * Defaults to the short time instance for your locale.
+     * @return The time format, which will never be null.
+     */
+    public java.text.DateFormat getTimeFormat() {
         if(timeFormat == null)
             timeFormat = java.text.DateFormat.getTimeInstance(java.text.DateFormat.SHORT);
         return timeFormat;
+    }
+
+    /**
+     * Sets the time format to use for formatting Calendar objects to displayable strings.
+     * @param timeFormat The new time format (as java.text.DateFormat), or null to use the default format.
+     */
+    public void setTimeFormat(java.text.DateFormat timeFormat) {
+        this.timeFormat = timeFormat;
     }
 
     /**
