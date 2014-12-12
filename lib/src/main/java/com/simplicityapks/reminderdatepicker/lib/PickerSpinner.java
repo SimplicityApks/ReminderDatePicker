@@ -54,7 +54,10 @@ public abstract class PickerSpinner extends Spinner {
      */
     public PickerSpinner(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs);
+        initAdapter(context);
+    }
 
+    protected void initAdapter(Context context) {
         // create our simple adapter with default layouts and set it here:
         PickerSpinnerAdapter adapter = new PickerSpinnerAdapter(context, getSpinnerItems(),
                 new TwinTextItem.Simple(getFooter(), null));

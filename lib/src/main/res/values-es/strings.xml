@@ -13,11 +13,11 @@
     <string name="date_next_weekday_weekend">Siguiente %1$s</string>
 
     <!-- Time items: -->
-    <string name="time_morning">Por la mañana (9:00)</string>
-    <string name="time_noon">Al mediodía (12:00)</string>
-    <string name="time_afternoon">Por la tarde (13:00)</string>
-    <string name="time_afternoon_2">Por la tarde (14:00)</string>
-    <string name="time_evening">Al anochecer (17:00)</string>
-    <string name="time_night">Por la noche (20:00)</string>
-    <string name="time_late_night">Por la noche (23:00)</string>
+    <string name="time_morning">Por la mañana</string> <!-- (9:00) -->
+    <string name="time_noon">Al mediodía</string> <!-- (12:00) -->
+    <string name="time_afternoon">Por la tarde</string> <!-- (13:00) -->
+    <string name="time_afternoon_2">Por la tarde</string> <!-- (14:00) -->
+    <string name="time_evening">Al anochecer</string> <!-- (17:00) -->
+    <string name="time_night">Por la noche</string> <!-- (20:00) -->
+    <string name="time_late_night">Por la noche</string> <!-- (23:00) -->
 </resources>

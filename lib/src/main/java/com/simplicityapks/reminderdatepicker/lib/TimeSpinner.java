@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -37,7 +38,7 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
     private OnClickListener customTimePicker = null;
 
     // The default time picker dialog to show when the custom one is null:
-    private final TimePickerDialog timePickerDialog;
+    private TimePickerDialog timePickerDialog;
     private FragmentManager fragmentManager;
 
     private boolean showMoreTimeItems = false;
@@ -77,17 +78,7 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
             setOnTimeSelectedListener((OnTimeSelectedListener) context);
         setOnItemSelectedListener(this);
 
-        final Calendar calendar = Calendar.getInstance();
-        // create the dialog to show later:
-        timePickerDialog = TimePickerDialog.newInstance(
-                new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(RadialPickerLayout radialPickerLayout, int hour, int minute) {
-                        setSelectedTime(hour, minute);
-                    }
-                },
-                calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),
-                DateFormat.is24HourFormat(context), hasVibratePermission(context));
+        initTimePickerDialog(context);
 
         // get the FragmentManager:
         try{
@@ -104,6 +95,32 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
         }
     }
 
+    private void initTimePickerDialog(Context context) {
+        final Calendar calendar = Calendar.getInstance();
+        // create the dialog to show later:
+        timePickerDialog = TimePickerDialog.newInstance(
+                new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(RadialPickerLayout radialPickerLayout, int hour, int minute) {
+                        setSelectedTime(hour, minute);
+                    }
+                },
+                calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),
+                is24HourFormat(getTimeFormat()), hasVibratePermission(context));
+    }
+
+    private boolean is24HourFormat(java.text.DateFormat timeFormat) {
+        String pattern;
+        try {
+            pattern = ((SimpleDateFormat) timeFormat).toLocalizedPattern();
+        } catch (ClassCastException e) {
+            // we cannot get the pattern, use the default setting for out context:
+            return DateFormat.is24HourFormat(getContext());
+        }
+        // if pattern does not contain the 12 hour formats, we return true (regardless of any 'a' (am/pm) modifier)
+        return !(pattern.contains("h") || pattern.contains("K"));
+    }
+
     private boolean hasVibratePermission(Context context) {
         final String permission = "android.permission.VIBRATE";
         final int res = context.checkCallingOrSelfPermission(permission);
@@ -115,13 +132,13 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
         final Resources res = getResources();
         ArrayList<TwinTextItem> items = new ArrayList<TwinTextItem>(4);
         // Morning item:
-        items.add(new TimeItem(res.getString(R.string.time_morning), 9, 0));
+        items.add(new TimeItem(res.getString(R.string.time_morning), formatTime(9, 0), 9, 0));
         // Afternoon item:
-        items.add(new TimeItem(res.getString(R.string.time_afternoon), 13, 0));
+        items.add(new TimeItem(res.getString(R.string.time_afternoon), formatTime(13, 0), 13, 0));
         // Evening item:
-        items.add(new TimeItem(res.getString(R.string.time_evening), 17, 0));
+        items.add(new TimeItem(res.getString(R.string.time_evening), formatTime(17, 0), 17, 0));
         // Night item:
-        items.add(new TimeItem(res.getString(R.string.time_night), 20, 0));
+        items.add(new TimeItem(res.getString(R.string.time_night), formatTime(20, 0), 20, 0));
         return items;
     }
 
@@ -182,6 +199,10 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
      */
     public void setTimeFormat(java.text.DateFormat timeFormat) {
         this.timeFormat = timeFormat;
+        // update our pre-built timePickerDialog with the new timeFormat:
+        initTimePickerDialog(getContext());
+        // to rebuild the spinner items, we need to recreate our adapter:
+        initAdapter(getContext());
     }
 
     /**
@@ -218,16 +239,16 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
             // create the noon and late night item:
             final Resources res = getResources();
             // switch the afternoon item to 2pm:
-            insertAdapterItem(new TimeItem(res.getString(R.string.time_afternoon_2), 14, 0), 2);
+            insertAdapterItem(new TimeItem(res.getString(R.string.time_afternoon_2), formatTime(14, 0), 14, 0), 2);
             removeAdapterItemAt(1);
             // noon item:
-            insertAdapterItem(new TimeItem(res.getString(R.string.time_noon), 12, 0), 1);
+            insertAdapterItem(new TimeItem(res.getString(R.string.time_noon), formatTime(12, 0), 12, 0), 1);
             // late night item:
-            addAdapterItem(new TimeItem(res.getString(R.string.time_late_night), 23, 0));
+            addAdapterItem(new TimeItem(res.getString(R.string.time_late_night), formatTime(23, 0), 23, 0));
         }
         else if(!enable && showMoreTimeItems) {
             // switch back the afternoon item:
-            insertAdapterItem(new TimeItem(getResources().getString(R.string.time_afternoon), 13, 0), 3);
+            insertAdapterItem(new TimeItem(getResources().getString(R.string.time_afternoon), formatTime(13, 0), 13, 0), 3);
             removeAdapterItemAt(2);
             removeAdapterItemAt(1);
             removeAdapterItemAt(getLastItemPosition());
