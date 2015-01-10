@@ -201,8 +201,19 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
         this.timeFormat = timeFormat;
         // update our pre-built timePickerDialog with the new timeFormat:
         initTimePickerDialog(getContext());
+
         // to rebuild the spinner items, we need to recreate our adapter:
+        // save the flags and selection first:
+        final boolean moreTimeItems = isShowingMoreTimeItems();
+        final boolean numbersInView = ((PickerSpinnerAdapter)getAdapter()).isShowingSecondaryTextInView();
+        final Calendar selection = getSelectedTime();
         initAdapter(getContext());
+
+        // force restore flags and selection to the new Adapter:
+        this.showMoreTimeItems = false;
+        setShowMoreTimeItems(moreTimeItems);
+        setShowNumbersInView(numbersInView);
+        setSelectedTime(selection.get(Calendar.HOUR_OF_DAY), selection.get(Calendar.MINUTE));
     }
 
     /**
