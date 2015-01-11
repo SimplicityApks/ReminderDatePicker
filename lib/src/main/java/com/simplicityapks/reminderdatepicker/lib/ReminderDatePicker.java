@@ -73,7 +73,7 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
     private Calendar lastSelectedDate = null;
 
     // To keep track whether we need to selectDefaultDate in onAttachToWindow():
-    private boolean restoringViewState = false;
+    private boolean shouldSelectDefault = true;
 
     /**
      * Construct a new ReminderDatePicker with the given context's theme but without any flags.
@@ -134,14 +134,14 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
     protected void onRestoreInstanceState(Parcelable state) {
         super.onRestoreInstanceState(state);
         if(state != null)
-            restoringViewState = true;
+            shouldSelectDefault = false;
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         // we may need to initialize the selected date
-        if(!restoringViewState)
+        if(shouldSelectDefault)
             selectDefaultDate();
     }
 
@@ -194,6 +194,8 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
         if(date!=null) {
             dateSpinner.setSelectedDate(date);
             timeSpinner.setSelectedTime(date.get(Calendar.HOUR_OF_DAY), date.get(Calendar.MINUTE));
+            // a custom selection has been set, don't select the default date:
+            shouldSelectDefault = false;
         }
     }
 
@@ -202,6 +204,8 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
      */
     public void setSelectedDate(int year, int month, int day) {
         dateSpinner.setSelectedDate(new GregorianCalendar(year, month, day));
+        // a custom selection has been set, don't select the default date:
+        shouldSelectDefault = false;
     }
 
     /**
@@ -209,6 +213,8 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
      */
     public void setSelectedTime(int hour, int minute) {
         timeSpinner.setSelectedTime(hour, minute);
+        // a custom selection has been set, don't select the default date:
+        shouldSelectDefault = false;
     }
 
     /**

@@ -202,18 +202,29 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
         // update our pre-built timePickerDialog with the new timeFormat:
         initTimePickerDialog(getContext());
 
-        // to rebuild the spinner items, we need to recreate our adapter:
         // save the flags and selection first:
+        final PickerSpinnerAdapter adapter = ((PickerSpinnerAdapter)getAdapter());
         final boolean moreTimeItems = isShowingMoreTimeItems();
-        final boolean numbersInView = ((PickerSpinnerAdapter)getAdapter()).isShowingSecondaryTextInView();
+        final boolean numbersInView = adapter.isShowingSecondaryTextInView();
         final Calendar selection = getSelectedTime();
+        // we need to restore differently if we have a temporary selection:
+        final boolean temporarySelected = getSelectedItemPosition() == adapter.getCount();
+
+        // to rebuild the spinner items, we need to recreate our adapter:
         initAdapter(getContext());
 
         // force restore flags and selection to the new Adapter:
-        this.showMoreTimeItems = false;
-        setShowMoreTimeItems(moreTimeItems);
         setShowNumbersInView(numbersInView);
-        setSelectedTime(selection.get(Calendar.HOUR_OF_DAY), selection.get(Calendar.MINUTE));
+        this.showMoreTimeItems = false;
+        if(temporarySelected) {
+            // for some reason these calls have to be exactly in this order!
+            setSelectedTime(selection.get(Calendar.HOUR_OF_DAY), selection.get(Calendar.MINUTE));
+            setShowMoreTimeItems(moreTimeItems);
+        } else {
+            // this way it works when a date from the array is selected (like the default)
+            setShowMoreTimeItems(moreTimeItems);
+            setSelectedTime(selection.get(Calendar.HOUR_OF_DAY), selection.get(Calendar.MINUTE));
+        }
     }
 
     /**
