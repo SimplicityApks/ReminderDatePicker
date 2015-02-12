@@ -27,38 +27,44 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
     /**
      * Mode for {@link #setFlags(int)}. Base mode, same items as in the Google Keep app.
      */
-    public static final int MODE_GOOGLE = 0;     // 00000
+    public static final int MODE_GOOGLE = 0;         // 000000
 
     /**
      * Mode for {@link #setFlags(int)}. Include all possible items and show numbers in the time spinner.
      */
-    public static final int MODE_EVERYTHING = 15;// 01111
+    public static final int MODE_EVERYTHING = 31;    // 011111
 
     /**
      * Flag for {@link #setFlags(int)}. Include a yesterday and last weekday item.
      */
-    public static final int FLAG_PAST = 1;       // 00001
+    public static final int FLAG_PAST = 1;           // 000001
 
     /**
      * Flag for {@link #setFlags(int)}. Include a month item exactly one month from today.
      */
-    public static final int FLAG_MONTH = 2;      // 00010
+    public static final int FLAG_MONTH = 2;          // 000010
 
     /**
      * Flag for {@link #setFlags(int)}. Include a noon and late night item in the time spinner.
      */
-    public static final int FLAG_MORE_TIME = 4;  // 00100
+    public static final int FLAG_MORE_TIME = 4;      // 000100
 
     /**
      * Flag for {@link #setFlags(int)}. Show numeric time in the time spinner view. Note that time
      * will always be shown in dropdown.
      */
-    public static final int FLAG_NUMBERS = 8;    // 01000
+    public static final int FLAG_NUMBERS = 8;        // 001000
+
+    /**
+     * Flag for {@link #setFlags(int)}. Show the weekday name when a date within the next week is
+     * selected instead of the standard date format.
+     */
+    public static final int FLAG_WEEKDAY_NAMES = 16; // 010000
 
     /**
      * Flag for {@link #setFlags(int)}. Hide the time picker and show a button to show it.
      */
-    public static final int FLAG_HIDE_TIME = 16; // 10000
+    public static final int FLAG_HIDE_TIME = 32;     // 100000
 
     // has FLAG_HIDE_TIME been set?
     private boolean shouldHideTime = false;

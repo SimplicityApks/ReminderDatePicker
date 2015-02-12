@@ -13,6 +13,7 @@
     <string name="flag_month">FLAG_MONTH</string>
     <string name="flag_more_time">FLAG_MORE_TIME</string>
     <string name="flag_numbers">FLAG_NUMBERS</string>
+    <string name="flag_weekday_names">FLAG_WEEKDAY_NAMES</string>
     <string name="flag_hide_time">FLAG_HIDE_TIME</string>
 
 </resources>

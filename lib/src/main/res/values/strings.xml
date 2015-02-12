@@ -11,6 +11,7 @@
     <string name="date_tomorrow">Tomorrow</string>
     <string name="date_next_weekday">Next %1$s</string>
     <string name="date_next_weekday_weekend">Next %1$s</string>
+    <string name="date_only_weekday" translatable="false">%1$s</string>
 
     <!-- Time items: -->
     <string name="time_morning">Morning</string> <!-- (9:00) -->

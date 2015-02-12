@@ -36,6 +36,7 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
 
     private boolean showPastItems = false;
     private boolean showMonthItem = false;
+    private boolean showWeekdayNames = false;
 
     private String[] weekDays = null;
 
@@ -158,18 +159,22 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
         }
         if(itemPosition >= 0)
             setSelection(itemPosition);
-        else {
+        else if(showWeekdayNames) {
             final long MILLIS_IN_DAY = 1000*60*60*24;
             final long dateDifference = (date.getTimeInMillis()/MILLIS_IN_DAY)
                     - (Calendar.getInstance().getTimeInMillis()/MILLIS_IN_DAY);
-            if(dateDifference>0 && dateDifference<=7) { // if the date is within the next week:
-                // we need to construct a temporary DateItem to select:
+            if(dateDifference>0 && dateDifference<7) { // if the date is within the next week:
+                // construct a temporary DateItem to select:
                 final int day = date.get(Calendar.DAY_OF_WEEK);
-                selectTemporary(new DateItem(getWeekDay(day, R.string.date_next_weekday), date));
+                selectTemporary(new DateItem(getWeekDay(day, R.string.date_only_weekday), date));
             } else {
-                // we need to show the date as a full text, using the current DateFormat:
+                // show the date as a full text, using the current DateFormat:
                 selectTemporary(new DateItem(formatDate(date), date));
             }
+        }
+        else {
+            // show the date as a full text, using the current DateFormat:
+            selectTemporary(new DateItem(formatDate(date), date));
         }
     }
 
@@ -240,6 +245,19 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
     }
 
     /**
+     * Toggles showing the weekday names instead of dates for the next week. Turning this on will
+     * display e.g. "Sunday" for the day after tomorrow, otherwise it'll be January 1.
+     * @param enable True to enable, false to disable weekday names.
+     */
+    public void setShowWeekdayNames(boolean enable) {
+        if(showWeekdayNames != enable) {
+            showWeekdayNames = enable;
+            // reselect the current item so it will use the new setting:
+            setSelectedDate(getSelectedDate());
+        }
+    }
+
+    /**
      * Set the flags to use for this date spinner.
      * @param modeOrFlags A mode of ReminderDatePicker.MODE_... or multiple ReminderDatePicker.FLAG_...
      *                    combined with the | operator.
@@ -247,6 +265,7 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
     public void setFlags(int modeOrFlags) {
         setShowPastItems((modeOrFlags & ReminderDatePicker.FLAG_PAST) != 0);
         setShowMonthItem((modeOrFlags & ReminderDatePicker.FLAG_MONTH) != 0);
+        setShowWeekdayNames((modeOrFlags & ReminderDatePicker.FLAG_WEEKDAY_NAMES) != 0);
     }
 
     @Override

@@ -62,9 +62,16 @@
         android:text="@string/flag_numbers"/>
 
     <CheckBox
-        android:id="@+id/cb_hide_time"
+        android:id="@+id/cb_weekday_names"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/cb_numbers"
+        android:text="@string/flag_weekday_names"/>
+
+    <CheckBox
+        android:id="@+id/cb_hide_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cb_weekday_names"
         android:text="@string/flag_hide_time"/>
 </RelativeLayout>

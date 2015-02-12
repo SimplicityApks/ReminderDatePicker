@@ -23,7 +23,7 @@ public class MainActivity extends ActionBarActivity implements CompoundButton.On
 
     private ReminderDatePicker datePicker;
 
-    private CheckBox cbPast, cbMonth, cbMoreTime, cbNumbers, cbHideTime;
+    private CheckBox cbPast, cbMonth, cbMoreTime, cbNumbers, cbWeekdayNames, cbHideTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +47,7 @@ public class MainActivity extends ActionBarActivity implements CompoundButton.On
         cbMonth = (CheckBox) findViewById(R.id.cb_month);
         cbMoreTime = (CheckBox) findViewById(R.id.cb_more_time);
         cbNumbers = (CheckBox) findViewById(R.id.cb_numbers);
+        cbWeekdayNames = (CheckBox) findViewById(R.id.cb_weekday_names);
         cbHideTime = (CheckBox) findViewById(R.id.cb_hide_time);
 
         // setup flag change listeners:
@@ -54,6 +55,7 @@ public class MainActivity extends ActionBarActivity implements CompoundButton.On
         cbMonth.setOnCheckedChangeListener(this);
         cbMoreTime.setOnCheckedChangeListener(this);
         cbNumbers.setOnCheckedChangeListener(this);
+        cbWeekdayNames.setOnCheckedChangeListener(this);
         cbHideTime.setOnCheckedChangeListener(this);
     }
 
@@ -101,6 +103,7 @@ public class MainActivity extends ActionBarActivity implements CompoundButton.On
                 (cbMonth.isChecked()? ReminderDatePicker.FLAG_MONTH : 0) |
                 (cbMoreTime.isChecked()? ReminderDatePicker.FLAG_MORE_TIME : 0) |
                 (cbNumbers.isChecked()? ReminderDatePicker.FLAG_NUMBERS : 0) |
+                (cbWeekdayNames.isChecked()? ReminderDatePicker.FLAG_WEEKDAY_NAMES : 0) |
                 (cbHideTime.isChecked()? ReminderDatePicker.FLAG_HIDE_TIME : 0);
     }
 
