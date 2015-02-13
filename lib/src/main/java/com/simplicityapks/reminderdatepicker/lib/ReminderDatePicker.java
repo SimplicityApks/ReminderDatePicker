@@ -305,6 +305,23 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
     }
 
     /**
+     * Gets the custom DateFormat currently used in the DateSpinner to format Calendar strings.
+     * If {@link #setDateFormat(java.text.DateFormat)} has not been called yet, it will return null.
+     * @return The time format, or null if the Spinner is using the default date format.
+     */
+    public java.text.DateFormat getCustomDateFormat() {
+        return dateSpinner.getCustomDateFormat();
+    }
+
+    /**
+     * Sets the custom date format to use for formatting Calendar objects to displayable strings in the DateSpinner.
+     * @param dateFormat The new DateFormat, or null to use the default format.
+     */
+    public void setDateFormat(java.text.DateFormat dateFormat) {
+        dateSpinner.setDateFormat(dateFormat);
+    }
+
+    /**
      * Gets the time format (as java.text.DateFormat) currently used in the TimeSpinner to format Calendar strings.
      * Defaults to the short time instance for your locale.
      * @return The time format, which will never be null.

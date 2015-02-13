@@ -12,6 +12,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.SpinnerAdapter;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 
@@ -39,6 +40,9 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
     private boolean showWeekdayNames = false;
 
     private String[] weekDays = null;
+
+    // The custom DateFormat used to convert Calendars into displayable Strings:
+    private java.text.DateFormat customDateFormat = null;
 
     /**
      * Construct a new DateSpinner with the given context's theme.
@@ -179,7 +183,42 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
     }
 
     private String formatDate(Calendar date) {
-        return DateUtils.formatDateTime(getContext(), date.getTimeInMillis(), DateUtils.FORMAT_SHOW_DATE);
+        if(customDateFormat == null)
+            return DateUtils.formatDateTime(getContext(), date.getTimeInMillis(), DateUtils.FORMAT_SHOW_DATE);
+        else
+            return customDateFormat.format(date.getTime());
+    }
+
+    /**
+     * Gets the custom DateFormat currently used to format Calendar strings.
+     * If {@link #setDateFormat(java.text.DateFormat)} has not been called yet, it will return null.
+     * @return The date format, or null if the Spinner is using the default date format.
+     */
+    public java.text.DateFormat getCustomDateFormat() {
+        return customDateFormat;
+    }
+
+    /**
+     * Sets the custom date format to use for formatting Calendar objects to displayable strings.
+     * @param dateFormat The new DateFormat, or null to use the default format.
+     */
+    public void setDateFormat(java.text.DateFormat dateFormat) {
+        this.customDateFormat = dateFormat;
+        // update the spinner with the new date format:
+
+        // the only spinner item that will be affected is the month item, so just toggle the flag twice
+        // instead of rebuilding the whole adapter
+        if(showMonthItem) {
+            int monthPosition = getLastItemPosition();
+            boolean reselectMonthItem = getSelectedItemPosition() == monthPosition;
+            setShowMonthItem(false);
+            setShowMonthItem(true);
+            if(reselectMonthItem) setSelection(monthPosition);
+        }
+
+        // if we have a temporary date item selected, update that as well
+        if(getSelectedItemPosition() == getAdapter().getCount())
+            setSelectedDate(getSelectedDate());
     }
 
     /**
