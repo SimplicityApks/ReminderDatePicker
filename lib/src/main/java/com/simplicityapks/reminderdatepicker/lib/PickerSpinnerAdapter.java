@@ -143,6 +143,9 @@ public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem>{
         final TextView secondaryText = (TextView) view.findViewById(SECONDARY_TEXT_ID);
         if (secondaryText != null) {
             if (showSecondaryText)
+                // Note that we're including the secondary view in the measure even if no secondary text is there.
+                // The reason is that the spinner should never change its size when an item is selected,
+                // which would otherwise be possible when a temporary selection (but no other item) has a secondary text.
                 secondaryText.setText(item.getSecondaryText());
             else
                 secondaryText.setVisibility(View.GONE);

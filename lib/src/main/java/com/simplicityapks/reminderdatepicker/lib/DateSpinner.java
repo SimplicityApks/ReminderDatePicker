@@ -12,7 +12,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.SpinnerAdapter;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 
@@ -38,11 +37,13 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
     private boolean showPastItems = false;
     private boolean showMonthItem = false;
     private boolean showWeekdayNames = false;
+    private boolean showNumbersInView = false;
 
     private String[] weekDays = null;
 
     // The custom DateFormat used to convert Calendars into displayable Strings:
     private java.text.DateFormat customDateFormat = null;
+    private java.text.DateFormat secondaryDateFormat = null;
 
     /**
      * Construct a new DateSpinner with the given context's theme.
@@ -170,7 +171,11 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
             if(dateDifference>0 && dateDifference<7) { // if the date is within the next week:
                 // construct a temporary DateItem to select:
                 final int day = date.get(Calendar.DAY_OF_WEEK);
-                selectTemporary(new DateItem(getWeekDay(day, R.string.date_only_weekday), date));
+
+                // Because these items are always temporarily selected, we can safely assume that
+                // they will never appear in the spinner dropdown. When a FLAG_NUMBERS is set, we
+                // want these items to have the date as secondary text in a short format.
+                selectTemporary(new DateItem(getWeekDay(day, R.string.date_only_weekday), formatSecondaryDate(date), date));
             } else {
                 // show the date as a full text, using the current DateFormat:
                 selectTemporary(new DateItem(formatDate(date), date));
@@ -189,6 +194,15 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
             return customDateFormat.format(date.getTime());
     }
 
+    // only to be used when FLAG_NUMBERS and FLAG_WEEKDAY_NAMES have been set
+    private String formatSecondaryDate(Calendar date) {
+        if(secondaryDateFormat == null)
+            return DateUtils.formatDateTime(getContext(), date.getTimeInMillis(),
+                    DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_NUMERIC_DATE);
+        else
+            return secondaryDateFormat.format(date.getTime());
+    }
+
     /**
      * Gets the custom DateFormat currently used to format Calendar strings.
      * If {@link #setDateFormat(java.text.DateFormat)} has not been called yet, it will return null.
@@ -203,7 +217,18 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
      * @param dateFormat The new DateFormat, or null to use the default format.
      */
     public void setDateFormat(java.text.DateFormat dateFormat) {
+        setDateFormat(dateFormat, null);
+    }
+
+    /**
+     * Sets the custom date format to use for formatting Calendar objects to displayable strings.
+     * @param dateFormat The new DateFormat, or null to use the default format.
+     * @param numbersDateFormat The DateFormat for formatting the secondary date when both FLAG_NUMBERS
+     *                          and FLAG_WEEKDAY_NAMES are set, or null to use the default format.
+     */
+    public void setDateFormat(java.text.DateFormat dateFormat, java.text.DateFormat numbersDateFormat) {
         this.customDateFormat = dateFormat;
+        this.secondaryDateFormat = numbersDateFormat;
         // update the spinner with the new date format:
 
         // the only spinner item that will be affected is the month item, so just toggle the flag twice
@@ -291,9 +316,32 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
     public void setShowWeekdayNames(boolean enable) {
         if(showWeekdayNames != enable) {
             showWeekdayNames = enable;
+            // if FLAG_NUMBERS has been set, toggle the secondary text in the adapter
+            if(showNumbersInView)
+                setShowNumbersInViewInt(enable);
             // reselect the current item so it will use the new setting:
             setSelectedDate(getSelectedDate());
         }
+    }
+
+    /**
+     * Toggles showing numeric dates for the weekday items in the spinner view. This will only apply
+     * when a day within the next week is selected and FLAG_WEEKDAY_NAMES has been set, not in the dropdown.
+     * @param enable True to enable, false to disable numeric mode.
+     */
+    public void setShowNumbersInView(boolean enable) {
+        showNumbersInView = enable;
+        // only enable the adapter when FLAG_WEEKDAY_NAMES has been set as well
+        if(!enable || showWeekdayNames)
+            setShowNumbersInViewInt(enable);
+    }
+
+    private void setShowNumbersInViewInt(boolean enable) {
+        PickerSpinnerAdapter adapter = (PickerSpinnerAdapter) getAdapter();
+        // workaround for now. See GitHub issue #2
+        if (enable != adapter.isShowingSecondaryTextInView() && getCount() == getSelectedItemPosition())
+            setSelection(0);
+        adapter.setShowSecondaryTextInView(enable);
     }
 
     /**
@@ -305,6 +353,7 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
         setShowPastItems((modeOrFlags & ReminderDatePicker.FLAG_PAST) != 0);
         setShowMonthItem((modeOrFlags & ReminderDatePicker.FLAG_MONTH) != 0);
         setShowWeekdayNames((modeOrFlags & ReminderDatePicker.FLAG_WEEKDAY_NAMES) != 0);
+        setShowNumbersInView((modeOrFlags & ReminderDatePicker.FLAG_NUMBERS) != 0);
     }
 
     @Override

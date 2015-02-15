@@ -279,7 +279,7 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
     }
 
     /**
-     * Sets to show numeric time in the view. Note that time will always be shown in dropdown.
+     * Toggles showing numeric time in the view. Note that time will always be shown in dropdown.
      * @param enable True to enable, false to disable numeric mode.
      */
     public void setShowNumbersInView(boolean enable) {

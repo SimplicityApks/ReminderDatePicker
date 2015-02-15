@@ -50,7 +50,8 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
     public static final int FLAG_MORE_TIME = 4;      // 000100
 
     /**
-     * Flag for {@link #setFlags(int)}. Show numeric time in the time spinner view. Note that time
+     * Flag for {@link #setFlags(int)}. Show numeric time in the time spinner view and in the date
+     * spinner view when a day within the next week is shown with FLAG_WEEKDAY_NAMES. Note that time
      * will always be shown in dropdown.
      */
     public static final int FLAG_NUMBERS = 8;        // 001000
