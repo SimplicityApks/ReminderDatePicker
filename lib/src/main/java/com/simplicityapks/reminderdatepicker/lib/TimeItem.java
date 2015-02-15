@@ -123,7 +123,7 @@ public class TimeItem implements TwinTextItem{
     @Override
     public String toString() {
         String sep = "\n";
-        return label +sep+ digitalTime +sep+ hour +sep+ minute;
+        return nullToEmpty(label) +sep+ nullToEmpty(digitalTime) +sep+ hour +sep+ minute;
     }
 
     /**
@@ -143,6 +143,20 @@ public class TimeItem implements TwinTextItem{
             e.printStackTrace();
             return null;
         }
-        return new TimeItem(items[0], items[1], hour, minute);
+        return new TimeItem(emptyToNull(items[0]), emptyToNull(items[1]), hour, minute);
+    }
+
+    /**
+     * Makes sure s is not null, but the empty string instead. Otherwise just return s.
+     */
+    private static String nullToEmpty(String s) {
+        return s==null? "" : s;
+    }
+
+    /**
+     * Makes sure s is not an empty string, but null instead. Otherwise just return s.
+     */
+    private static String emptyToNull(String s) {
+        return "".equals(s)? null : s;
     }
 }
