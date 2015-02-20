@@ -12,16 +12,8 @@ but adds important features and enhancements. You can **download the [sample app
 Screenshots
 -----------
 
-<table border="0">
-  <colgroup>
-    <col width="*">
-    <col width="*">
-    </colgroup>
-  <tr>
-    <td align="center"><img src="https://raw.github.com/simplicityapks/ReminderDatePicker/screenshots/screenshot_date.png"></td>
-    <td align="center"><img src="https://raw.github.com/simplicityapks/ReminderDatePicker/screenshots/screenshot_time.png"></td>
-  </tr>
-</table>
+<img src="https://raw.github.com/simplicityapks/ReminderDatePicker/screenshots/screenshot_date.png" width="270" style="margin-right:10px;">
+<img src="https://raw.github.com/simplicityapks/ReminderDatePicker/screenshots/screenshot_time.png" width="270">
 
 Set-up
 ------
@@ -68,7 +60,7 @@ use `app:flags="month|more_time"` for a larger set of selectable days and hours.
 
 After clicking on the footer in one of the spinners, the additional date or time picker will open as 
 dialog. These are the standard pickers from the Android framework, made Android 2.1+ compatible by 
-[DateTimePicker](https://github.com/flavienlaurent/datetimepicker). You can, however, use your a custom
+[DateTimePicker](https://github.com/flavienlaurent/datetimepicker). You can, however, use a custom
 date or time picker or even implement your own behaviour. To achieve this simply call `setCustomDatePicker()` 
 or `setCustomTimePicker()`, passing an OnClickListener whose *onClick()* method will be called when the 
 footer is clicked.
