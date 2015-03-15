@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion '21.1.1'
+    compileSdkVersion 22
+    buildToolsVersion '22'
     defaultConfig {
         applicationId 'com.simplicityapks.reminderdatepicker.sample'
         minSdkVersion 8
-        targetSdkVersion 21
+        targetSdkVersion 22
         versionCode 2
         versionName '1.1.1'
     }
@@ -22,6 +22,6 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:21.+'
+    compile 'com.android.support:appcompat-v7:22.+'
     compile project(':lib')
 }
