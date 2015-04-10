@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,7 +25,7 @@ import java.util.List;
 public abstract class PickerSpinner extends Spinner {
 
     // Indicates that the onItemSelectedListener callback should not be passed to the listener.
-    private int interceptNextSelectionCallbacks = 0;
+    private final ArrayList<Integer> interceptSelectionCallbacks = new ArrayList<>();
     private boolean reselectTemporaryItem = false;
 
     /**
@@ -121,7 +122,7 @@ public abstract class PickerSpinner extends Spinner {
             // remove any previous temporary selection:
             ((PickerSpinnerAdapter)getAdapter()).selectTemporary(null);
             // check that the selection goes through:
-            interceptNextSelectionCallbacks = 0;
+            interceptSelectionCallbacks.clear();
             super.setSelection(position);
             super.setSelection(position, false);
         }
@@ -133,7 +134,7 @@ public abstract class PickerSpinner extends Spinner {
      */
     private void setSelectionQuietly(int position) {
         // intercept the callback here:
-        interceptNextSelectionCallbacks++;
+        interceptSelectionCallbacks.add(position);
         super.setSelection(position, false); // No idea why both setSelections are needed but it only works with both
         super.setSelection(position);
     }
@@ -167,8 +168,8 @@ public abstract class PickerSpinner extends Spinner {
                 new OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        if(interceptNextSelectionCallbacks > 0) {
-                            interceptNextSelectionCallbacks--;
+                        if(interceptSelectionCallbacks.contains(position)) {
+                            interceptSelectionCallbacks.remove((Integer) position);
                             if(reselectTemporaryItem) {
                                 if (position != getAdapter().getCount())
                                     setSelectionQuietly(getAdapter().getCount());

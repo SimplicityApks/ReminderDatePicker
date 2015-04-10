@@ -134,6 +134,7 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ReminderDatePicker);
             int flags = a.getInt(R.styleable.ReminderDatePicker_flags, MODE_GOOGLE);
             setFlags(flags);
+            a.recycle();
         }
     }
 

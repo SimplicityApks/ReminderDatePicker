@@ -101,6 +101,7 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ReminderDatePicker);
             int flags = a.getInt(R.styleable.ReminderDatePicker_flags, ReminderDatePicker.MODE_GOOGLE);
             setFlags(flags);
+            a.recycle();
         }
     }
 
@@ -114,7 +115,7 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
     public List<TwinTextItem> getSpinnerItems() {
         final Resources res = getResources();
         final Calendar date = Calendar.getInstance();
-        ArrayList<TwinTextItem> items = new ArrayList<TwinTextItem>(3);
+        ArrayList<TwinTextItem> items = new ArrayList<>(3);
         // today item:
         items.add(new DateItem(res.getString(R.string.date_today), date));
         // tomorrow item:

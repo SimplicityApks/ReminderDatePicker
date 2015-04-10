@@ -92,6 +92,7 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ReminderDatePicker);
             int flags = a.getInt(R.styleable.ReminderDatePicker_flags, ReminderDatePicker.MODE_GOOGLE);
             setFlags(flags);
+            a.recycle();
         }
     }
 
@@ -130,7 +131,7 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
     @Override
     public List<TwinTextItem> getSpinnerItems() {
         final Resources res = getResources();
-        ArrayList<TwinTextItem> items = new ArrayList<TwinTextItem>(4);
+        ArrayList<TwinTextItem> items = new ArrayList<>(4);
         // Morning item:
         items.add(new TimeItem(res.getString(R.string.time_morning), formatTime(9, 0), 9, 0));
         // Afternoon item:
