@@ -46,6 +46,9 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
     // The time format used to convert Calendars into displayable Strings:
     private java.text.DateFormat timeFormat = null;
 
+    private int lastSelectedHour = -1;
+    private int lastSelectedMinute = -1;
+
     /**
      * Construct a new TimeSpinner with the given context's theme.
      * @param context The Context the view is running in, through which it can access the current theme, resources, etc.
@@ -148,11 +151,10 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
      * @return The selected time as Calendar, or null if there is none.
      */
     public Calendar getSelectedTime() {
-        final TimeItem selectedItem = (TimeItem) getSelectedItem();
-        if(selectedItem == null)
+        final Object selectedItem = getSelectedItem();
+        if(!(selectedItem instanceof TimeItem))
             return null;
-        else
-            return selectedItem.getTime();
+        return ((TimeItem) selectedItem).getTime();
     }
 
     /**
@@ -323,9 +325,17 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if(timeListener != null) {
-            TimeItem selected = (TimeItem) getSelectedItem();
-            if(selected != null)
-                timeListener.onTimeSelected(selected.getHour(), selected.getMinute());
+            Object selectedObj = getSelectedItem();
+            if(selectedObj instanceof TimeItem) {
+                TimeItem selected = (TimeItem) selectedObj;
+                int hour = selected.getHour();
+                int minute = selected.getMinute();
+                if(hour != lastSelectedHour || minute != lastSelectedMinute) {
+                    timeListener.onTimeSelected(hour, minute);
+                    lastSelectedHour = hour;
+                    lastSelectedMinute = minute;
+                }
+            }
         }
     }
 

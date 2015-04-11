@@ -26,6 +26,9 @@ public abstract class PickerSpinner extends Spinner {
 
     // Indicates that the onItemSelectedListener callback should not be passed to the listener.
     private final ArrayList<Integer> interceptSelectionCallbacks = new ArrayList<>();
+    // Indicates that the selection should be restored after initialization (setSelection has not been called externally)
+    private boolean restoreTemporarySelection = true;
+    // Indicates that the temporary item should be reselected after an item is removed
     private boolean reselectTemporaryItem = false;
 
     /**
@@ -86,10 +89,12 @@ public abstract class PickerSpinner extends Spinner {
             super.onRestoreInstanceState(bundle.getParcelable("superState"));
             // restore the temporary selection, we need to wait till the end of the message queue
             final String tempItem = bundle.getString("temporaryItem");
+            restoreTemporarySelection = true;
             post(new Runnable() {
                 @Override
                 public void run() {
-                    restoreTemporarySelection(tempItem);
+                    if(restoreTemporarySelection)
+                        restoreTemporarySelection(tempItem);
                 }
             });
         }
@@ -145,6 +150,7 @@ public abstract class PickerSpinner extends Spinner {
      * @param item The item to select, or null to remove any temporary selection.
      */
     public void selectTemporary(TwinTextItem item) {
+        restoreTemporarySelection = false;
         // if we just want to clear the selection:
         if(item == null) {
             setSelection(getLastItemPosition());
@@ -176,7 +182,10 @@ public abstract class PickerSpinner extends Spinner {
                                 reselectTemporaryItem = false;
                             }
                         }
-                        else listener.onItemSelected(parent, view, position, id);
+                        // sometimes during rotation or initialization onItemSelected will be called with the footer selected, catch that
+                        else if(!(((PickerSpinnerAdapter) getAdapter()).hasFooter()
+                                    && position == getLastItemPosition() + 1))
+                            listener.onItemSelected(parent, view, position, id);
                     }
 
                     @Override

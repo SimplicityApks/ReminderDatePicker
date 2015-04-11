@@ -358,9 +358,10 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
         if(listener != null) {
             // catch selecting same date twice
             Calendar date = getSelectedDate();
-            if(!date.equals(lastSelectedDate))
+            if(date != null && !date.equals(lastSelectedDate)) {
                 listener.onDateSelected(date);
-            lastSelectedDate = date;
+                lastSelectedDate = date;
+            }
         }
     }
 

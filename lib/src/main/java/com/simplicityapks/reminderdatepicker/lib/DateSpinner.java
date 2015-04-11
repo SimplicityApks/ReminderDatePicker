@@ -41,6 +41,9 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
 
     private String[] weekDays = null;
 
+    // To catch twice selecting the same date:
+    private Calendar lastSelectedDate = null;
+
     // The custom DateFormat used to convert Calendars into displayable Strings:
     private java.text.DateFormat customDateFormat = null;
     private java.text.DateFormat secondaryDateFormat = null;
@@ -142,11 +145,10 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
      * @return The selected date as Calendar, or null if there is none.
      */
     public Calendar getSelectedDate() {
-        final DateItem selectedItem = (DateItem) getSelectedItem();
-        if(selectedItem == null)
+        final Object selectedItem = getSelectedItem();
+        if(!(selectedItem instanceof DateItem))
             return null;
-        else
-            return selectedItem.getDate();
+        return ((DateItem) selectedItem).getDate();
     }
 
     /**
@@ -378,8 +380,14 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if(dateListener != null)
-            dateListener.onDateSelected(getSelectedDate());
+        if(dateListener != null) {
+            // catch selecting same date twice
+            Calendar date = getSelectedDate();
+            if(date != null && !date.equals(lastSelectedDate)) {
+                dateListener.onDateSelected(date);
+                lastSelectedDate = date;
+            }
+        }
     }
 
     // unused
