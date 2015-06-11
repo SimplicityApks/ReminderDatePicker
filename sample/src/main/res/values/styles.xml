@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -13,4 +13,22 @@
         <item name="android:paddingBottom">4dp</item>
     </style>
 
+    <style name="PickerSpinner" parent="PickerSpinner">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <!--spinnerMode >= API Level 11-->
+        <item name="android:spinnerMode" tools:ignore="NewApi">dialog</item>
+    </style>
+
+    <style name="PickerSpinner.DateSpinner">
+
+    </style>
+
+    <style name="PickerSpinner.TimeSpinner">
+        <item name="android:layout_marginLeft">4dp</item>
+        <!--layout_marginStart >= API Level 17-->
+        <item name="android:layout_marginStart" tools:ignore="NewApi">4dp</item>
+    </style>
 </resources>
