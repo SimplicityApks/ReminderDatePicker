@@ -342,7 +342,7 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
     private void setShowNumbersInViewInt(boolean enable) {
         PickerSpinnerAdapter adapter = (PickerSpinnerAdapter) getAdapter();
         // workaround for now. See GitHub issue #2
-        if (enable != adapter.isShowingSecondaryTextInView() && getCount() == getSelectedItemPosition())
+        if (enable != adapter.isShowingSecondaryTextInView() && adapter.getCount() == getSelectedItemPosition())
             setSelection(0);
         adapter.setShowSecondaryTextInView(enable);
     }

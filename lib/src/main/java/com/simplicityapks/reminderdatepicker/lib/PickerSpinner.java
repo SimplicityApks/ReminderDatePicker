@@ -72,7 +72,7 @@ public abstract class PickerSpinner extends Spinner {
     @Override
     public Parcelable onSaveInstanceState() {
         // our temporary selection will not be saved
-        if(getSelectedItemPosition() == getCount()) {
+        if(getSelectedItemPosition() == getAdapter().getCount()) {
             Bundle state = new Bundle();
             state.putParcelable("superState", super.onSaveInstanceState());
             // save the TwinTextItem using its toString() method
@@ -121,7 +121,8 @@ public abstract class PickerSpinner extends Spinner {
      */
     @Override
     public void setSelection(int position) {
-        if(position == getCount()-1 && ((PickerSpinnerAdapter)getAdapter()).hasFooter())
+        PickerSpinnerAdapter adapter = (PickerSpinnerAdapter) getAdapter();
+        if(position == adapter.getCount()-1 && adapter.hasFooter())
             onFooterClick(); // the footer has been clicked, so don't update the selection
         else {
             // remove any previous temporary selection:
@@ -157,9 +158,10 @@ public abstract class PickerSpinner extends Spinner {
             // the call is passed on to the adapter in setSelection.
             return;
         }
+        PickerSpinnerAdapter adapter = (PickerSpinnerAdapter) getAdapter();
         // pass on the call to the adapter:
-        ((PickerSpinnerAdapter)getAdapter()).selectTemporary(item);
-        final int tempItemPosition = getCount();
+        adapter.selectTemporary(item);
+        final int tempItemPosition = adapter.getCount();
         if(getSelectedItemPosition() == tempItemPosition) {
             // this is quite a hack, first reset the position to 0 but intercept the callback,
             // then redo the selection:
@@ -177,8 +179,9 @@ public abstract class PickerSpinner extends Spinner {
                         if(interceptSelectionCallbacks.contains(position)) {
                             interceptSelectionCallbacks.remove((Integer) position);
                             if(reselectTemporaryItem) {
-                                if (position != getAdapter().getCount())
-                                    setSelectionQuietly(getAdapter().getCount());
+                                final int tempItemPosition = getAdapter().getCount();
+                                if (position != tempItemPosition)
+                                    setSelectionQuietly(tempItemPosition);
                                 reselectTemporaryItem = false;
                             }
                         }
@@ -201,7 +204,8 @@ public abstract class PickerSpinner extends Spinner {
      * @return The last selectable position.
      */
     public int getLastItemPosition() {
-        return getCount() - (((PickerSpinnerAdapter) getAdapter()).hasFooter()?2:1);
+        PickerSpinnerAdapter adapter = (PickerSpinnerAdapter) getAdapter();
+        return adapter.getCount() - (adapter.hasFooter()? 2 : 1);
     }
 
     /**
@@ -221,6 +225,7 @@ public abstract class PickerSpinner extends Spinner {
      */
     public void insertAdapterItem(TwinTextItem item, int index) {
         int selection = getSelectedItemPosition();
+        ((PickerSpinnerAdapter)getAdapter()).setNotifyOnChange(false);
         ((PickerSpinnerAdapter)getAdapter()).insert(item, index);
         if(index <= selection)
             setSelectionQuietly(selection+1);
