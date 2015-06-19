@@ -30,7 +30,7 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
      * Implement this interface if you want to be notified whenever the selected time changes.
      */
     public interface OnTimeSelectedListener {
-        public void onTimeSelected(int hour, int minute);
+        void onTimeSelected(int hour, int minute);
     }
 
     // These listeners don't have to be implemented, if null just ignore
@@ -288,7 +288,7 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
     public void setShowNumbersInView(boolean enable) {
         PickerSpinnerAdapter adapter = (PickerSpinnerAdapter) getAdapter();
         // workaround for now.
-        if(enable != adapter.isShowingSecondaryTextInView() && getCount() == getSelectedItemPosition())
+        if(enable != adapter.isShowingSecondaryTextInView() && adapter.getCount() == getSelectedItemPosition())
             setSelection(0);
         adapter.setShowSecondaryTextInView(enable);
     }
