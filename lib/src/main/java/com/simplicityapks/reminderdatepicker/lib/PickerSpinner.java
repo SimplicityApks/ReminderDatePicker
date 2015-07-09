@@ -225,7 +225,6 @@ public abstract class PickerSpinner extends Spinner {
      */
     public void insertAdapterItem(TwinTextItem item, int index) {
         int selection = getSelectedItemPosition();
-        ((PickerSpinnerAdapter)getAdapter()).setNotifyOnChange(false);
         ((PickerSpinnerAdapter)getAdapter()).insert(item, index);
         if(index <= selection)
             setSelectionQuietly(selection+1);

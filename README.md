@@ -29,11 +29,11 @@ To use this library in your project either
 or add `compile project(':lib')` to the dependencies in your build.gradle in Android Studio.
 In Eclipse, you will need to right click on the java folder in this project and select Build Path-->Use as Source Folder.
 Also, make sure you have configured both the [appcompat support (v7) library](http://developer.android.com/tools/support-library/features.html#v7)
-and the [DateTimePicker](https://github.com/flavienlaurent/datetimepicker) correctly and referenced as library.
+and the [DateTimePicker](https://github.com/jaydeep17/datetimepicker) correctly and referenced as library.
 
 The library is designed for Android ICS and above (API level 14+), but it works fine in Android 2.1+ 
 as well (only the spinners use a dialog instead of the popup menu). Note that you need to use [NineOldAndroids](https://github.com/JakeWharton/NineOldAndroids/)
-on pre-Honeycomb for the additional [DateTimePicker](https://github.com/flavienlaurent/datetimepicker) 
+on pre-Honeycomb for the additional [DateTimePicker](https://github.com/jaydeep17/datetimepicker)
 that is integrated out of the box.
 
 Usage
@@ -84,6 +84,7 @@ Credits
 **Huge thanks to**
 * **Google** for the original design of this picker in Google Keep
 * **[flavienlaurent](https://github.com/flavienlaurent)** for his awesome [DateTimePicker](https://github.com/flavienlaurent/datetimepicker)
+* **[jaydeep17](https://github.com/jaydeep17)** for forking and continuing work on the [DateTimePicker](https://github.com/jaydeep17/datetimepicker)
 * **[chrisbanes](https://github.com/chrisbanes)** for his [maven_push.gradle script](http://chris.banes.me/2013/08/27/pushing-aars-to-maven-central/) which brought this lib to maven central
 * **[Oxygen Team](http://www.iconarchive.com/artist/oxygen-icons.org.html)** for designing the [icon of the sample app](http://www.iconarchive.com/show/oxygen-icons-by-oxygen-icons.org/Apps-preferences-system-time-icon.html)
 * **[dancer_69](http://forum.xda-developers.com/member.php?u=390873)** for the Greek translation
