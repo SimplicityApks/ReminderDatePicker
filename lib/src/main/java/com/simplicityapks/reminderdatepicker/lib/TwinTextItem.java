@@ -36,6 +36,14 @@ public interface TwinTextItem {
         public CharSequence getSecondaryText() {
             return secondary;
         }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public boolean isEnabled() {
+            return true;
+        }
     }
 
     /**
@@ -49,4 +57,10 @@ public interface TwinTextItem {
      * @return The text (probably as String).
      */
     public CharSequence getSecondaryText();
+
+    /**
+     * Whether this item is enabled. Return false to show this spinner item in a disabled state with grey text.
+     * @return true to enable, false to disable this item.
+     */
+    public boolean isEnabled();
 }

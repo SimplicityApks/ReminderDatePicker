@@ -26,7 +26,7 @@ import java.util.List;
  * getCount()-1 | footer, if available (else last item)
  * getCount()   | temporarySelection, if available (else null)
  */
-public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem>{
+public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem> {
 
     // IDs for both TextViews:
     private static final int PRIMARY_TEXT_ID = android.R.id.text1;
@@ -140,6 +140,9 @@ public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem>{
                         "contain a textview with id set to android.R.id.text1"
         );
         primaryText.setText(item.getPrimaryText());
+        // show a disabled state if the item is disabled
+        primaryText.setEnabled(item.isEnabled());
+
         final TextView secondaryText = (TextView) view.findViewById(SECONDARY_TEXT_ID);
         if (secondaryText != null) {
             if (showSecondaryText)
@@ -183,6 +186,22 @@ public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem>{
     public int getCount() {
         // we need one extra item which is not in the array.
         return super.getCount() + (footer==null? 0 : 1);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean areAllItemsEnabled() {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isEnabled(int position) {
+        return getItem(position).isEnabled();
     }
 
     /**

@@ -127,6 +127,7 @@ public abstract class PickerSpinner extends Spinner {
         else {
             // remove any previous temporary selection:
             ((PickerSpinnerAdapter)getAdapter()).selectTemporary(null);
+            reselectTemporaryItem = false;
             // check that the selection goes through:
             interceptSelectionCallbacks.clear();
             super.setSelection(position);
@@ -176,14 +177,14 @@ public abstract class PickerSpinner extends Spinner {
                 new OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        if(reselectTemporaryItem) {
+                            final int tempItemPosition = getAdapter().getCount();
+                            if (position != tempItemPosition)
+                                setSelectionQuietly(tempItemPosition);
+                            reselectTemporaryItem = false;
+                        }
                         if(interceptSelectionCallbacks.contains(position)) {
                             interceptSelectionCallbacks.remove((Integer) position);
-                            if(reselectTemporaryItem) {
-                                final int tempItemPosition = getAdapter().getCount();
-                                if (position != tempItemPosition)
-                                    setSelectionQuietly(tempItemPosition);
-                                reselectTemporaryItem = false;
-                            }
                         }
                         // sometimes during rotation or initialization onItemSelected will be called with the footer selected, catch that
                         else if(!(((PickerSpinnerAdapter) getAdapter()).hasFooter()

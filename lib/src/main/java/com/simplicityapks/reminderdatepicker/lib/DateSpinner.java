@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.widget.AdapterView;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
+import com.fourmob.datetimepicker.date.SimpleMonthAdapter;
 
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
@@ -43,6 +46,10 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
 
     // To catch twice selecting the same date:
     private Calendar lastSelectedDate = null;
+
+    // Min and mix date to be shown:
+    private Calendar minDate = null;
+    private Calendar maxDate = null;
 
     // The custom DateFormat used to convert Calendars into displayable Strings:
     private java.text.DateFormat customDateFormat = null;
@@ -91,6 +98,9 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
                 },
                 calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH), hasVibratePermission(context));
+
+        // the default min date is today:
+        setMinDate(calendar);
 
         // get the FragmentManager:
         try{
@@ -156,7 +166,7 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
      * item is created and passed to selectTemporary().
      * @param date The date to be selected.
      */
-    public void setSelectedDate(Calendar date) {
+    public void setSelectedDate(@NonNull Calendar date) {
         final int count = getAdapter().getCount() - 1;
         int itemPosition = -1;
         for(int i=0; i<count; i++) {
@@ -190,7 +200,7 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
         }
     }
 
-    private String formatDate(Calendar date) {
+    private String formatDate(@NonNull Calendar date) {
         if(customDateFormat == null)
             return DateUtils.formatDateTime(getContext(), date.getTimeInMillis(), DateUtils.FORMAT_SHOW_DATE);
         else
@@ -198,7 +208,7 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
     }
 
     // only to be used when FLAG_NUMBERS and FLAG_WEEKDAY_NAMES have been set
-    private String formatSecondaryDate(Calendar date) {
+    private String formatSecondaryDate(@NonNull Calendar date) {
         if(secondaryDateFormat == null)
             return DateUtils.formatDateTime(getContext(), date.getTimeInMillis(),
                     DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_NUMERIC_DATE);
@@ -249,6 +259,109 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
             setSelectedDate(getSelectedDate());
     }
 
+
+    /**
+     * Sets the minimum allowed date.
+     * Spinner items and dates in the date picker before the given date will get disabled.
+     * @param minDate The minimum date, or null to clear the previous min date.
+     */
+    public void setMinDate(@Nullable Calendar minDate) {
+        this.minDate = minDate;
+        // update the date picker (even if it is not used right now)
+        if(minDate == null)
+            datePickerDialog.setMinDate(null);
+        else if(maxDate != null && compareCalendarDates(minDate, maxDate) > 0)
+            throw new IllegalArgumentException("Minimum date must be before maximum date!");
+        else
+            datePickerDialog.setMinDate(new SimpleMonthAdapter.CalendarDay(minDate));
+        updateEnabledItems();
+    }
+
+    /**
+     * Gets the current minimum allowed date.
+     * @return The minimum date, or null if there is none.
+     */
+    public @Nullable Calendar getMinDate() {
+        return minDate;
+    }
+
+    /**
+     * Sets the maximum allowed date.
+     * Spinner items and dates in the date picker before the given date will get disabled.
+     * @param maxDate The maximum date, or null to clear the previous max date.
+     */
+    public void setMaxDate(@Nullable Calendar maxDate) {
+        this.maxDate = maxDate;
+        // update the date picker (even if it is not used right now)
+        if(maxDate == null)
+            datePickerDialog.setMaxDate(null);
+        else if(minDate != null && compareCalendarDates(minDate, maxDate) > 0)
+            throw new IllegalArgumentException("Maximum date must be after minimum date!");
+        else
+            datePickerDialog.setMaxDate(new SimpleMonthAdapter.CalendarDay(maxDate));
+        updateEnabledItems();
+    }
+
+    /**
+     * Gets the current minimum allowed date.
+     * @return The minimum date, or null if there is none.
+     */
+    public @Nullable Calendar getMaxDate() {
+        return maxDate;
+    }
+
+    /**
+     * Loops through the Spinner items and disables all that are not within the min/max date range.
+     */
+    private void updateEnabledItems() {
+        PickerSpinnerAdapter adapter = (PickerSpinnerAdapter) getAdapter();
+        // if the current item is out of range, we have no choice but to reset it
+        if(!isInDateRange(getSelectedDate())) {
+            final Calendar today = Calendar.getInstance();
+            if(isInDateRange(today))
+                setSelectedDate(today);
+            else
+                // if today itself is not a valid date, we will just use the minimum date (which is always set here)
+                setSelectedDate(minDate);
+        }
+
+        for(int position = getLastItemPosition(); position >= 0; position--) {
+            DateItem item = (DateItem) adapter.getItem(position);
+            if(isInDateRange(item.getDate()))
+                item.setEnabled(true);
+            else
+                item.setEnabled(false);
+        }
+    }
+
+    private boolean isInDateRange(@NonNull Calendar date) {
+        return (minDate == null || compareCalendarDates(minDate, date) <= 0) // later than minDate
+                && (maxDate == null || compareCalendarDates(maxDate, date) >= 0); // before maxDate
+    }
+
+    /**
+     * Compares the two given Calendar objects, only counting the date, not time.
+     * @return -1 if first comes before second, 0 if both are the same day, 1 if second is before first.
+     */
+    private int compareCalendarDates(@NonNull Calendar first, @NonNull Calendar second) {
+        final int firstYear = first.get(Calendar.YEAR);
+        final int secondYear = second.get(Calendar.YEAR);
+        final int firstDay = first.get(Calendar.DAY_OF_YEAR);
+        final int secondDay = second.get(Calendar.DAY_OF_YEAR);
+        if(firstYear == secondYear) {
+            if(firstDay == secondDay)
+                return 0;
+            else if(firstDay < secondDay)
+                return -1;
+            else
+                return 1;
+        }
+        else if(firstYear < secondYear)
+            return -1;
+        else
+            return 1;
+    }
+
     /**
      * Implement this interface if you want to be notified whenever the selected date changes.
      */
@@ -272,6 +385,10 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
      */
     public void setShowPastItems(boolean enable) {
         if(enable && !showPastItems) {
+            // first reset the minimum date if necessary:
+            if(getMinDate() != null && compareCalendarDates(getMinDate(), Calendar.getInstance()) == 0)
+                setMinDate(null);
+
             // create the yesterday and last Monday item:
             final Resources res = getResources();
             final Calendar date = Calendar.getInstance();
@@ -282,14 +399,17 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
             date.add(Calendar.DAY_OF_YEAR, -6);
             int weekday = date.get(Calendar.DAY_OF_WEEK);
             insertAdapterItem(new DateItem(getWeekDay(weekday,
-            // have a separate string for Saturday and Sunday because of gender variation in Portuguese
-                    weekday==7 || weekday==1? R.string.date_last_weekday : R.string.date_last_weekday_weekend),
+                    // have a separate string for Saturday and Sunday because of gender variation in Portuguese
+                    weekday == 7 || weekday == 1 ? R.string.date_last_weekday : R.string.date_last_weekday_weekend),
                     date), 0);
         }
         else if(!enable && showPastItems) {
             // delete the yesterday and last weekday items:
             removeAdapterItemAt(1);
             removeAdapterItemAt(0);
+
+            // we set the minimum date to today as we don't allow past items
+            setMinDate(Calendar.getInstance());
         }
         showPastItems = enable;
     }

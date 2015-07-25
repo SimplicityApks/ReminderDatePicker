@@ -11,6 +11,7 @@ public class DateItem implements TwinTextItem{
 
     private final String label, dateNumbers;
     private final int year, month, day;
+    private boolean enabled = true;
 
     /**
      * Constructs a new DateItem holding the specified date and a label to show primarily.
@@ -130,6 +131,19 @@ public class DateItem implements TwinTextItem{
     @Override
     public CharSequence getSecondaryText() {
         return dateNumbers;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    /**
+     * Enable or disable this spinner item.
+     * @param enable true to enable, false to disable this item.
+     */
+    public void setEnabled(boolean enable) {
+        this.enabled = enable;
     }
 
     /**

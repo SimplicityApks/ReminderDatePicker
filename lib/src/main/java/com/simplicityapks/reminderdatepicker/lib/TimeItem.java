@@ -5,10 +5,11 @@ import java.util.Calendar;
 /**
  * Object to be inserted into the ArrayAdapter of the TimeSpinner. The time is saved as well as a label.
  */
-public class TimeItem implements TwinTextItem{
+public class TimeItem implements TwinTextItem {
 
     private final String label, digitalTime;
     private final int hour, minute;
+    private boolean enabled = true;
 
     /**
      * Constructs a new TimeItem holding the specified time and a label to show primarily.
@@ -114,6 +115,19 @@ public class TimeItem implements TwinTextItem{
     @Override
     public CharSequence getSecondaryText() {
         return digitalTime;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    /**
+     * Enable or disable this spinner item.
+     * @param enable true to enable, false to disable this item.
+     */
+    public void setEnabled(boolean enable) {
+        this.enabled = enable;
     }
 
     /**
