@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -339,6 +340,44 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
     public void setTimeFormat(java.text.DateFormat timeFormat) {
         timeSpinner.setTimeFormat(timeFormat);
     }
+
+
+    /**
+     * Sets the minimum allowed date for the DateSpinner.
+     * Spinner items and dates in the date picker before the given date will get disabled.
+     * Does not affect the TimeSpinner.
+     * @param minDate The minimum date, or null to clear the previous min date.
+     */
+    public void setMinDate(@Nullable Calendar minDate) {
+        dateSpinner.setMinDate(minDate);
+    }
+
+    /**
+     * Gets the current minimum allowed date for the DateSpinner.
+     * @return The minimum date, or null if there is none.
+     */
+    public @Nullable Calendar getMinDate() {
+        return dateSpinner.getMinDate();
+    }
+
+    /**
+     * Sets the maximum allowed date for the DateSpinner.
+     * Spinner items and dates in the date picker before the given date will get disabled.
+     * Does not affect the TimeSpinner.
+     * @param maxDate The maximum date, or null to clear the previous max date.
+     */
+    public void setMaxDate(@Nullable Calendar maxDate) {
+        dateSpinner.setMaxDate(maxDate);
+    }
+
+    /**
+     * Gets the current maximum allowed date for the DateSpinner.
+     * @return The maximum date, or null if there is none.
+     */
+    public @Nullable Calendar getMaxDate() {
+        return dateSpinner.getMaxDate();
+    }
+
 
     /**
      * Set the flags to use for the picker.

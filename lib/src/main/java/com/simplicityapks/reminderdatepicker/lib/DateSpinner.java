@@ -47,7 +47,7 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
     // To catch twice selecting the same date:
     private Calendar lastSelectedDate = null;
 
-    // Min and mix date to be shown:
+    // Min and mix date to be shown (are currently not restored during rotation as they are mostly set in the onCreate() anyway):
     private Calendar minDate = null;
     private Calendar maxDate = null;
 
@@ -287,7 +287,7 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
 
     /**
      * Sets the maximum allowed date.
-     * Spinner items and dates in the date picker before the given date will get disabled.
+     * Spinner items and dates in the date picker after the given date will get disabled.
      * @param maxDate The maximum date, or null to clear the previous max date.
      */
     public void setMaxDate(@Nullable Calendar maxDate) {
@@ -303,12 +303,13 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
     }
 
     /**
-     * Gets the current minimum allowed date.
-     * @return The minimum date, or null if there is none.
+     * Gets the current maximum allowed date.
+     * @return The maximum date, or null if there is none.
      */
     public @Nullable Calendar getMaxDate() {
         return maxDate;
     }
+
 
     /**
      * Loops through the Spinner items and disables all that are not within the min/max date range.

@@ -54,7 +54,11 @@ See the [sample source code](https://github.com/SimplicityApks/ReminderDatePicke
 This library supports different behaviours and selectable dates. Based on your needs, call `setFlags()` 
 or use the `app:flags="..."` attribute in the xml declaration with one or more of the 
 *ReminderDatePicker.FLAG_...* or *.MODE_...* constants (combined with the `|` operator). For example 
-use `app:flags="month|more_time"` for a larger set of selectable days and hours. 
+use `app:flags="month|more_time"` for a larger set of selectable days and hours.
+
+Furthermore, you can restrict which days are enabled in the date spinner by calling `setMinDate()` and
+`setMaxDate()`. Per default, dates in the past are not user-selectable, but you can re-enable them
+by calling `setMinDate(null)` or using *FLAG_PAST*.
 
 ###Custom additional date or time picker
 
