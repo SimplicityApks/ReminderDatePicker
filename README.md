@@ -74,6 +74,7 @@ footer is clicked.
 [DateSpinner](/lib/src/main/java/com/simplicityapks/reminderdatepicker/lib/DateSpinner.java) and 
 [TimeSpinner](/lib/src/main/java/com/simplicityapks/reminderdatepicker/lib/TimeSpinner.java) can be 
 used separately (when FLAG_HIDE_TIME does not suffice) and each listen for the xml flags as well.
+But make sure you use `style="@style/PickerSpinner"` in the spinner's xml layout tag!
 
 Alternatively, if you have a totally different usage and need the spinners used here, let your custom 
 Spinner extend [PickerSpinner](/lib/src/main/java/com/simplicityapks/reminderdatepicker/lib/PickerSpinner.java) 
