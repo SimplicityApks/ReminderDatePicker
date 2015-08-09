@@ -21,9 +21,7 @@ Set-up
 To use this library in your project either
 
 * Add this line to the dependencies in your build.gradle (note you need `mavenCentral()` in your repositories):
-`compile 'com.simplicityapks:reminderdatepicker:1.1.+'`
-
-* If you want the KitKat version (1.0) instead, use `compile 'com.simplicityapks:reminderdatepicker:1.0.+'`
+`compile 'com.simplicityapks:reminderdatepicker:1.2.+'`
 
 * Copy the library into your workspace and [add it as library in Eclipse](http://developer.android.com/tools/projects/projects-eclipse.html#ReferencingLibraryProject) 
 or add `compile project(':lib')` to the dependencies in your build.gradle in Android Studio.
