@@ -2,8 +2,8 @@ package com.simplicityapks.reminderdatepicker.sample;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.CheckBox;
@@ -16,7 +16,7 @@ import com.simplicityapks.reminderdatepicker.lib.ReminderDatePicker;
 import java.text.DateFormat;
 import java.util.Calendar;
 
-public class MainActivity extends ActionBarActivity implements CompoundButton.OnCheckedChangeListener{
+public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener{
 
     private String FLAG_DARK_THEME = "flag_dark_theme";
     private boolean useDarkTheme = false;
