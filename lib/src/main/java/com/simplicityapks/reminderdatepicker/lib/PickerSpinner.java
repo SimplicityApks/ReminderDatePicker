@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
@@ -93,13 +94,43 @@ public abstract class PickerSpinner extends Spinner {
             post(new Runnable() {
                 @Override
                 public void run() {
-                    if(restoreTemporarySelection)
+                    if (restoreTemporarySelection)
                         restoreTemporarySelection(tempItem);
                 }
             });
         }
         else super.onRestoreInstanceState(state);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setVisibility(int visibility) {
+        super.setVisibility(visibility);
+        // When going from state gone to visible with a temporary item selected, the position is
+        // somehow reset by the system, so we need to reselect the temporary item.
+        // This is merely a workaround as I can't find a better solution.
+        if(visibility == VISIBLE) {
+            PickerSpinnerAdapter adapter = (PickerSpinnerAdapter) getAdapter();
+            int count = adapter.getCount();
+            // check whether we have the temporary item selected
+            if(getSelectedItemPosition() == count) {
+                // get the temp item from the adapter to reselect it later:
+                TwinTextItem tempItem = null;
+                try {
+                    tempItem = adapter.getItem(count);
+                } catch (IndexOutOfBoundsException e) {
+                    Log.d("PickerSpinner", "SetVisibility: Couldn't get temporary item from adapter, aborting workaround");
+                }
+                // now reselect the temporary item
+                if(tempItem != null)
+                    selectTemporary(tempItem);
+            }
+        }
+
+    }
+
 
     /**
      * Sets the Adapter used to provide the data which backs this Spinner. Needs to be an {@link com.simplicityapks.reminderdatepicker.lib.PickerSpinnerAdapter}
