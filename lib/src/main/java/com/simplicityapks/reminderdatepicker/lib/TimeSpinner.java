@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.text.format.DateFormat;
@@ -238,12 +239,22 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
     }
 
     /**
+     * Gets the default {@link TimePickerDialog} that is shown when the footer is clicked.
+     * @return The dialog, or null if a custom time picker has been set and the default one is thus unused.
+     */
+    public @Nullable TimePickerDialog getTimePickerDialog() {
+        if(customTimePicker != null)
+            return null;
+        return timePickerDialog;
+    }
+
+    /**
      * Sets a custom listener whose onClick method will be called to create and handle the custom time picker.
      * You should call {@link #setSelectedTime} when the custom picker is finished.
      * @param launchPicker An {@link android.view.View.OnClickListener} whose onClick method will be
-     *                     called to show the custom time picker.
+     *                     called to show the custom time picker, or null to use the default picker.
      */
-    public void setCustomTimePicker(OnClickListener launchPicker) {
+    public void setCustomTimePicker(@Nullable OnClickListener launchPicker) {
         this.customTimePicker = launchPicker;
     }
 

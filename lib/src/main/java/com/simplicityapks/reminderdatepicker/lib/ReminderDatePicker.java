@@ -14,6 +14,9 @@ import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
+import com.fourmob.datetimepicker.date.DatePickerDialog;
+import com.sleepbot.datetimepicker.time.TimePickerDialog;
+
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -234,12 +237,28 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
     }
 
     /**
+     * Gets the default {@link DatePickerDialog} that is shown when the footer in the DateSpinner is clicked.
+     * @return The dialog, or null if a custom date picker has been set and the default one is thus unused.
+     */
+    public @Nullable DatePickerDialog getDatePickerDialog() {
+        return dateSpinner.getDatePickerDialog();
+    }
+
+    /**
+     * Gets the default {@link TimePickerDialog} that is shown when the footer in the TimeSpinner is clicked.
+     * @return The dialog, or null if a custom time picker has been set and the default one is thus unused.
+     */
+    public @Nullable TimePickerDialog getTimePickerDialog() {
+        return timeSpinner.getTimePickerDialog();
+    }
+
+    /**
      * Sets a custom listener whose onClick method will be called to create and handle the custom date picker.
      * You should call {@link #setSelectedDate(int, int, int)} when the custom picker is finished.
      * @param launchPicker An {@link android.view.View.OnClickListener} whose onClick method will be
-     *                     called to show the custom date picker.
+     *                     called to show the custom date picker, or null to use the default picker.
      */
-    public void setCustomDatePicker(OnClickListener launchPicker) {
+    public void setCustomDatePicker(@Nullable OnClickListener launchPicker) {
         dateSpinner.setCustomDatePicker(launchPicker);
     }
 
@@ -247,9 +266,9 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
      * Sets a custom listener whose onClick method will be called to create and handle the custom time picker.
      * You should call {@link #setSelectedTime} when the custom picker is finished.
      * @param launchPicker An {@link android.view.View.OnClickListener} whose onClick method will be
-     *                     called to show the custom time picker.
+     *                     called to show the custom time picker, or null to use the default picker.
      */
-    public void setCustomTimePicker(OnClickListener launchPicker) {
+    public void setCustomTimePicker(@Nullable OnClickListener launchPicker) {
         timeSpinner.setCustomTimePicker(launchPicker);
     }
 

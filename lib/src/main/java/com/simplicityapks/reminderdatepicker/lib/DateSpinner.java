@@ -371,12 +371,22 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
     }
 
     /**
+     * Gets the default {@link DatePickerDialog} that is shown when the footer is clicked.
+     * @return The dialog, or null if a custom date picker has been set and the default one is thus unused.
+     */
+    public @Nullable DatePickerDialog getDatePickerDialog() {
+        if(customDatePicker != null)
+            return null;
+        return datePickerDialog;
+    }
+
+    /**
      * Sets a custom listener whose onClick method will be called to create and handle the custom date picker.
      * You should call {@link #setSelectedDate} when the custom picker is finished.
      * @param launchPicker An {@link android.view.View.OnClickListener} whose onClick method will be
-     *                     called to show the custom date picker.
+     *                     called to show the custom date picker, or null to use the default picker.
      */
-    public void setCustomDatePicker(OnClickListener launchPicker) {
+    public void setCustomDatePicker(@Nullable OnClickListener launchPicker) {
         this.customDatePicker = launchPicker;
     }
 
