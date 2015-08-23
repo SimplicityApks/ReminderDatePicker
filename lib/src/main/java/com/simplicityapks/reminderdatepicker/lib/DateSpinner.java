@@ -498,6 +498,10 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
     @Override
     public void onFooterClick() {
         if (customDatePicker == null) {
+            // update the selected date in the dialog
+            final Calendar date = getSelectedDate();
+            datePickerDialog.onDayOfMonthSelected(
+                    date.get(Calendar.YEAR), date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH));
             datePickerDialog.show(fragmentManager, "DatePickerDialog");
         } else {
             customDatePicker.onClick(this);

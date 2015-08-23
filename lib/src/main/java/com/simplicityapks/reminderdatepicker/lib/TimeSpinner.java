@@ -322,6 +322,9 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
     @Override
     public void onFooterClick() {
         if (customTimePicker == null) {
+            // update the selected time in the dialog
+            final Calendar time = getSelectedTime();
+            timePickerDialog.setStartTime(time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE));
             timePickerDialog.show(fragmentManager, "TimePickerDialog");
         } else {
             customTimePicker.onClick(this);
