@@ -8,16 +8,17 @@ import java.util.Calendar;
 public class TimeItem implements TwinTextItem {
 
     private final String label, digitalTime;
-    private final int hour, minute;
+    private final int hour, minute, id;
     private boolean enabled = true;
 
     /**
      * Constructs a new TimeItem holding the specified time and a label to show primarily.
      * @param label The String to return when getPrimaryText() is called, but the first text in brackets is set as secondary text.
      * @param time The time to be returned by getTime(), as Calendar.
+     * @param id The identifier to find this item with.
      */
-    public TimeItem(String label, Calendar time) {
-        this(label, time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE));
+    public TimeItem(String label, Calendar time, int id) {
+        this(label, time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE), id);
     }
 
     /**
@@ -25,10 +26,12 @@ public class TimeItem implements TwinTextItem {
      * @param label The String to return when getPrimaryText() is called, but the first text in brackets is set as secondary text.
      * @param hour The hour of the day.
      * @param minute The minute of the hour.
+     * @param id The identifier to find this item with.
      */
-    public TimeItem(String label, int hour, int minute) {
+    public TimeItem(String label, int hour, int minute, int id) {
         this.hour = hour;
         this.minute = minute;
+        this.id = id;
 
         // parse the digital time from the label and set both label and digitalTime:
         int timeStart = label.indexOf('(');
@@ -49,12 +52,14 @@ public class TimeItem implements TwinTextItem {
      * @param timeString The String to return when getSecondaryText() is called.
      * @param hour The hour of the day.
      * @param minute The minute of the hour.
+     * @param id The identifier to find this item with.
      */
-    public TimeItem(String label, String timeString, int hour, int minute) {
+    public TimeItem(String label, String timeString, int hour, int minute, int id) {
         this.label = label;
         this.digitalTime = timeString;
         this.hour = hour;
         this.minute = minute;
+        this.id = id;
     }
 
     /**
@@ -118,6 +123,11 @@ public class TimeItem implements TwinTextItem {
     }
 
     @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
     public boolean isEnabled() {
         return enabled;
     }
@@ -137,7 +147,7 @@ public class TimeItem implements TwinTextItem {
     @Override
     public String toString() {
         String sep = "\n";
-        return nullToEmpty(label) +sep+ nullToEmpty(digitalTime) +sep+ hour +sep+ minute;
+        return nullToEmpty(label) +sep+ nullToEmpty(digitalTime) +sep+ hour +sep+ minute +sep+ id;
     }
 
     /**
@@ -147,17 +157,18 @@ public class TimeItem implements TwinTextItem {
      */
     public static TimeItem fromString(String code) {
         String[] items = code.split("\n");
-        if(items.length != 4) return null;
-        int hour, minute;
+        if(items.length != 5) return null;
+        int hour, minute, id;
         try {
             hour = Integer.parseInt(items[2]);
             minute = Integer.parseInt(items[3]);
+            id = Integer.parseInt(items[4]);
         }
         catch (NumberFormatException e) {
             e.printStackTrace();
             return null;
         }
-        return new TimeItem(emptyToNull(items[0]), emptyToNull(items[1]), hour, minute);
+        return new TimeItem(emptyToNull(items[0]), emptyToNull(items[1]), hour, minute, id);
     }
 
     /**

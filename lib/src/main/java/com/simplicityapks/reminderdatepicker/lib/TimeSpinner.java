@@ -137,13 +137,13 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
         final Resources res = getResources();
         ArrayList<TwinTextItem> items = new ArrayList<>(4);
         // Morning item:
-        items.add(new TimeItem(res.getString(R.string.time_morning), formatTime(9, 0), 9, 0));
+        items.add(new TimeItem(res.getString(R.string.time_morning), formatTime(9, 0), 9, 0, 1));
         // Afternoon item:
-        items.add(new TimeItem(res.getString(R.string.time_afternoon), formatTime(13, 0), 13, 0));
+        items.add(new TimeItem(res.getString(R.string.time_afternoon), formatTime(13, 0), 13, 0, 2));
         // Evening item:
-        items.add(new TimeItem(res.getString(R.string.time_evening), formatTime(17, 0), 17, 0));
+        items.add(new TimeItem(res.getString(R.string.time_evening), formatTime(17, 0), 17, 0, 3));
         // Night item:
-        items.add(new TimeItem(res.getString(R.string.time_night), formatTime(20, 0), 20, 0));
+        items.add(new TimeItem(res.getString(R.string.time_night), formatTime(20, 0), 20, 0, 4));
         return items;
     }
 
@@ -178,7 +178,7 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
             setSelection(itemPosition);
         else {
             // create a temporary TimeItem to select:
-            selectTemporary(new TimeItem(formatTime(hour, minute), hour, minute));
+            selectTemporary(new TimeItem(formatTime(hour, minute), hour, minute, 0));
         }
     }
 
@@ -275,19 +275,19 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
             // create the noon and late night item:
             final Resources res = getResources();
             // switch the afternoon item to 2pm:
-            insertAdapterItem(new TimeItem(res.getString(R.string.time_afternoon_2), formatTime(14, 0), 14, 0), 2);
-            removeAdapterItemAt(1);
+            insertAdapterItem(new TimeItem(res.getString(R.string.time_afternoon_2), formatTime(14, 0), 14, 0, 7), 2);
+            removeAdapterItemById(2);
             // noon item:
-            insertAdapterItem(new TimeItem(res.getString(R.string.time_noon), formatTime(12, 0), 12, 0), 1);
+            insertAdapterItem(new TimeItem(res.getString(R.string.time_noon), formatTime(12, 0), 12, 0, 5), 1);
             // late night item:
-            addAdapterItem(new TimeItem(res.getString(R.string.time_late_night), formatTime(23, 0), 23, 0));
+            addAdapterItem(new TimeItem(res.getString(R.string.time_late_night), formatTime(23, 0), 23, 0, 6));
         }
         else if(!enable && showMoreTimeItems) {
             // switch back the afternoon item:
-            insertAdapterItem(new TimeItem(getResources().getString(R.string.time_afternoon), formatTime(13, 0), 13, 0), 3);
-            removeAdapterItemAt(2);
-            removeAdapterItemAt(1);
-            removeAdapterItemAt(getLastItemPosition());
+            insertAdapterItem(new TimeItem(getResources().getString(R.string.time_afternoon), formatTime(13, 0), 13, 0, 2), 3);
+            removeAdapterItemById(7);
+            removeAdapterItemById(5);
+            removeAdapterItemById(6);
         }
         showMoreTimeItems = enable;
     }

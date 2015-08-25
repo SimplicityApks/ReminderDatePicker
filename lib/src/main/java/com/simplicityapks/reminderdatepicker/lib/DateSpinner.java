@@ -130,16 +130,16 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
         final Calendar date = Calendar.getInstance();
         ArrayList<TwinTextItem> items = new ArrayList<>(3);
         // today item:
-        items.add(new DateItem(res.getString(R.string.date_today), date));
+        items.add(new DateItem(res.getString(R.string.date_today), date, 1));
         // tomorrow item:
         date.add(Calendar.DAY_OF_YEAR, 1);
-        items.add(new DateItem(res.getString(R.string.date_tomorrow), date));
+        items.add(new DateItem(res.getString(R.string.date_tomorrow), date, 2));
         // next weekday item:
         date.add(Calendar.DAY_OF_YEAR, 6);
         int weekday = date.get(Calendar.DAY_OF_WEEK);
         items.add(new DateItem(getWeekDay(weekday,
                 // have a separate string for Saturday and Sunday because of gender variation in Portuguese
-                weekday==7 || weekday==1? R.string.date_next_weekday : R.string.date_next_weekday_weekend), date));
+                weekday==7 || weekday==1? R.string.date_next_weekday : R.string.date_next_weekday_weekend), date, 3));
         return items;
     }
 
@@ -188,15 +188,15 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
                 // Because these items are always temporarily selected, we can safely assume that
                 // they will never appear in the spinner dropdown. When a FLAG_NUMBERS is set, we
                 // want these items to have the date as secondary text in a short format.
-                selectTemporary(new DateItem(getWeekDay(day, R.string.date_only_weekday), formatSecondaryDate(date), date));
+                selectTemporary(new DateItem(getWeekDay(day, R.string.date_only_weekday), formatSecondaryDate(date), date, 0));
             } else {
                 // show the date as a full text, using the current DateFormat:
-                selectTemporary(new DateItem(formatDate(date), date));
+                selectTemporary(new DateItem(formatDate(date), date, 0));
             }
         }
         else {
             // show the date as a full text, using the current DateFormat:
-            selectTemporary(new DateItem(formatDate(date), date));
+            selectTemporary(new DateItem(formatDate(date), date, 0));
         }
     }
 
@@ -247,7 +247,7 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
         // the only spinner item that will be affected is the month item, so just toggle the flag twice
         // instead of rebuilding the whole adapter
         if(showMonthItem) {
-            int monthPosition = getLastItemPosition();
+            int monthPosition = getAdapterItemPosition(4);
             boolean reselectMonthItem = getSelectedItemPosition() == monthPosition;
             setShowMonthItem(false);
             setShowMonthItem(true);
@@ -405,19 +405,19 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
             final Calendar date = Calendar.getInstance();
             // yesterday:
             date.add(Calendar.DAY_OF_YEAR, -1);
-            insertAdapterItem(new DateItem(res.getString(R.string.date_yesterday), date), 0);
+            insertAdapterItem(new DateItem(res.getString(R.string.date_yesterday), date, -1), 0);
             // last weekday item:
             date.add(Calendar.DAY_OF_YEAR, -6);
             int weekday = date.get(Calendar.DAY_OF_WEEK);
             insertAdapterItem(new DateItem(getWeekDay(weekday,
                     // have a separate string for Saturday and Sunday because of gender variation in Portuguese
                     weekday == 7 || weekday == 1 ? R.string.date_last_weekday : R.string.date_last_weekday_weekend),
-                    date), 0);
+                    date, -2), 0);
         }
         else if(!enable && showPastItems) {
             // delete the yesterday and last weekday items:
-            removeAdapterItemAt(1);
-            removeAdapterItemAt(0);
+            removeAdapterItemById(-2);
+            removeAdapterItemById(-1);
 
             // we set the minimum date to today as we don't allow past items
             setMinDate(Calendar.getInstance());
@@ -434,10 +434,10 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
             // create the in 1 month item
             final Calendar date = Calendar.getInstance();
             date.add(Calendar.MONTH, 1);
-            addAdapterItem(new DateItem(formatDate(date), date));
+            addAdapterItem(new DateItem(formatDate(date), date, 4));
         }
         else if(!enable && showMonthItem) {
-            removeAdapterItemAt(getLastItemPosition());
+            removeAdapterItemById(4);
         }
         showMonthItem = enable;
     }

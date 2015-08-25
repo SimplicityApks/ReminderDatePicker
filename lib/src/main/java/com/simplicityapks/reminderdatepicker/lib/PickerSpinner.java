@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -208,18 +209,18 @@ public abstract class PickerSpinner extends Spinner {
                 new OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        if(reselectTemporaryItem) {
+                        if (reselectTemporaryItem) {
                             final int tempItemPosition = getAdapter().getCount();
                             if (position != tempItemPosition)
                                 setSelectionQuietly(tempItemPosition);
                             reselectTemporaryItem = false;
                         }
-                        if(interceptSelectionCallbacks.contains(position)) {
+                        if (interceptSelectionCallbacks.contains(position)) {
                             interceptSelectionCallbacks.remove((Integer) position);
                         }
                         // sometimes during rotation or initialization onItemSelected will be called with the footer selected, catch that
-                        else if(!(((PickerSpinnerAdapter) getAdapter()).hasFooter()
-                                    && position == getLastItemPosition() + 1))
+                        else if (!(((PickerSpinnerAdapter) getAdapter()).hasFooter()
+                                && position == getLastItemPosition() + 1))
                             listener.onItemSelected(parent, view, position, id);
                     }
 
@@ -238,6 +239,24 @@ public abstract class PickerSpinner extends Spinner {
     public int getLastItemPosition() {
         PickerSpinnerAdapter adapter = (PickerSpinnerAdapter) getAdapter();
         return adapter.getCount() - (adapter.hasFooter()? 2 : 1);
+    }
+
+    /**
+     * Finds a spinner adapter item by its id value (excluding any temporary selection).
+     * @param id The id of the item to search.
+     * @return The specified TwinTextItem, or null if no item with the given id was found.
+     */
+    public @Nullable TwinTextItem getAdapterItemById(int id) {
+        return ((PickerSpinnerAdapter) getAdapter()).getItemById(id);
+    }
+
+    /**
+     * Finds a spinner item's position in the data set by its id value (excluding any temporary selection).
+     * @param id The id of the item to search.
+     * @return The position of the specified TwinTextItem, or -1 if no item with the given id was found.
+     */
+    public int getAdapterItemPosition(int id) {
+        return ((PickerSpinnerAdapter) getAdapter()).getItemPosition(id);
     }
 
     /**
@@ -298,6 +317,25 @@ public abstract class PickerSpinner extends Spinner {
                 setSelectionQuietly(selection - 1);
             }
         }
+    }
+
+    /**
+     * Removes the specified item(s) from the adapter and takes care of handling selection changes.
+     * Always call this method instead of getAdapter().remove().
+     * @param id The id of the item(s) to be removed. All items with this id will be removed.
+     * @return True if one or more items with the specified id were found and removed, false otherwise.
+     */
+    public boolean removeAdapterItemById(int id) {
+        PickerSpinnerAdapter adapter = (PickerSpinnerAdapter) getAdapter();
+        boolean result = false;
+        for(int index = adapter.getCount()-1; index >= 0; index--) {
+            TwinTextItem item = adapter.getItem(index);
+            if(item.getId() == id) {
+                removeAdapterItemAt(index);
+                result = true;
+            }
+        }
+        return result;
     }
 
     /**
