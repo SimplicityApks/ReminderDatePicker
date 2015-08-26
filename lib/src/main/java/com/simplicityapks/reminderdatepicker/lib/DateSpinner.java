@@ -490,6 +490,18 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
         setShowNumbersInView((modeOrFlags & ReminderDatePicker.FLAG_NUMBERS) != 0);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void removeAdapterItemAt(int index) {
+        if(index == getSelectedItemPosition()) {
+            Calendar date = getSelectedDate();
+            selectTemporary(new DateItem(formatDate(date), date));
+        }
+        super.removeAdapterItemAt(index);
+    }
+
     @Override
     public CharSequence getFooter() {
         return getResources().getString(R.string.spinner_date_footer);
