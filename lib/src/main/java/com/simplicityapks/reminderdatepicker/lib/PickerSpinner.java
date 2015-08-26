@@ -276,14 +276,21 @@ public abstract class PickerSpinner extends Spinner {
      */
     public void insertAdapterItem(TwinTextItem item, int index) {
         int selection = getSelectedItemPosition();
-        ((PickerSpinnerAdapter)getAdapter()).insert(item, index);
-        if(index <= selection)
+        Object selectedItem = getSelectedItem();
+        ((PickerSpinnerAdapter) getAdapter()).insert(item, index);
+        // select the new item if there was an equal temporary item selected
+        if(selectedItem.equals(item))
+            setSelectionQuietly(index);
+        // otherwise keep track when inserting above the selection
+        else if(index <= selection)
             setSelectionQuietly(selection+1);
     }
 
     /**
      * Removes the specified item from the adapter and takes care of handling selection changes.
      * Always call this method instead of getAdapter().remove().
+     * Note that if you remove the selected item here, it will just reselect the next one instead of
+     * creating a temporary item containing the current selection.
      * @param index The index of the item to be removed.
      */
     public void removeAdapterItemAt(int index) {
@@ -300,11 +307,14 @@ public abstract class PickerSpinner extends Spinner {
             adapter.setFooter(null);
         } else { // a normal item
             // keep the right selection in either of these cases:
-            if(index == selection) {// we delete the selected item and
+            if(index == selection) { // we delete the selected item and
                 if(index == getLastItemPosition())  // it is the last real item
                     setSelection(selection - 1);
                 else {
-                    // we need to reselect the current item:
+                    // we need to reselect the current item
+                    // (this is not guaranteed to fire a selection callback when multiple operations
+                    // modify the dataset, so it is a lot better to first select the item you want
+                    // to have selected, best by overriding this method in your subclass).
                     setSelectionQuietly(index==0 && count>1? 1 : 0);
                     setSelection(selection);
                 }
