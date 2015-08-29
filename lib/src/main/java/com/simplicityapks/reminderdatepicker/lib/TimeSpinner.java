@@ -321,7 +321,7 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
     public void removeAdapterItemAt(int index) {
         if(index == getSelectedItemPosition()) {
             Calendar time = getSelectedTime();
-            selectTemporary(new TimeItem(formatTime(time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE)), time));
+            selectTemporary(new TimeItem(formatTime(time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE)), time, 0));
         }
         super.removeAdapterItemAt(index);
     }

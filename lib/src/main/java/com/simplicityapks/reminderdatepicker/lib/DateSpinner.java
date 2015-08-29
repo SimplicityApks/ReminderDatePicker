@@ -344,7 +344,7 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
      * Compares the two given Calendar objects, only counting the date, not time.
      * @return -1 if first comes before second, 0 if both are the same day, 1 if second is before first.
      */
-    private int compareCalendarDates(@NonNull Calendar first, @NonNull Calendar second) {
+    static int compareCalendarDates(@NonNull Calendar first, @NonNull Calendar second) {
         final int firstYear = first.get(Calendar.YEAR);
         final int secondYear = second.get(Calendar.YEAR);
         final int firstDay = first.get(Calendar.DAY_OF_YEAR);
@@ -497,7 +497,7 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
     public void removeAdapterItemAt(int index) {
         if(index == getSelectedItemPosition()) {
             Calendar date = getSelectedDate();
-            selectTemporary(new DateItem(formatDate(date), date));
+            selectTemporary(new DateItem(formatDate(date), date, 0));
         }
         super.removeAdapterItemAt(index);
     }
