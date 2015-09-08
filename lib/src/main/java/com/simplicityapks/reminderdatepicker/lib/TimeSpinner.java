@@ -4,7 +4,10 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.content.res.XmlResourceParser;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.text.format.DateFormat;
@@ -17,7 +20,6 @@ import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -26,6 +28,14 @@ import java.util.List;
  * The right PickerSpinner of the Google Keep app, to select a time within one day.
  */
 public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSelectedListener {
+
+    public static final String XML_TAG_TIMEITEM = "TimeItem";
+
+    public static final String XML_ATTR_ABSHOUR = "absHour";
+    public static final String XML_ATTR_ABSMINUTE= "absMinute";
+
+    public static final String XML_ATTR_RELHOUR = "relHour";
+    public static final String XML_ATTR_RELMINUTE = "relMinute";
 
     /**
      * Implement this interface if you want to be notified whenever the selected time changes.
@@ -134,17 +144,69 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
 
     @Override
     public List<TwinTextItem> getSpinnerItems() {
+        try {
+            return getItemsFromXml(R.xml.time_items);
+        } catch (Exception e) {
+            Log.d("TimeSpinner", "Error parsing time items from xml");
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    protected @Nullable TwinTextItem parseItemFromXmlTag(@NonNull XmlResourceParser parser) {
         final Resources res = getResources();
-        ArrayList<TwinTextItem> items = new ArrayList<>(4);
-        // Morning item:
-        items.add(new TimeItem(res.getString(R.string.time_morning), formatTime(9, 0), 9, 0, 1));
-        // Afternoon item:
-        items.add(new TimeItem(res.getString(R.string.time_afternoon), formatTime(13, 0), 13, 0, 2));
-        // Evening item:
-        items.add(new TimeItem(res.getString(R.string.time_evening), formatTime(17, 0), 17, 0, 3));
-        // Night item:
-        items.add(new TimeItem(res.getString(R.string.time_night), formatTime(20, 0), 20, 0, 4));
-        return items;
+        final String packageName = getContext().getPackageName();
+
+        if(!parser.getName().equals(XML_TAG_TIMEITEM)) {
+            Log.d("TimeSpinner", "Unknown xml tag name: " + parser.getName());
+            return null;
+        }
+
+        // parse the TimeItem, possible values are
+        String text = null;
+        @StringRes int textResource = NO_ID, id = NO_ID;
+        int hour = 0, minute = 0;
+        for(int i=parser.getAttributeCount()-1; i>=0; i--) {
+            String attrName = parser.getAttributeName(i);
+            switch (attrName) {
+                case XML_ATTR_ID:
+                    id = parser.getIdAttributeResourceValue(NO_ID);
+                    break;
+                case XML_ATTR_TEXT:
+                    text = parser.getAttributeValue(i);
+                    if(text != null && text.startsWith("@string/"))
+                        textResource = res.getIdentifier(text, "string", packageName);
+                    break;
+
+                case XML_ATTR_ABSHOUR:
+                    hour = parser.getAttributeIntValue(i, -1);
+                    break;
+                case XML_ATTR_ABSMINUTE:
+                    minute = parser.getAttributeIntValue(i, -1);
+                    break;
+
+                case XML_ATTR_RELHOUR:
+                    hour += parser.getAttributeIntValue(i, 0);
+                    break;
+                case XML_ATTR_RELMINUTE:
+                    minute += parser.getAttributeIntValue(i, 0);
+                    break;
+                default:
+                    Log.d("TimeSpinner", "Skipping unknown attribute tag parsing xml resource: "
+                            + attrName + ", maybe a typo?");
+            }
+        }// end for attr
+
+        // now construct the time item from the attributes
+        if(textResource != NO_ID)
+            text = res.getString(textResource);
+
+        // when no text is given, format the date to have at least something to show
+        if(text == null || text.equals(""))
+            text = formatTime(hour, minute);
+
+        return new TimeItem(text, formatTime(hour, minute), hour, minute, id);
     }
 
     /**
@@ -178,7 +240,7 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
             setSelection(itemPosition);
         else {
             // create a temporary TimeItem to select:
-            selectTemporary(new TimeItem(formatTime(hour, minute), hour, minute, 0));
+            selectTemporary(new TimeItem(formatTime(hour, minute), hour, minute, NO_ID));
         }
     }
 
@@ -275,19 +337,19 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
             // create the noon and late night item:
             final Resources res = getResources();
             // switch the afternoon item to 2pm:
-            insertAdapterItem(new TimeItem(res.getString(R.string.time_afternoon_2), formatTime(14, 0), 14, 0, 7), 2);
-            removeAdapterItemById(2);
+            insertAdapterItem(new TimeItem(res.getString(R.string.time_afternoon_2), formatTime(14, 0), 14, 0, R.id.time_afternoon_2), 2);
+            removeAdapterItemById(R.id.time_afternoon);
             // noon item:
-            insertAdapterItem(new TimeItem(res.getString(R.string.time_noon), formatTime(12, 0), 12, 0, 5), 1);
+            insertAdapterItem(new TimeItem(res.getString(R.string.time_noon), formatTime(12, 0), 12, 0, R.id.time_noon), 1);
             // late night item:
-            addAdapterItem(new TimeItem(res.getString(R.string.time_late_night), formatTime(23, 0), 23, 0, 6));
+            addAdapterItem(new TimeItem(res.getString(R.string.time_late_night), formatTime(23, 0), 23, 0, R.id.time_late_night));
         }
         else if(!enable && showMoreTimeItems) {
             // switch back the afternoon item:
-            insertAdapterItem(new TimeItem(getResources().getString(R.string.time_afternoon), formatTime(13, 0), 13, 0, 2), 3);
-            removeAdapterItemById(7);
-            removeAdapterItemById(5);
-            removeAdapterItemById(6);
+            insertAdapterItem(new TimeItem(getResources().getString(R.string.time_afternoon), formatTime(13, 0), 13, 0, R.id.time_afternoon), 3);
+            removeAdapterItemById(R.id.time_afternoon_2);
+            removeAdapterItemById(R.id.time_noon);
+            removeAdapterItemById(R.id.time_late_night);
         }
         showMoreTimeItems = enable;
     }
@@ -321,7 +383,7 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
     public void removeAdapterItemAt(int index) {
         if(index == getSelectedItemPosition()) {
             Calendar time = getSelectedTime();
-            selectTemporary(new TimeItem(formatTime(time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE)), time, 0));
+            selectTemporary(new TimeItem(formatTime(time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE)), time, NO_ID));
         }
         super.removeAdapterItemAt(index);
     }

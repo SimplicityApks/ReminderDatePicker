@@ -1,10 +1,13 @@
 package com.simplicityapks.reminderdatepicker.lib;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.content.res.XmlResourceParser;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.XmlRes;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -12,6 +15,10 @@ import android.widget.AdapterView;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +32,9 @@ import java.util.List;
  * 4. Dynamic and easy modifying the spinner items without having to worry about selection changes (use the ...AdapterItem...() methods)
  */
 public abstract class PickerSpinner extends Spinner {
+
+    public static final String XML_ATTR_ID = "id";
+    public static final String XML_ATTR_TEXT = "text";
 
     // Indicates that the onItemSelectedListener callback should not be passed to the listener.
     private final ArrayList<Integer> interceptSelectionCallbacks = new ArrayList<>();
@@ -374,4 +384,34 @@ public abstract class PickerSpinner extends Spinner {
      * @param codeString The raw String saved from the item's toString() method.
      */
     protected abstract void restoreTemporarySelection(String codeString);
+
+    /**
+     *
+     */
+    protected ArrayList<TwinTextItem> getItemsFromXml(@XmlRes int xmlResource)
+            throws XmlPullParserException, IOException {
+        final Resources res = getResources();
+        XmlResourceParser parser = res.getXml(xmlResource);
+        ArrayList<TwinTextItem> items = new ArrayList<>();
+
+        int eventType;
+        while((eventType = parser.next()) != XmlPullParser.END_DOCUMENT) {
+            if(eventType == XmlPullParser.START_TAG) {
+                // call our subclass to parse the correct item
+                TwinTextItem item = parseItemFromXmlTag(parser);
+                if(item != null)
+                    items.add(item);
+            }
+        }
+
+        return items;
+    }
+
+    /**
+     * Override this method in your spinner, returning your specific item parsed from the given xml parser at the current tag.
+     * Do not call parser.next() in here!
+     */
+    protected @Nullable TwinTextItem parseItemFromXmlTag(@NonNull XmlResourceParser parser) {
+        return null;
+    }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.content.res.XmlResourceParser;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -19,7 +20,6 @@ import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.fourmob.datetimepicker.date.SimpleMonthAdapter;
 
 import java.text.DateFormatSymbols;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -28,6 +28,18 @@ import java.util.List;
  * The left PickerSpinner in the Google Keep app, to select a date.
  */
 public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSelectedListener {
+
+    public static final String XML_TAG_DATEITEM = "DateItem";
+
+    public static final String XML_ATTR_ABSDAYOFYEAR = "absDayOfYear";
+    public static final String XML_ATTR_ABSDAYOFMONTH = "absDayOfMonth";
+    public static final String XML_ATTR_ABSMONTH = "absMonth";
+    public static final String XML_ATTR_ABSYEAR = "absYear";
+
+    public static final String XML_ATTR_RELDAY = "relDay";
+    public static final String XML_ATTR_RELMONTH = "relMonth";
+    public static final String XML_ATTR_RELYEAR = "relYear";
+
 
     // These listeners don't have to be implemented, if null just ignore
     private OnDateSelectedListener dateListener = null;
@@ -126,27 +138,104 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
 
     @Override
     public List<TwinTextItem> getSpinnerItems() {
+        try {
+            return getItemsFromXml(R.xml.date_items);
+        } catch (Exception e) {
+            Log.d("DateSpinner", "Error parsing date items from xml");
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    protected @Nullable TwinTextItem parseItemFromXmlTag(@NonNull XmlResourceParser parser) {
         final Resources res = getResources();
-        final Calendar date = Calendar.getInstance();
-        ArrayList<TwinTextItem> items = new ArrayList<>(3);
-        // today item:
-        items.add(new DateItem(res.getString(R.string.date_today), date, 1));
-        // tomorrow item:
-        date.add(Calendar.DAY_OF_YEAR, 1);
-        items.add(new DateItem(res.getString(R.string.date_tomorrow), date, 2));
-        // next weekday item:
-        date.add(Calendar.DAY_OF_YEAR, 6);
-        int weekday = date.get(Calendar.DAY_OF_WEEK);
-        items.add(new DateItem(getWeekDay(weekday,
-                // have a separate string for Saturday and Sunday because of gender variation in Portuguese
-                weekday==7 || weekday==1? R.string.date_next_weekday : R.string.date_next_weekday_weekend), date, 3));
-        return items;
+        final String packageName = getContext().getPackageName();
+
+        if(!parser.getName().equals(XML_TAG_DATEITEM)) {
+            Log.d("DateSpinner", "Unknown xml tag name: " + parser.getName());
+            return null;
+        }
+
+        // parse the DateItem, possible values are
+        String text = null;
+        @StringRes int textResource = NO_ID, id = NO_ID;
+        Calendar date = Calendar.getInstance();
+        for(int i=parser.getAttributeCount()-1; i>=0; i--) {
+            String attrName = parser.getAttributeName(i);
+            switch (attrName) {
+                case XML_ATTR_ID:
+                    id = parser.getIdAttributeResourceValue(NO_ID);
+                    break;
+                case XML_ATTR_TEXT:
+                    text = parser.getAttributeValue(i);
+                    if(text != null && text.startsWith("@string/"))
+                        textResource = res.getIdentifier(text, "string", packageName);
+                    break;
+
+                case XML_ATTR_ABSDAYOFYEAR:
+                    final int absDayOfYear = parser.getAttributeIntValue(i, -1);
+                    if(absDayOfYear > 0)
+                        date.set(Calendar.DAY_OF_YEAR, absDayOfYear);
+                    break;
+                case XML_ATTR_ABSDAYOFMONTH:
+                    final int absDayOfMonth = parser.getAttributeIntValue(i, -1);
+                    if(absDayOfMonth > 0)
+                        date.set(Calendar.DAY_OF_MONTH, absDayOfMonth);
+                    break;
+                case XML_ATTR_ABSMONTH:
+                    final int absMonth = parser.getAttributeIntValue(i, -1);
+                    if(absMonth >= 0)
+                        date.set(Calendar.MONTH, absMonth);
+                    break;
+                case XML_ATTR_ABSYEAR:
+                    final int absYear = parser.getAttributeIntValue(i, -1);
+                    if(absYear >= 0)
+                        date.set(Calendar.YEAR, absYear);
+                    break;
+
+                case XML_ATTR_RELDAY:
+                    final int relDay = parser.getAttributeIntValue(i, 0);
+                    date.add(Calendar.DAY_OF_YEAR, relDay);
+                    break;
+                case XML_ATTR_RELMONTH:
+                    final int relMonth = parser.getAttributeIntValue(i, 0);
+                    date.add(Calendar.MONTH, relMonth);
+                    break;
+                case XML_ATTR_RELYEAR:
+                    final int relYear = parser.getAttributeIntValue(i, 0);
+                    date.add(Calendar.YEAR, relYear);
+                    break;
+                default:
+                    Log.d("DateSpinner", "Skipping unknown attribute tag parsing xml resource: "
+                            + attrName + ", maybe a typo?");
+            }
+        }// end for attr
+
+        // now construct the date item from the attributes
+
+        // check if we got a textResource earlier and parse that string together with the weekday
+        if(textResource != NO_ID)
+            text = getWeekDay(date.get(Calendar.DAY_OF_WEEK), textResource);
+
+        // when no text is given, format the date to have at least something to show
+        if(text == null || text.equals(""))
+            text = formatDate(date);
+
+        return new DateItem(text, date, id);
     }
 
     private String getWeekDay(int weekDay, @StringRes int stringRes) {
         if(weekDays == null) weekDays = new DateFormatSymbols().getWeekdays();
-        // in some translations (French for instance), the weekday is the first word but is not capitalized, so we'll do that
+        // use a separate string for Saturday and Sunday because of gender variation in Portuguese
+        if(weekDay==7 || weekDay==1) {
+            if(stringRes == R.string.date_next_weekday)
+                stringRes = R.string.date_next_weekday_weekend;
+            else if(stringRes == R.string.date_last_weekday)
+                stringRes = R.string.date_last_weekday_weekend;
+        }
         String result = getResources().getString(stringRes, weekDays[weekDay]);
+        // in some translations (French for instance), the weekday is the first word but is not capitalized, so we'll do that
         return Character.toUpperCase(result.charAt(0)) + result.substring(1);
     }
 
@@ -188,15 +277,15 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
                 // Because these items are always temporarily selected, we can safely assume that
                 // they will never appear in the spinner dropdown. When a FLAG_NUMBERS is set, we
                 // want these items to have the date as secondary text in a short format.
-                selectTemporary(new DateItem(getWeekDay(day, R.string.date_only_weekday), formatSecondaryDate(date), date, 0));
+                selectTemporary(new DateItem(getWeekDay(day, R.string.date_only_weekday), formatSecondaryDate(date), date, NO_ID));
             } else {
                 // show the date as a full text, using the current DateFormat:
-                selectTemporary(new DateItem(formatDate(date), date, 0));
+                selectTemporary(new DateItem(formatDate(date), date, NO_ID));
             }
         }
         else {
             // show the date as a full text, using the current DateFormat:
-            selectTemporary(new DateItem(formatDate(date), date, 0));
+            selectTemporary(new DateItem(formatDate(date), date, NO_ID));
         }
     }
 
@@ -405,19 +494,17 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
             final Calendar date = Calendar.getInstance();
             // yesterday:
             date.add(Calendar.DAY_OF_YEAR, -1);
-            insertAdapterItem(new DateItem(res.getString(R.string.date_yesterday), date, -1), 0);
+            insertAdapterItem(new DateItem(res.getString(R.string.date_yesterday), date, R.id.date_yesterday), 0);
             // last weekday item:
             date.add(Calendar.DAY_OF_YEAR, -6);
             int weekday = date.get(Calendar.DAY_OF_WEEK);
-            insertAdapterItem(new DateItem(getWeekDay(weekday,
-                    // have a separate string for Saturday and Sunday because of gender variation in Portuguese
-                    weekday == 7 || weekday == 1 ? R.string.date_last_weekday : R.string.date_last_weekday_weekend),
-                    date, -2), 0);
+            insertAdapterItem(new DateItem(getWeekDay(weekday, R.string.date_last_weekday),
+                    date, R.id.date_last_week), 0);
         }
         else if(!enable && showPastItems) {
             // delete the yesterday and last weekday items:
-            removeAdapterItemById(-2);
-            removeAdapterItemById(-1);
+            removeAdapterItemById(R.id.date_last_week);
+            removeAdapterItemById(R.id.date_yesterday);
 
             // we set the minimum date to today as we don't allow past items
             setMinDate(Calendar.getInstance());
@@ -434,10 +521,10 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
             // create the in 1 month item
             final Calendar date = Calendar.getInstance();
             date.add(Calendar.MONTH, 1);
-            addAdapterItem(new DateItem(formatDate(date), date, 4));
+            addAdapterItem(new DateItem(formatDate(date), date, R.id.date_month));
         }
         else if(!enable && showMonthItem) {
-            removeAdapterItemById(4);
+            removeAdapterItemById(R.id.date_month);
         }
         showMonthItem = enable;
     }
@@ -497,7 +584,7 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
     public void removeAdapterItemAt(int index) {
         if(index == getSelectedItemPosition()) {
             Calendar date = getSelectedDate();
-            selectTemporary(new DateItem(formatDate(date), date, 0));
+            selectTemporary(new DateItem(formatDate(date), date, NO_ID));
         }
         super.removeAdapterItemAt(index);
     }
