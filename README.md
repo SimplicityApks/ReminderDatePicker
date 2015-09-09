@@ -67,6 +67,20 @@ date or time picker or even implement your own behaviour. To achieve this simply
 or `setCustomTimePicker()`, passing an OnClickListener whose *onClick()* method will be called when the 
 footer is clicked.
 
+###Custom date and time spinner items
+
+Date and time spinner parse their items from an xml resource file, [R.xml.date_items](/lib/src/main/res/xml/date_items.xml)
+and [R.xml.time_items](/lib/src/main/res/xml/time_items.xml) respectively. That means you can implement
+a custom item list by overriding those files: In each *DateItem* or *TimeItem* xml tag you should
+provide an `id` and `text` attribute (if text is left out the date will be formatted instead).
+To declare the item's date (or time), you can use the `abs...` and `rel...` attributes, where *rel*
+means relative to the current date and time and *abs* the absolute value. See the *XML_ATTR_...*
+constants in the spinners for the supported tags.
+
+Likewise, it is possible to add and remove spinner items at runtime using `addAdapterItem()`,
+`insertAdapterItem()` and `removeAdapterItemById()`. The id value passed to an item's constructor
+can be any integer, but should preferably be a resource id declared in [ids.xml](/lib/src/main/res/values/ids.xml).
+
 ###Advanced Usage
 
 [DateSpinner](/lib/src/main/java/com/simplicityapks/reminderdatepicker/lib/DateSpinner.java) and 
