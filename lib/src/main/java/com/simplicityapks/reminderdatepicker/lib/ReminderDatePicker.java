@@ -157,30 +157,72 @@ public class ReminderDatePicker extends LinearLayout implements AdapterView.OnIt
             selectDefaultDate();
     }
 
+    /**
+     * Selects the next best date (and time) after today.
+     * Requires that the items are in ascending order (and that there is at least one item to select).
+     */
     private void selectDefaultDate() {
-        Calendar calendar = Calendar.getInstance();
-        boolean moreTime = timeSpinner.isShowingMoreTimeItems();
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        // if FLAG_HIDE_TIME has been set, set it to tomorrow morning:
-        if(shouldHideTime) {
-            hour = 9;
-            calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) + 1);
+        Calendar today = Calendar.getInstance();
+        int hour = -1, minute = -1;
+
+        // get the next possible selection
+        Calendar date = getNextItemDate(today);
+        // if it is the today item, we need to take a look the time
+        if(date != null && DateSpinner.compareCalendarDates(date, today) == 0) {
+            // same as getNextTimeDate for TimeSpinner
+            final int last = timeSpinner.getLastItemPosition();
+            final int searchHour = today.get(Calendar.HOUR_OF_DAY),
+                    searchMinute = today.get(Calendar.MINUTE);
+            for (int i=0; i<=last; i++) {
+                final TimeItem time = ((TimeItem) timeSpinner.getItemAtPosition(i));
+                if(time.getHour() > searchHour || (time.getHour() == searchHour && time.getMinute() >= searchMinute)) {
+                    hour = time.getHour();
+                    minute = time.getMinute();
+                    break;
+                }
+            }
+
+            // it may be too late in the evening to select the today item
+            // or if FLAG_HIDE_TIME has been set, set it to tomorrow morning:
+            if((hour == -1 && minute == -1) || shouldHideTime) {
+                Calendar tomorrow = (Calendar) today.clone();
+                tomorrow.add(Calendar.DAY_OF_YEAR, 1);
+                date = getNextItemDate(tomorrow); // if this returns null it'll be set to today below
+            }
         }
-        else if(hour < 9)               hour = 9;
-        else if(hour < 12 && moreTime)  hour = 12;
-        else if(hour < 13 && !moreTime) hour = 13;
-        else if(hour < 14 && moreTime)  hour = 14;
-        else if(hour < 17)              hour = 17;
-        else if(hour < 20)              hour = 20;
-        else if(hour < 23 && moreTime)  hour = 23;
-        else {
-            hour = 9;
-            calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) + 1);
+        if(date == null) {
+            // it seems this spinner only contains past items, use the last one
+            date = ((DateItem) dateSpinner.getItemAtPosition(dateSpinner.getLastItemPosition())).getDate();
         }
-        calendar.set(Calendar.HOUR_OF_DAY, hour);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        setSelectedDate(calendar);
+
+        if(hour == -1 && minute == -1) {
+            // the date is not today, just select the earliest possible time
+            final TimeItem time = ((TimeItem) timeSpinner.getItemAtPosition(0));
+            hour = time.getHour();
+            minute = time.getMinute();
+        }
+
+        // finally, select what we found
+        date.set(Calendar.HOUR_OF_DAY, hour);
+        date.set(Calendar.MINUTE, minute);
+        setSelectedDate(date);
+    }
+
+    /**
+     * Gets the next date item's date equal to or later than the given date in the DateSpinner.
+     * Requires that the items are in ascending order.
+     * @return A date from the next item in the DateSpinner, or no such date was found.
+     */
+    private @Nullable Calendar getNextItemDate(Calendar searchDate) {
+        final int last = dateSpinner.getLastItemPosition();
+        for (int i=0; i<=last; i++) {
+            final Calendar date = ((DateItem) dateSpinner.getItemAtPosition(i)).getDate();
+            // use the DateSpinner's compare method so hours and minutes are not considered
+            if(DateSpinner.compareCalendarDates(date, searchDate) >= 0)
+                return date;
+        }
+        // not found
+        return null;
     }
 
     /**

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items>
+    <DateItem id="@id/date_today"
+        text="@string/date_today" />
+    <DateItem id="@id/date_tomorrow"
+        text="@string/date_tomorrow"
+        relDay="1" />
+    <DateItem id="@id/date_next_week"
+        text="@string/date_next_weekday"
+        relDay="7" />
+</items>

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -177,6 +178,34 @@ public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem> {
             return footer;
         else
             return super.getItem(position);
+    }
+
+    /**
+     * Finds a spinner item by its id value (excluding any temporary selection).
+     * @param id The id of the item to search.
+     * @return The specified TwinTextItem, or null if no item with the given id was found.
+     */
+    public @Nullable TwinTextItem getItemById(int id) {
+        for(int index = getCount()-1; index >= 0; index--) {
+            TwinTextItem item = getItem(index);
+            if(item.getId() == id)
+                return item;
+        }
+        return null;
+    }
+
+    /**
+     * Finds a spinner item's position in the data set by its id value (excluding any temporary selection).
+     * @param id The id of the item to search.
+     * @return The position of the specified TwinTextItem, or -1 if no item with the given id was found.
+     */
+    public int getItemPosition(int id) {
+        for(int index = getCount()-1; index >= 0; index--) {
+            TwinTextItem item = getItem(index);
+            if(item.getId() == id)
+                return index;
+        }
+        return -1;
     }
 
     /**

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items>
+    <TimeItem id="@id/time_morning"
+        text="@string/time_morning"
+        absHour="9"
+        absMinute="0" />
+    <TimeItem id="@id/time_afternoon"
+        text="@string/time_afternoon"
+        absHour="13"
+        absMinute="0" />
+    <TimeItem id="@id/time_evening"
+        text="@string/time_evening"
+        absHour="17"
+        absMinute="0" />
+    <TimeItem id="@id/time_night"
+        text="@string/time_night"
+        absHour="20"
+        absMinute="0" />
+</items>

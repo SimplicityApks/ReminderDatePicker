@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="date_last_week" type="id" />
+    <item name="date_yesterday" type="id" />
+    <item name="date_today" type="id" />
+    <item name="date_tomorrow" type="id" />
+    <item name="date_next_week" type="id" />
+    <item name="date_month" type="id" />
+
+    <item name="time_morning" type="id" />
+    <item name="time_noon" type="id" />
+    <item name="time_afternoon" type="id" />
+    <item name="time_afternoon_2" type="id" />
+    <item name="time_evening" type="id" />
+    <item name="time_night" type="id" />
+    <item name="time_late_night" type="id" />
+</resources>

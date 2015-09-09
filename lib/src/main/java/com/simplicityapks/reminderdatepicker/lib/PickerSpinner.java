@@ -1,9 +1,13 @@
 package com.simplicityapks.reminderdatepicker.lib;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.content.res.XmlResourceParser;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.XmlRes;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +15,10 @@ import android.widget.AdapterView;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +32,9 @@ import java.util.List;
  * 4. Dynamic and easy modifying the spinner items without having to worry about selection changes (use the ...AdapterItem...() methods)
  */
 public abstract class PickerSpinner extends Spinner {
+
+    public static final String XML_ATTR_ID = "id";
+    public static final String XML_ATTR_TEXT = "text";
 
     // Indicates that the onItemSelectedListener callback should not be passed to the listener.
     private final ArrayList<Integer> interceptSelectionCallbacks = new ArrayList<>();
@@ -208,18 +219,18 @@ public abstract class PickerSpinner extends Spinner {
                 new OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        if(reselectTemporaryItem) {
+                        if (reselectTemporaryItem) {
                             final int tempItemPosition = getAdapter().getCount();
                             if (position != tempItemPosition)
                                 setSelectionQuietly(tempItemPosition);
                             reselectTemporaryItem = false;
                         }
-                        if(interceptSelectionCallbacks.contains(position)) {
+                        if (interceptSelectionCallbacks.contains(position)) {
                             interceptSelectionCallbacks.remove((Integer) position);
                         }
                         // sometimes during rotation or initialization onItemSelected will be called with the footer selected, catch that
-                        else if(!(((PickerSpinnerAdapter) getAdapter()).hasFooter()
-                                    && position == getLastItemPosition() + 1))
+                        else if (!(((PickerSpinnerAdapter) getAdapter()).hasFooter()
+                                && position == getLastItemPosition() + 1))
                             listener.onItemSelected(parent, view, position, id);
                     }
 
@@ -238,6 +249,24 @@ public abstract class PickerSpinner extends Spinner {
     public int getLastItemPosition() {
         PickerSpinnerAdapter adapter = (PickerSpinnerAdapter) getAdapter();
         return adapter.getCount() - (adapter.hasFooter()? 2 : 1);
+    }
+
+    /**
+     * Finds a spinner adapter item by its id value (excluding any temporary selection).
+     * @param id The id of the item to search.
+     * @return The specified TwinTextItem, or null if no item with the given id was found.
+     */
+    public @Nullable TwinTextItem getAdapterItemById(int id) {
+        return ((PickerSpinnerAdapter) getAdapter()).getItemById(id);
+    }
+
+    /**
+     * Finds a spinner item's position in the data set by its id value (excluding any temporary selection).
+     * @param id The id of the item to search.
+     * @return The position of the specified TwinTextItem, or -1 if no item with the given id was found.
+     */
+    public int getAdapterItemPosition(int id) {
+        return ((PickerSpinnerAdapter) getAdapter()).getItemPosition(id);
     }
 
     /**
@@ -311,6 +340,25 @@ public abstract class PickerSpinner extends Spinner {
     }
 
     /**
+     * Removes the specified item(s) from the adapter and takes care of handling selection changes.
+     * Always call this method instead of getAdapter().remove().
+     * @param id The id of the item(s) to be removed. All items with this id will be removed.
+     * @return True if one or more items with the specified id were found and removed, false otherwise.
+     */
+    public boolean removeAdapterItemById(int id) {
+        PickerSpinnerAdapter adapter = (PickerSpinnerAdapter) getAdapter();
+        boolean result = false;
+        for(int index = adapter.getCount()-1; index >= 0; index--) {
+            TwinTextItem item = adapter.getItem(index);
+            if(item.getId() == id) {
+                removeAdapterItemAt(index);
+                result = true;
+            }
+        }
+        return result;
+    }
+
+    /**
      * Gets the default list of items to be inflated into the Spinner, will be called once on
      * initializing the Spinner. Should use lazy initialization in inherited classes.
      * @return The List of Objects whose toString() method will be called for the items, or null.
@@ -336,4 +384,34 @@ public abstract class PickerSpinner extends Spinner {
      * @param codeString The raw String saved from the item's toString() method.
      */
     protected abstract void restoreTemporarySelection(String codeString);
+
+    /**
+     *
+     */
+    protected ArrayList<TwinTextItem> getItemsFromXml(@XmlRes int xmlResource)
+            throws XmlPullParserException, IOException {
+        final Resources res = getResources();
+        XmlResourceParser parser = res.getXml(xmlResource);
+        ArrayList<TwinTextItem> items = new ArrayList<>();
+
+        int eventType;
+        while((eventType = parser.next()) != XmlPullParser.END_DOCUMENT) {
+            if(eventType == XmlPullParser.START_TAG) {
+                // call our subclass to parse the correct item
+                TwinTextItem item = parseItemFromXmlTag(parser);
+                if(item != null)
+                    items.add(item);
+            }
+        }
+
+        return items;
+    }
+
+    /**
+     * Override this method in your spinner, returning your specific item parsed from the given xml parser at the current tag.
+     * Do not call parser.next() in here!
+     */
+    protected @Nullable TwinTextItem parseItemFromXmlTag(@NonNull XmlResourceParser parser) {
+        return null;
+    }
 }

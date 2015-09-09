@@ -10,16 +10,17 @@ import java.util.GregorianCalendar;
 public class DateItem implements TwinTextItem{
 
     private final String label, dateNumbers;
-    private final int year, month, day;
+    private final int year, month, day, id;
     private boolean enabled = true;
 
     /**
      * Constructs a new DateItem holding the specified date and a label to show primarily.
      * @param label The string to return when getPrimaryText() is called.
      * @param date The date to be returned by getDate().
+     * @param id The identifier to find this item with.
      */
-    public DateItem(String label, Calendar date) {
-        this(label, date.get(Calendar.YEAR), date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH));
+    public DateItem(String label, Calendar date, int id) {
+        this(label, date.get(Calendar.YEAR), date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH), id);
     }
 
     /**
@@ -28,12 +29,14 @@ public class DateItem implements TwinTextItem{
      * @param year The year.
      * @param month The month of year, zero-indexed (so 11 is December).
      * @param day The day of the month.
+     * @param id The identifier to find this item with.
      */
-    public DateItem(String label, int year, int month, int day) {
+    public DateItem(String label, int year, int month, int day, int id) {
         this.label = label;
         this.year = year;
         this.month = month;
         this.day = day;
+        this.id = id;
         this.dateNumbers = null;
     }
 
@@ -43,9 +46,10 @@ public class DateItem implements TwinTextItem{
      * @param label The string to return when getPrimaryText() is called.
      * @param dateString The String to return when getSecondaryText() is called.
      * @param date The date to be returned by getDate().
+     * @param id The identifier to find this item with.
      */
-    public DateItem(String label, String dateString, Calendar date) {
-        this(label, dateString, date.get(Calendar.YEAR), date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH));
+    public DateItem(String label, String dateString, Calendar date, int id) {
+        this(label, dateString, date.get(Calendar.YEAR), date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH), id);
     }
 
     /**
@@ -56,12 +60,14 @@ public class DateItem implements TwinTextItem{
      * @param year The year.
      * @param month The month of year, zero-indexed (so 11 is December).
      * @param day The day of the month.
+     * @param id The identifier to find this item with.
      */
-    public DateItem(String label, String dateString, int year, int month, int day) {
+    public DateItem(String label, String dateString, int year, int month, int day, int id) {
         this.label = label;
         this.year = year;
         this.month = month;
         this.day = day;
+        this.id = id;
         this.dateNumbers = dateString;
     }
 
@@ -134,6 +140,11 @@ public class DateItem implements TwinTextItem{
     }
 
     @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
     public boolean isEnabled() {
         return enabled;
     }
@@ -153,7 +164,7 @@ public class DateItem implements TwinTextItem{
     @Override
     public String toString() {
         String sep = "\n";
-        return nullToEmpty(label) +sep+ nullToEmpty(dateNumbers) +sep+ year +sep+ month +sep+ day;
+        return nullToEmpty(label) +sep+ nullToEmpty(dateNumbers) +sep+ year +sep+ month +sep+ day +sep+ id;
     }
 
     /**
@@ -163,18 +174,19 @@ public class DateItem implements TwinTextItem{
      */
     public static DateItem fromString(String code) {
         String[] items = code.split("\n");
-        if(items.length != 5) return null;
-        int year, month, day;
+        if(items.length != 6) return null;
+        int year, month, day, id;
         try {
             year = Integer.parseInt(items[2]);
             month = Integer.parseInt(items[3]);
             day = Integer.parseInt(items[4]);
+            id = Integer.parseInt(items[5]);
         }
         catch (NumberFormatException e) {
             e.printStackTrace();
             return null;
         }
-        return new DateItem(emptyToNull(items[0]), emptyToNull(items[1]), year, month, day);
+        return new DateItem(emptyToNull(items[0]), emptyToNull(items[1]), year, month, day, id);
     }
 
     /**
