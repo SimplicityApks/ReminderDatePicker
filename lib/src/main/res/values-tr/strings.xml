@@ -1,0 +1,23 @@
+<resources>
+    <string name="spinner_date_footer">Bir tarih seçin&#8230;</string>
+    <string name="spinner_time_footer">Bir saat seçin&#8230;</string>
+    <string name="select_time">Saat seç</string>
+
+    <!-- Date items: -->
+    <string name="date_last_weekday">Son %1$s</string>
+    <string name="date_last_weekday_weekend">Son %1$s</string>
+    <string name="date_yesterday">Dün</string>
+    <string name="date_today">Bugün</string>
+    <string name="date_tomorrow">Yarın</string>
+    <string name="date_next_weekday">Sonraki %1$s</string>
+    <string name="date_next_weekday_weekend">Sonraki %1$s</string>
+
+    <!-- Time items: -->
+    <string name="time_morning">Sabah</string> <!-- (9:00) -->
+    <string name="time_noon">Öğlen</string> <!-- (12:00) -->
+    <string name="time_afternoon">Öğleden sonra</string> <!-- (13:00) -->
+    <string name="time_afternoon_2">Öğleden sonra</string> <!-- (14:00) -->
+    <string name="time_evening">Akşam</string> <!-- (17:00) -->
+    <string name="time_night">Gece</string> <!-- (20:00) -->
+    <string name="time_late_night">Gece yarısı</string> <!-- (23:00) -->
+</resources>
