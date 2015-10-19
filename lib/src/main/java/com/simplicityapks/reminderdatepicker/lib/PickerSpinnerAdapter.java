@@ -38,7 +38,7 @@ public class PickerSpinnerAdapter extends ArrayAdapter<TwinTextItem> {
 
     // Due to only having a light spinner dropdown background even on a dark app theme, we need a
     // different resource with inverse text colors on pre Lollipop devices.
-    private final boolean useAlternativeResources = Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && isActivityUsingDarkTheme();
+    private final boolean useAlternativeResources = Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB && isActivityUsingDarkTheme();
 
     @LayoutRes
     private int dropDownResource = useAlternativeResources? R.layout.twin_text_dropdown_item_dark : R.layout.twin_text_dropdown_item;
