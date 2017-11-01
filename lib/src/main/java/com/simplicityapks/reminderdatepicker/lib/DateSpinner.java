@@ -15,9 +15,10 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Toast;
 
+import com.fourmob.datetimepicker.date.CalendarDay;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
-import com.fourmob.datetimepicker.date.SimpleMonthAdapter;
 
 import java.text.DateFormatSymbols;
 import java.util.Calendar;
@@ -28,6 +29,9 @@ import java.util.List;
  * The left PickerSpinner in the Google Keep app, to select a date.
  */
 public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSelectedListener {
+
+    // TODO remove when setMinDate(null) works
+    private static final CalendarDay MINIMUM_POSSIBLE_DATE = new CalendarDay(1902, 1, 1);
 
     public static final String XML_TAG_DATEITEM = "DateItem";
 
@@ -149,9 +153,6 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
 
     @Override
     protected @Nullable TwinTextItem parseItemFromXmlTag(@NonNull XmlResourceParser parser) {
-        final Resources res = getResources();
-        final String packageName = getContext().getPackageName();
-
         if(!parser.getName().equals(XML_TAG_DATEITEM)) {
             Log.d("DateSpinner", "Unknown xml tag name: " + parser.getName());
             return null;
@@ -169,8 +170,9 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
                     break;
                 case XML_ATTR_TEXT:
                     text = parser.getAttributeValue(i);
-                    if(text != null && text.startsWith("@string/"))
-                        textResource = res.getIdentifier(text, "string", packageName);
+                    // try to get a resource value, the string is retrieved below
+                    if(text != null && text.startsWith("@"))
+                        textResource = parser.getAttributeResourceValue(i, NO_ID);
                     break;
 
                 case XML_ATTR_ABSDAYOFYEAR:
@@ -358,11 +360,11 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
         this.minDate = minDate;
         // update the date picker (even if it is not used right now)
         if(minDate == null)
-            datePickerDialog.setMinDate(null);
+            datePickerDialog.setMinDate(MINIMUM_POSSIBLE_DATE);
         else if(maxDate != null && compareCalendarDates(minDate, maxDate) > 0)
             throw new IllegalArgumentException("Minimum date must be before maximum date!");
         else
-            datePickerDialog.setMinDate(new SimpleMonthAdapter.CalendarDay(minDate));
+            datePickerDialog.setMinDate(new CalendarDay(minDate));
         updateEnabledItems();
     }
 
@@ -387,7 +389,7 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
         else if(minDate != null && compareCalendarDates(minDate, maxDate) > 0)
             throw new IllegalArgumentException("Maximum date must be after minimum date!");
         else
-            datePickerDialog.setMaxDate(new SimpleMonthAdapter.CalendarDay(maxDate));
+            datePickerDialog.setMaxDate(new CalendarDay(maxDate));
         updateEnabledItems();
     }
 
@@ -599,7 +601,7 @@ public class DateSpinner extends PickerSpinner implements AdapterView.OnItemSele
         if (customDatePicker == null) {
             // update the selected date in the dialog
             final Calendar date = getSelectedDate();
-            datePickerDialog.onDayOfMonthSelected(
+            datePickerDialog.onDateSelected(
                     date.get(Calendar.YEAR), date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH));
             datePickerDialog.show(fragmentManager, "DatePickerDialog");
         } else {

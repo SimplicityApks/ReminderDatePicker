@@ -155,9 +155,6 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
 
     @Override
     protected @Nullable TwinTextItem parseItemFromXmlTag(@NonNull XmlResourceParser parser) {
-        final Resources res = getResources();
-        final String packageName = getContext().getPackageName();
-
         if(!parser.getName().equals(XML_TAG_TIMEITEM)) {
             Log.d("TimeSpinner", "Unknown xml tag name: " + parser.getName());
             return null;
@@ -175,8 +172,9 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
                     break;
                 case XML_ATTR_TEXT:
                     text = parser.getAttributeValue(i);
-                    if(text != null && text.startsWith("@string/"))
-                        textResource = res.getIdentifier(text, "string", packageName);
+                    // try to get a resource value, the string is retrieved below
+                    if(text != null && text.startsWith("@"))
+                        textResource = parser.getAttributeResourceValue(i, NO_ID);
                     break;
 
                 case XML_ATTR_ABSHOUR:
@@ -200,7 +198,7 @@ public class TimeSpinner extends PickerSpinner implements AdapterView.OnItemSele
 
         // now construct the time item from the attributes
         if(textResource != NO_ID)
-            text = res.getString(textResource);
+            text = getResources().getString(textResource);
 
         // when no text is given, format the date to have at least something to show
         if(text == null || text.equals(""))
