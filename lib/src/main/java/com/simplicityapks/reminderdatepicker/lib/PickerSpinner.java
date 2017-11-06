@@ -12,7 +12,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -31,7 +30,7 @@ import java.util.List;
  * 3. Select items which are not currently in the spinner items (use {@link #selectTemporary(TwinTextItem)}.
  * 4. Dynamic and easy modifying the spinner items without having to worry about selection changes (use the ...AdapterItem...() methods)
  */
-public abstract class PickerSpinner extends Spinner {
+public abstract class PickerSpinner extends android.support.v7.widget.AppCompatSpinner {
 
     public static final String XML_ATTR_ID = "id";
     public static final String XML_ATTR_TEXT = "text";
@@ -39,7 +38,7 @@ public abstract class PickerSpinner extends Spinner {
     // Indicates that the onItemSelectedListener callback should not be passed to the listener.
     private final ArrayList<Integer> interceptSelectionCallbacks = new ArrayList<>();
     // Indicates that the selection should be restored after initialization (setSelection has not been called externally)
-    private boolean restoreTemporarySelection = true;
+    private boolean restoreTemporarySelection = false;
     // Indicates that the temporary item should be reselected after an item is removed
     private boolean reselectTemporaryItem = false;
 
@@ -74,9 +73,10 @@ public abstract class PickerSpinner extends Spinner {
     }
 
     protected void initAdapter(Context context) {
+        CharSequence footer = getFooter();
+        TwinTextItem footerItem = footer == null? null : new TwinTextItem.Simple(footer, null);
         // create our simple adapter with default layouts and set it here:
-        PickerSpinnerAdapter adapter = new PickerSpinnerAdapter(context, getSpinnerItems(),
-                new TwinTextItem.Simple(getFooter(), null));
+        PickerSpinnerAdapter adapter = new PickerSpinnerAdapter(context, getSpinnerItems(), footerItem);
         setAdapter(adapter);
     }
 
@@ -99,16 +99,8 @@ public abstract class PickerSpinner extends Spinner {
         if(state instanceof Bundle) {
             Bundle bundle = (Bundle) state;
             super.onRestoreInstanceState(bundle.getParcelable("superState"));
-            // restore the temporary selection, we need to wait till the end of the message queue
             final String tempItem = bundle.getString("temporaryItem");
-            restoreTemporarySelection = true;
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    if (restoreTemporarySelection)
-                        restoreTemporarySelection(tempItem);
-                }
-            });
+            restoreTemporarySelection(tempItem);
         }
         else super.onRestoreInstanceState(state);
     }
@@ -119,10 +111,12 @@ public abstract class PickerSpinner extends Spinner {
     @Override
     public void setVisibility(int visibility) {
         super.setVisibility(visibility);
-        // When going from state gone to visible with a temporary item selected, the position is
-        // somehow reset by the system, so we need to reselect the temporary item.
+        // When going from state gone to visible with a temporary item selected, but the array has
+        // changed (by toggling FLAG_MORE_TIME), the position is somehow reset by the system, so we
+        // need to reselect the temporary item (even if it was already selected).
         // This is merely a workaround as I can't find a better solution.
         if(visibility == VISIBLE) {
+            reselectTemporaryItem = false;
             PickerSpinnerAdapter adapter = (PickerSpinnerAdapter) getAdapter();
             int count = adapter.getCount();
             // check whether we have the temporary item selected
@@ -135,8 +129,9 @@ public abstract class PickerSpinner extends Spinner {
                     Log.d("PickerSpinner", "SetVisibility: Couldn't get temporary item from adapter, aborting workaround");
                 }
                 // now reselect the temporary item
-                if(tempItem != null)
+                if(tempItem != null) {
                     selectTemporary(tempItem);
+                }
             }
         }
 
@@ -170,6 +165,7 @@ public abstract class PickerSpinner extends Spinner {
             // remove any previous temporary selection:
             ((PickerSpinnerAdapter)getAdapter()).selectTemporary(null);
             reselectTemporaryItem = false;
+            restoreTemporarySelection = false;
             // check that the selection goes through:
             interceptSelectionCallbacks.clear();
             super.setSelection(position);
@@ -184,6 +180,10 @@ public abstract class PickerSpinner extends Spinner {
     private void setSelectionQuietly(int position) {
         // intercept the callback here:
         interceptSelectionCallbacks.add(position);
+        superSetSelection(position);
+    }
+
+    private void superSetSelection(int position) {
         super.setSelection(position, false); // No idea why both setSelections are needed but it only works with both
         super.setSelection(position);
     }
@@ -194,7 +194,6 @@ public abstract class PickerSpinner extends Spinner {
      * @param item The item to select, or null to remove any temporary selection.
      */
     public void selectTemporary(TwinTextItem item) {
-        restoreTemporarySelection = false;
         // if we just want to clear the selection:
         if(item == null) {
             setSelection(getLastItemPosition());
@@ -202,7 +201,7 @@ public abstract class PickerSpinner extends Spinner {
             return;
         }
         PickerSpinnerAdapter adapter = (PickerSpinnerAdapter) getAdapter();
-        // pass on the call to the adapter:
+        // pass on the call to the adapter (just stores the item):
         adapter.selectTemporary(item);
         final int tempItemPosition = adapter.getCount();
         if(getSelectedItemPosition() == tempItemPosition) {
@@ -211,6 +210,23 @@ public abstract class PickerSpinner extends Spinner {
             setSelectionQuietly(0);
         }
         super.setSelection(tempItemPosition);
+        // during initialization the system might check our selected position and reset it,
+        // thus we need to check after the message queue has been settled
+        if (!restoreTemporarySelection) {
+            restoreTemporarySelection = true;
+            post(new Runnable() {
+                @Override
+                public void run() {
+                    if (restoreTemporarySelection) {
+                        restoreTemporarySelection = false;
+                        reselectTemporaryItem = false;
+                        final int tempItemPosition = getAdapter().getCount();
+                        if (getSelectedItemPosition() != tempItemPosition)
+                            superSetSelection(tempItemPosition);
+                    }
+                }
+            });
+        }
     }
 
     @Override
@@ -220,10 +236,10 @@ public abstract class PickerSpinner extends Spinner {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         if (reselectTemporaryItem) {
+                            reselectTemporaryItem = false;
                             final int tempItemPosition = getAdapter().getCount();
                             if (position != tempItemPosition)
                                 setSelectionQuietly(tempItemPosition);
-                            reselectTemporaryItem = false;
                         }
                         if (interceptSelectionCallbacks.contains(position)) {
                             interceptSelectionCallbacks.remove((Integer) position);
