@@ -33,4 +33,9 @@
         <!--layout_marginStart >= API Level 17-->
         <item name="android:layout_marginStart" tools:ignore="NewApi">4dp</item>
     </style>
+
+    <style name="SpinnerFooterStyle" parent="Base.Widget.AppCompat.DropDownItem.Spinner">
+        <!-- Customize the footer used in the PickerSpinners here -->
+        <item name="android:background">@color/footer_background</item>
+    </style>
 </resources>
